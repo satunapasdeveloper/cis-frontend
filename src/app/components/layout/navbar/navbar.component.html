@@ -18,7 +18,7 @@
     </div>
 
     <div class="flex items-center gap-5">
-        <span class="text-gray-600 hover:text-blue-500 cursor-pointer">
+        <span class="text-gray-600 hover:text-blue-500 cursor-pointer" (click)="ShowSearch = true">
             <i class="pi pi-search"></i>
         </span>
 
@@ -31,3 +31,32 @@
         </span>
     </div>
 </div>
+
+<p-dialog header="Quick Menu" [modal]="true" [(visible)]="ShowSearch" [style]="{ width: '25rem' }" [draggable]="false"
+    [resizable]="false">
+    <div class="flex flex-col w-full pt-2">
+        <div class="flex w-full mb-5">
+            <input #KeywordSearch type="text" pInputText placeholder="Cari menu disini" class="p-inputtext-lg w-full"
+                (keyup)="handleFilterMenu(KeywordSearch.value)">
+        </div>
+
+        <div class="flex flex-col gap-2 h-[20rem] overflow-x-auto">
+            <div *ngFor="let item of Menu"
+                class="flex flex-col bg-gray-100 gap-1 hover:bg-blue-100 hover:text-blue-700 p-2 rounded-md cursor-pointer"
+                (click)="handleNavigateToMenu(item)">
+                <p class="text-sm font-medium">
+                    <i class="{{ item.icon }}" style="font-size: 11px; margin-right: 5px"></i>&nbsp;{{ item.caption }}
+                </p>
+                <p class="text-xs">
+                    {{ item.url }}
+                </p>
+            </div>
+
+            <div *ngIf="!Menu.length" class="flex flex-row justify-center">
+                <p class="text-gray-700 text-center font-medium">
+                    No menu to show
+                </p>
+            </div>
+        </div>
+    </div>
+</p-dialog>
