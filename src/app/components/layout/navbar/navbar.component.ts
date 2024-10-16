@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { TooltipModule } from 'primeng/tooltip';
+import { DividerModule } from 'primeng/divider'
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
@@ -13,7 +14,8 @@ import { AuthenticationModel } from 'src/app/model/pages/authentication/authenti
     standalone: true,
     imports: [
         CommonModule,
-        TooltipModule
+        TooltipModule,
+        DividerModule
     ],
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.scss']
@@ -24,6 +26,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     ShowTopMenu = false;
 
+    NavbarMenu$ = this._authenticationService
+        .NavbarMenu$
+        .pipe(takeUntil(this.Destroy$));
+
+    SelectedNavbarMenu: any;
+
     constructor(
         private _router: Router,
         private _messageService: MessageService,
@@ -32,7 +40,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        this.SelectedNavbarMenu = JSON.parse(localStorage.getItem('_CIS_ACTIVE_MENU_')!);
+    }
 
+    handleClickNavbarMenu(item: AuthenticationModel.INavbarMenu) {
+        localStorage.setItem('_CIS_ACTIVE_MENU_', JSON.stringify(item));
+        this.handleToggleSidebar();
     }
 
     handleToggleSidebar() {
