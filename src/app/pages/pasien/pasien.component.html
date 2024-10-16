@@ -1,0 +1,125 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-10/12 p-3 bg-white rounded-lg shadow-sm">
+        <!-- Switch Bayi Lahir -->
+        <div
+            class="flex w-full items-center gap-2 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <p-inputSwitch [(ngModel)]="IsBayiLahir" />
+            <p class="text-gray-700 text-sm">
+                Pasien adalah bayi baru lahir
+            </p>
+        </div>
+
+        <!-- Form Identitas Non Bayi -->
+        <div *ngIf="!IsBayiLahir"
+            class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <p class="text-gray-700 text-xl font-semibold">
+                Identitas
+            </p>
+            <p class="text-gray-700 text-sm mb-4">
+                Mohon isi dengan lengkap data identitas pasien
+            </p>
+
+            <app-dynamic-form #FormIdentitasComps [props]="FormIdentitasProps"></app-dynamic-form>
+        </div>
+
+        <!-- Form Identitas Bayi -->
+        <div *ngIf="IsBayiLahir"
+            class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <p class="text-gray-700 text-xl font-semibold">
+                Identitas
+            </p>
+            <p class="text-gray-700 text-sm mb-4">
+                Mohon isi dengan lengkap data identitas pasien bayi
+            </p>
+
+            <app-dynamic-form #FormIdentitasBayiComps [props]="FormIdentitasBayiProps"></app-dynamic-form>
+        </div>
+
+        <!-- Form Alamat -->
+        <div class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <p class="text-gray-700 text-xl font-semibold">
+                Alamat
+            </p>
+            <p class="text-gray-700 text-sm mb-4">
+                Mohon isi data alamat pasien sesuai dengan kartu identitas
+            </p>
+
+            <div class="grid w-full mb-4">
+                <p class="text-sm text-gray-600 font-medium">
+                    Alamat
+                    <span class="text-xs text-red-500">*</span>
+                </p>
+                <textarea rows="3" pInputTextarea class="p-inputtext-sm w-full" [(ngModel)]="Alamat">
+            </textarea>
+            </div>
+
+            <app-dynamic-form #FormAlamatComps [props]="FormAlamatProps"></app-dynamic-form>
+
+            <div class="flex w-full mt-5 mb-3 gap-3 items-center">
+                <p-inputSwitch [(ngModel)]="IsAlamatDomisiliSame" />
+                <p class="text-gray-700 text-sm">
+                    Alamat domisili sama dengan alamat pada kartu identitas
+                </p>
+            </div>
+
+            <div *ngIf="!IsAlamatDomisiliSame" class="grid w-full mb-4">
+                <p class="text-sm text-gray-600 font-medium">
+                    Alamat Domisili
+                    <span class="text-xs text-red-500">*</span>
+                </p>
+                <textarea rows="3" pInputTextarea class="p-inputtext-sm w-full" [(ngModel)]="AlamatDomisili">
+            </textarea>
+            </div>
+
+            <app-dynamic-form *ngIf="!IsAlamatDomisiliSame" #FormAlamatDomisiliComps [props]="FormAlamatDomisiliProps">
+            </app-dynamic-form>
+        </div>
+
+        <!-- Form Kontak -->
+        <div class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <p class="text-gray-700 text-xl font-semibold">
+                Kontak
+            </p>
+            <p class="text-gray-700 text-sm mb-4">
+                Mohon isi data Kontak pasien
+            </p>
+
+            <app-dynamic-form #FormKontakComps [props]="FormKontakProps"></app-dynamic-form>
+        </div>
+
+        <!-- Form Lain Lain -->
+        <div class="grid w-full mb-3">
+            <p class="text-gray-700 text-xl font-semibold">
+                Lain - Lain
+            </p>
+            <p class="text-gray-700 text-sm mb-4">
+                Mohon isi data pasien dibawah ini
+            </p>
+
+            <app-dynamic-form #FormLainLainComps [props]="FormLainLainProps"></app-dynamic-form>
+        </div>
+
+        <div class="flex w-full justify-end mt-4 gap-4">
+            <p-button severity="secondary" label="Kembali" styleClass="p-button-sm" (onClick)="handleBackToList()">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'insert'" severity="info" label="Simpan" styleClass="p-button-sm"
+                (onClick)="savePasien()">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
+                (onClick)="updatePasien()">
+            </p-button>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>

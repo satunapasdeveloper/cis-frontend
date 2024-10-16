@@ -1,0 +1,12 @@
+<div *ngIf="UserData$ as user"
+    class="flex flex-col w-full gap-0 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-400 pb-2">
+    <p class="text-base font-medium text-gray-800 text-center">
+        {{ user.layanan | titlecase }}
+    </p>
+    <p class="text-sm text-gray-800 text-center">
+        No. Ijin : -
+    </p>
+    <p class="text-sm text-gray-800 text-center">
+        {{ user.alamat_lengkap | titlecase }}
+    </p>
+</div>

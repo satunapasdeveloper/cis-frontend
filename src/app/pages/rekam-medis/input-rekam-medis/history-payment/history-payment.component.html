@@ -1,0 +1,250 @@
+<div id="invoice" class="flex flex-col w-full p-2">
+    <p class="text-gray-800 text-xl font-semibold">
+        Invoice {{ Invoice.no_invoice }}
+    </p>
+    <p class="text-gray-700 text-sm mb-5">
+        Invoice telah dibayar pada {{ Invoice.tanggal_invoice }}
+    </p>
+
+    <div class="flex flex-row w-full gap-2 mb-2">
+        <!-- Tanggal Invoice -->
+        <div class="flex-col gap-0 w-6/12">
+            <p class="text-gray-600 text-sm">
+                Tanggal Invoice
+            </p>
+            <p class="text-gray-800 text-sm font-semibold">
+                {{ Invoice.tanggal_invoice }}
+            </p>
+        </div>
+
+        <!-- Tanggal Invoice -->
+        <div class="flex-col gap-0 w-6/12">
+            <p class="text-gray-600 text-sm">
+                Tanggal Pemeriksaan
+            </p>
+            <p class="text-gray-800 text-sm font-semibold">
+                {{ Invoice.tanggal_visit }}
+            </p>
+        </div>
+    </div>
+
+    <div class="flex flex-row w-full gap-2 mb-2">
+        <!-- Tanggal Invoice -->
+        <div class="flex-col gap-0 w-6/12">
+            <p class="text-gray-600 text-sm">
+                Nama Pasien
+            </p>
+            <p class="text-gray-800 text-sm font-semibold">
+                {{ Invoice.nama_lengkap }}
+            </p>
+        </div>
+
+        <!-- Tanggal Invoice -->
+        <div class="flex-col gap-0 w-6/12">
+            <p class="text-gray-600 text-sm">
+                Nama Dokter
+            </p>
+            <p class="text-gray-800 text-sm font-semibold">
+                {{ Invoice.dokter }}
+            </p>
+        </div>
+    </div>
+
+    <div class="flex flex-row w-full gap-2 mb-4">
+        <!-- Metode Bayar -->
+        <div class="flex-col gap-0 w-6/12">
+            <p class="text-gray-600 text-sm">
+                Metode Bayar
+            </p>
+            <p class="text-gray-800 text-sm font-semibold">
+                {{ Invoice.payment_method }}
+            </p>
+        </div>
+
+        <!-- Debitur -->
+        <div class="flex-col gap-0 w-6/12">
+            <p class="text-gray-600 text-sm">
+                Debitur
+            </p>
+            <p class="text-gray-800 text-sm font-semibold">
+                {{ Invoice.debitur }}
+            </p>
+        </div>
+    </div>
+
+    <div *ngIf="Billing as billing" class="flex flex-col w-full gap-0">
+        <!-- Heading -->
+        <div class="flex flex-row p-2 rounded-md bg-gray-100 mb-1">
+            <div class="w-7/12">
+                <p class="text-sm font-semibold">
+                    Deskripsi
+                </p>
+            </div>
+            <div class="w-2/12">
+                <p class="text-sm text-center font-semibold">
+                    Jumlah
+                </p>
+            </div>
+            <div class="w-3/12">
+                <p class="text-sm text-center font-semibold">
+                    Total
+                </p>
+            </div>
+        </div>
+
+        <!-- Obat -->
+        <div class="flex flex-col p-2 mb-1 border-b border-t-0 border-x-0 border-gray-200 border-dashed">
+            <p class="text-gray-700 text-sm mb-2 font-medium">
+                1. Obat
+            </p>
+
+            <div *ngFor="let item of billing.obat" class="flex flex-row gap-2 mb-1 items-center">
+                <div class="w-7/12">
+                    <p class="text-sm">
+                        {{ item.deskripsi }}
+                    </p>
+                </div>
+                <div class="w-2/12">
+                    <p class="text-sm text-center">
+                        {{ item.jumlah }}
+                    </p>
+                </div>
+                <div class="w-3/12">
+                    <p class="text-sm text-end">
+                        {{ item.total_harga | currency: 'Rp. ' }}
+                    </p>
+                </div>
+            </div>
+
+            <div *ngIf="billing.obat.length < 1" class="flex flex-row w-full justify-center p-2 rounded-md bg-gray-100">
+                <p class="text-sm text-gray-700">
+                    Tidak ada resep obat
+                </p>
+            </div>
+        </div>
+
+        <!-- Tindakan -->
+        <div class="flex flex-col p-2 mb-1 border-b border-t-0 border-x-0 border-gray-200 border-dashed">
+            <p class="text-gray-700 text-sm mb-2 font-medium">
+                2. Tindakan
+            </p>
+
+            <div *ngFor="let item of billing.tindakan" class="flex flex-row gap-2 mb-1 items-center">
+                <div class="w-7/12">
+                    <p class="text-sm">
+                        {{ item.deskripsi }}
+                    </p>
+                </div>
+                <div class="w-2/12">
+                    <p class="text-sm text-center">
+                        {{ item.jumlah }}
+                    </p>
+                </div>
+                <div class="w-3/12">
+                    <p class="text-sm text-end">
+                        {{ item.total_harga | currency: 'Rp. ' }}
+                    </p>
+                </div>
+            </div>
+
+            <div *ngIf="billing.tindakan.length < 1"
+                class="flex flex-row w-full justify-center p-2 rounded-md bg-gray-100">
+                <p class="text-sm text-gray-700">
+                    Tidak ada tindakan
+                </p>
+            </div>
+        </div>
+
+        <!-- BMHP -->
+        <div class="flex flex-col p-2 mb-3">
+            <p class="text-gray-700 text-sm mb-2 font-medium">
+                3. BMHP
+            </p>
+
+            <div *ngFor="let item of billing.bmhp" class="flex flex-row gap-2 mb-1 items-center">
+                <div class="w-7/12">
+                    <p class="text-sm">
+                        {{ item.deskripsi }}
+                    </p>
+                </div>
+                <div class="w-2/12">
+                    <p class="text-sm text-center">
+                        {{ item.jumlah }}
+                    </p>
+                </div>
+                <div class="w-3/12">
+                    <p class="text-sm text-end">
+                        {{ item.total_harga | currency: 'Rp. ' }}
+                    </p>
+                </div>
+            </div>
+
+            <div *ngIf="billing.bmhp.length < 1" class="flex flex-row w-full justify-center p-2 rounded-md bg-gray-100">
+                <p class="text-sm text-gray-700">
+                    Tidak ada penggunaan BMHP
+                </p>
+            </div>
+        </div>
+
+        <!-- Total -->
+        <div class="flex flex-row p-2 justify-end mb-5">
+            <div class="w-4/12 flex flex-col gap-2">
+                <!-- Subtotal -->
+                <div class="flex w-full">
+                    <div class="w-4/12">
+                        <p class="text-sm font-semibold">
+                            Subtotal
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-end">
+                            {{ billing.subtotal | currency: 'Rp. ' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Diskon -->
+                <div class="flex w-full items-center">
+                    <div class="w-4/12">
+                        <p class="text-sm font-semibold">
+                            Diskon
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-end">
+                            {{ billing.diskon | currency: 'Rp. ' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="flex w-full items-center">
+                    <div class="w-4/12">
+                        <p class="text-sm font-semibold">
+                            Total
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-end">
+                            {{ billing.total | currency: 'Rp. ' }}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="flex flex-row w-full gap-3 px-2">
+    <div class="w-6/12 grid">
+        <p-button severity="secondary" styleClass="p-button-sm w-full" label="Unduh Invoice"
+            (onClick)="downloadInvoice()">
+        </p-button>
+    </div>
+    <div class="w-6/12 grid">
+        <p-button severity="secondary" styleClass="p-button-sm w-full" label="Batalkan Invoice"
+            (onClick)="cancelInvoice()">
+        </p-button>
+    </div>
+</div>

@@ -1,0 +1,189 @@
+<app-dashboard>
+    <!-- User -->
+    <div *ngIf="UserData$ | async as user"
+        class="flex w-full gap-3 items-center p-5 rounded-lg shadow-sm bg-white mb-5 ">
+        <div class="flex">
+            <img src="../../../assets/icon/user.png" alt="user" class="h-14 w-14">
+        </div>
+
+        <div class="flex flex-col gap-0">
+            <p class="text-slate-700 text-3xl font-semibold">
+                Selamat Datang, {{ user.nama | titlecase }}
+            </p>
+
+            <p class="text-slate-600 text-sm">
+                <i class="pi pi-home"></i>
+                Nama Layanan Anda : {{ user.layanan }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Counter -->
+    <div class="flex flex-row w-full mt-5 mb-7 gap-5">
+        <!-- List Dokter Praktek -->
+        <div class="flex flex-col w-8/12 bg-white rounded-lg shadow-sm p-3 gap-4 max-h-[17rem] overflow-y-auto">
+            <!-- Heading -->
+            <div class="flex flex-col">
+                <p class="text-gray-800 text-lg font-medium">
+                    Dokter Praktek Hari Ini
+                </p>
+                <p class="text-gray-600 text-sm">
+                    Menampilkan daftar dokter yang praktek hari ini
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                @for (item of DokterPraktekHariIniDatasource; track $index; let last = $last) {
+                <div
+                    class="flex flex-row justify-between gap-0 pb-2 {{ last ? '' : 'border-b border-dashed border-t-0 border-x-0 border-gray-300' }}">
+                    <div class="w-6/12">
+                        <p class="text-gray-700 text-base">
+                            {{ $index + 1 }})
+                            {{ item.nama }}
+                        </p>
+                    </div>
+                    <p class="text-gray-700 text-sm">
+                        {{ item.nama_poli ? item.nama_poli : 'UMUM' }}
+                    </p>
+                    <p class="text-gray-700 text-sm">
+                        {{ item.jadwal }}
+                    </p>
+                </div>
+
+                }
+            </div>
+        </div>
+
+        <!-- Counting -->
+        <div class="grid grid-cols-2 grid-row-2 w-4/12 gap-4">
+            <!-- Pasien Terlayani -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ PasienTerlayani }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Pasien Terlayani Hari Ini
+                </p>
+            </div>
+
+            <!-- Total -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3 justify-center">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ TotalPasien }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Total Pasien
+                </p>
+            </div>
+
+            <!-- Dokter Praktek Hari Ini -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3 justify-center">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ DokterPraktekHariIni }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Dokter Praktek Hari Ini
+                </p>
+            </div>
+
+            <!-- Tindakan Medis Hari Ini -->
+            <div class="flex flex-col w-full rounded-lg shadow-sm bg-white p-3 justify-center">
+                <div class="flex w-full items-start mb-3">
+                    <p class="text-sky-500 font-medium text-5xl text-center">
+                        {{ TindakanMedisHariIni }}
+                    </p>
+
+                    <span class="ml-auto cursor-pointer">
+                        <i class="pi pi-arrow-up-right text-gray-600" style="font-size: 13px"></i>
+                    </span>
+                </div>
+
+                <p class="text-gray-700 text-sm">
+                    Tindakan Medis Hari Ini
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="flex flex-row w-full gap-5">
+        <div class="flex flex-col gap-2 w-8/12 bg-white rounded-lg shadow-sm p-3">
+            <div class="flex flex-col">
+                <p class="text-lg text-gray-800 font-medium tracking-tight leading-6">
+                    Pendapatan
+                </p>
+                <p class="text-sm text-gray-600 tracking-tight leading-6">
+                    Menampilkan ringkasan pendapatan dalam 7 hari terakhir
+                </p>
+            </div>
+
+            <div class="flex flex-col w-full">
+                <apx-chart *ngIf="ChartPendapatan" class="flex-auto w-full h-80" [chart]="ChartPendapatan.chart"
+                    [colors]="ChartPendapatan.colors" [dataLabels]="ChartPendapatan.dataLabels"
+                    [grid]="ChartPendapatan.grid" [labels]="ChartPendapatan.labels" [legend]="ChartPendapatan.legend"
+                    [plotOptions]="ChartPendapatan.plotOptions" [series]="ChartPendapatan.series"
+                    [states]="ChartPendapatan.states" [stroke]="ChartPendapatan.stroke"
+                    [tooltip]="ChartPendapatan.tooltip" [xaxis]="ChartPendapatan.xaxis" [yaxis]="ChartPendapatan.yaxis">
+                </apx-chart>
+            </div>
+        </div>
+
+        <!-- List Penyakit Terpopuler -->
+        <div class="flex flex-col w-4/12 bg-white rounded-lg shadow-sm p-3 gap-4 max-h-[17rem] overflow-y-auto">
+            <!-- Heading -->
+            <div class="flex flex-col">
+                <p class="text-gray-800 text-lg font-medium">
+                    Penyakit Terpopuler
+                </p>
+                <p class="text-gray-600 text-sm">
+                    Menampilkan daftar penyakit terpopuler dalam 30 hari
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                @for (item of PenyakitTerpopuler; track $index; let last = $last) {
+                <div
+                    class="flex flex-row items-center gap-0 pb-2 {{ last ? '' : 'border-b border-dashed border-t-0 border-x-0 border-gray-300' }}">
+                    <div class="w-1/12">
+                        <p class="text-gray-700 text-sm text-start">
+                            {{ $index + 1 }})
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.nama_penyakit }}
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p class="text-red-600 text-sm text-center">
+                            {{ item.jml_pasien_terdiagnosa }}
+                        </p>
+                    </div>
+                </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</app-dashboard>

@@ -1,0 +1,141 @@
+<div class="flex flex-col w-full">
+    <!-- Resep Non Racikan -->
+    <div class="grid w-full mb-5 pb-5 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+        <p class="text-gray-700 text-xl font-semibold">
+            Obat Non Racikan
+        </p>
+        <p class="text-gray-700 text-sm mb-4">
+            Isi data resep non racikan disini
+        </p>
+
+        <div class="flex flex-col gap-2 p-2 rounded-lg border-dashed border-gray-300 border">
+            @if (ResepNonRacikan.length) {
+            <div *ngFor="let item of ResepNonRacikan; let i = index;" class="flex flex-col gap-2">
+                <p class="text-sm text-gray-800 font-medium">
+                    {{ item.nama_obat }} x {{ item.qty }}
+                </p>
+
+                <div class="flex gap-2 items-center">
+                    <div class="w-7/12 flex flex-col gap-1">
+                        <p class="text-sm text-gray-600">
+                            Aturan Pakai
+                        </p>
+                        <p class="text-sm text-gray-800 font-medium">
+                            {{ onFormatAturanPakai(item) }}
+                        </p>
+                    </div>
+                    <div class="w-3/12 flex flex-col gap-1">
+                        <p class="text-sm text-gray-600">
+                            Rute
+                        </p>
+                        <p class="text-sm text-gray-800 font-medium">
+                            {{ item.rute_pemberian_obat ? item.rute_pemberian_obat : item.rute_pemberian }}
+                        </p>
+                    </div>
+                    <div class="w-2/12 flex gap-0">
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteObatNonRacikan(i)" />
+
+                        <p-button icon="pi pi-file-edit" [rounded]="true" [text]="true" severity="warning"
+                            (onClick)="handleOpenDialogResepNonRacikan('update', i, item)" />
+                    </div>
+                </div>
+
+            </div>
+            } @else {
+            <p class="text-lg text-gray-800 font-medium text-center">
+                Belum ada obat
+            </p>
+            }
+
+            <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                (click)="handleOpenDialogResepNonRacikan('insert')">
+                <i class="pi pi-plus" style="font-size: 12px"></i>
+                <p class="text-sm text-gray-800 font-medium text-center">
+                    Tambah obat
+                </p>
+            </div>
+        </div>
+
+        <app-dialog-resep-non-racikan #DialogResepNonRacikanComps (onSave)="handleSaveObatNonRacikan($event)">
+        </app-dialog-resep-non-racikan>
+    </div>
+
+    <!-- Resep Racikan -->
+    <div class="grid w-full mb-5 pb-5 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+        <p class="text-gray-700 text-xl font-semibold">
+            Obat Racikan
+        </p>
+        <p class="text-gray-700 text-sm mb-4">
+            Isi data resep racikan disini
+        </p>
+
+        <div class="flex flex-col gap-2 p-2 rounded-lg border-dashed border-gray-300 border">
+            @if (ResepRacikan.length) {
+            <div *ngFor="let item of ResepRacikan; let i = index;" class="flex flex-col gap-2">
+                <p class="text-base text-gray-800 font-medium">
+                    {{ item.nama_racikan ? item.nama_racikan : item.nama_obat }}
+                </p>
+
+                <div class="flex flex-col gap-1 mb-3">
+                    <p *ngFor="let obat of item.obats ? item.obats : item.racikan" class="text-sm text-gray-800">
+                        {{ obat.nama_obat }} x {{ obat.qty }}
+                    </p>
+                </div>
+
+                <div class="flex gap-2 items-center">
+                    <div class="w-7/12 flex flex-col gap-1">
+                        <p class="text-sm text-gray-600">
+                            Aturan Pakai
+                        </p>
+                        <p class="text-sm text-gray-800 font-medium">
+                            {{ onFormatAturanPakai(item) }}
+                        </p>
+                    </div>
+                    <div class="w-3/12 flex flex-col gap-1">
+                        <p class="text-sm text-gray-600">
+                            Rute
+                        </p>
+                        <p class="text-sm text-gray-800 font-medium">
+                            {{ item.rute_pemberian_obat ? item.rute_pemberian_obat : item.rute_pemberian }}
+                        </p>
+                    </div>
+                    <div class="w-2/12 flex gap-0">
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteObatNonRacikan(i)" />
+
+                        <p-button icon="pi pi-file-edit" [rounded]="true" [text]="true" severity="warning"
+                            (onClick)="handleOpenDialogResepNonRacikan('update', i, item)" />
+                    </div>
+                </div>
+
+            </div>
+            } @else {
+            <p class="text-lg text-gray-800 font-medium text-center">
+                Belum ada obat
+            </p>
+            }
+
+            <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                (click)="handleOpenDialogResepRacikan('insert')">
+                <i class="pi pi-plus" style="font-size: 12px"></i>
+                <p class="text-sm text-gray-800 font-medium text-center">
+                    Tambah obat
+                </p>
+            </div>
+        </div>
+
+        <app-dialog-resep-racikan #DialogResepRacikanComps (onSave)="handleSaveObatRacikan($event)">
+        </app-dialog-resep-racikan>
+    </div>
+
+    <!-- Resep Manual -->
+    <div class="hidden w-full">
+        <p class="text-gray-700 text-xl font-semibold">
+            Resep Manual
+        </p>
+        <p class="text-gray-700 text-sm mb-4">
+            Isi data resep manual disini
+        </p>
+    </div>
+</div>

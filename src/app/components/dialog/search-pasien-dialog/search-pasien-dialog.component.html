@@ -1,0 +1,47 @@
+<p-dialog header="Edit Profile" [modal]="true" [(visible)]="ShowDialog" [style]="{ width: '30rem' }" [draggable]="false"
+    [showHeader]="false" [resizable]="false">
+    <div class="flex flex-col w-full">
+        <p class="text-2xl font-bold text-gray-800">
+            Cari Data Pasien
+        </p>
+        <p class="text-sm text-gray-700 mb-3">
+            Cari data pasien berdasarkan nama pasien dan pilih data pasien untuk melanjutkan.
+        </p>
+
+        <div class="flex w-full mb-5">
+            <input #Search type="text" pInputText class="w-full" placeholder="Cari berdasarkan nama pasien"
+                (keyup.enter)="handleSearch(Search.value)">
+        </div>
+
+        <div *ngIf="!DataPasien.length" class="flex flex-col items-center">
+            <img src="../../../../assets/icon/search.svg" alt="search" class="h-[12rem] drop-shadow-lg">
+        </div>
+
+        <div *ngIf="DataPasien.length" class="flex flex-col w-full gap-3 h-[20rem] max-h-[20rem] overflow-y-auto">
+            <div *ngFor="let item of DataPasien"
+                class="flex flex-col rounded-lg shadow bg-gray-50 hover:bg-gray-200 transition-all p-3 cursor-pointer"
+                (click)="handleSelectPasien(item)">
+                <p class="text-base font-medium text-gray-700">
+                    {{ item.nama_lengkap }}
+                </p>
+                <p class="text-sm text-sky-500">
+                    {{ item.nik }}
+                </p>
+                <p class="text-sm text-gray-700">
+                    {{ item.alamat_lengkap }}
+                </p>
+            </div>
+        </div>
+
+        <div
+            class="flex justify-between items-center mt-5 pt-3 border-t border-b-0 border-x-0 border-gray-200 border-dashed">
+            <p class="text-gray-700 text-sm mb-0">
+                Pasien tidak ditemukan?
+            </p>
+
+            <p-button severity="info" label="Buat Pasien Baru" styleClass="p-button-sm"
+                (onClick)="handleNavigateToPasien()">
+            </p-button>
+        </div>
+    </div>
+</p-dialog>

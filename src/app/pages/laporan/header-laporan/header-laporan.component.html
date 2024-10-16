@@ -1,0 +1,30 @@
+<div class="flex flex-col gap-2">
+    <!-- Header -->
+    <div class="flex flex-row items-center">
+        <div class="w-8/12 text-left">
+            <p class="text-base text-left text-gray-800 font-semibold">
+                {{ title }}
+            </p>
+        </div>
+
+        <div class="w-4/12 text-end">
+            <p class="text-gray-800 text-sm">
+                Periode : {{ periode }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Nama Klinik -->
+    <div *ngIf="UserData$ as user"
+        class="flex flex-col w-full gap-0 mb-5 border-b border-t-0 border-x-0 border-dashed border-gray-400 pb-2">
+        <p class="text-base font-medium text-gray-800 text-start">
+            {{ user.layanan | titlecase }}
+        </p>
+        <p class="text-sm text-gray-800">
+            No. Ijin : -
+        </p>
+        <p class="text-sm text-gray-800">
+            {{ user.alamat_lengkap | titlecase }}
+        </p>
+    </div>
+</div>

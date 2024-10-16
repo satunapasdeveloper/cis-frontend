@@ -1,0 +1,113 @@
+<div class="flex flex-col items-center w-full bg-white rounded-lg shadow p-3 gap-0 mb-3">
+    <img *ngIf="Pasien?.status_billing" src="../../../../../assets/icon/paid.png" alt="paid" class="h-[6rem] w-[6rem]">
+
+    <img *ngIf="!Pasien?.status_billing" src="../../../../../assets/icon/unpaid.png" alt="unpaid"
+        class="h-[6rem] w-[6rem]">
+
+    <p class="text-3xl font-semibold text-gray-800 my-2">
+        {{ Pasien?.nama_lengkap }}
+    </p>
+
+    <span class="px-2 py-1 rounded-md bg-green-100 text-green-600 font-semibold text-base mb-2">
+        {{ Pasien?.no_rekam_medis }}
+    </span>
+
+    <p class="text-base text-gray-800 mb-1">
+        {{ Pasien?.dokter }}
+    </p>
+
+    <p class="text-sm text-gray-800 mb-1">
+        Debitur {{ Pasien?.debitur }}
+    </p>
+
+    <p class="text-sm text-gray-800 mb-1">
+        Berkunjung pada {{ Pasien?.tanggal_visit }}
+    </p>
+</div>
+
+<div class="grid w-full p-3 bg-white rounded-lg shadow gap-2 max-h-[25rem] overflow-y-auto">
+    <!-- Title -->
+    <div class="flex w-full flex-col pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-200">
+        <p class="text-base text-gray-800 text-center font-semibold">
+            Riwayat Rekam Medis
+        </p>
+        <p class="text-sm text-gray-700 text-center">
+            Riwayat kunjungan dan pemeriksaan pasien
+        </p>
+    </div>
+
+    <!-- List -->
+    <div *ngIf="RiwayatRekamMedis.length" class="flex flex-col w-full gap-1">
+        @for (item of RiwayatRekamMedis; track $index; let last = $last) {
+        <div
+            class="flex flex-col {{ last ? 'p-1' : 'px-1 pt-1 pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300' }} cursor-pointer">
+            <div class="flex flex-row justify-between mb-2 items-center">
+                <p class="text-sm font-semibold text-gray-800">
+                    {{ item.no_pendaftaran }}
+                </p>
+
+                <span class="py-1 px-2 text-xs bg-green-200 rounded-lg"
+                    (click)="handleOpenDialogDetailRiwayatRekamMedis(item)">
+                    <p class="text-green-700">
+                        Lihat Detail
+                    </p>
+                </span>
+            </div>
+
+            <div class="flex flex-row items-start mb-2">
+                <div class="flex flex-col w-6/12">
+                    <p class="text-xs text-gray-700">
+                        Tgl. Kunjungan
+                    </p>
+                    <span class="font-medium text-xs text-gray-800">
+                        {{ item.tanggal_visit }}
+                    </span>
+                </div>
+
+                <div class="flex flex-col w-6/12">
+                    <p class="text-xs text-gray-700">
+                        Dokter
+                    </p>
+                    <span class="font-medium text-xs text-gray-800">
+                        {{ item.dokter }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex flex-row items-center justify-between">
+                <div class="flex flex-col w-6/12">
+                    <p class="text-xs text-gray-700">
+                        No. Antrian
+                    </p>
+                    <span class="font-medium text-xs text-gray-800">
+                        {{ item.no_antrian }}
+                    </span>
+                </div>
+
+                <div class="flex flex-col w-6/12">
+                    <p class="text-xs text-gray-700">
+                        Metode Bayar
+                    </p>
+                    <span class="font-medium text-xs text-gray-800">
+                        {{ item.debitur }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+    <div *ngIf="!RiwayatRekamMedis.length" class="flex justify-center p-2">
+        <p class="text-sm font-medium text-gray-700">
+            Belum Ada Riwayat Pemeriksaan
+        </p>
+    </div>
+
+    <!-- Dialog Detail Riwayat Rekam Medis -->
+    <p-dialog header="Detail Kunjungan" [modal]="true" [(visible)]="ShowDialogDetail" [style]="{ width: '50rem' }"
+        [draggable]="false" [resizable]="false" [showHeader]="false">
+        <div class="w-full">
+            <app-riwayat-rekam-medis></app-riwayat-rekam-medis>
+        </div>
+    </p-dialog>
+</div>

@@ -1,0 +1,12 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="flex flex-row w-full gap-3">
+        <div class="w-4/12 grid max-h-[100%]">
+            <app-form-pilih-pasien-for-dokumen (onSelectRiwayatKunjungan)="handleChooseRiwayatKunjungan($event)">
+            </app-form-pilih-pasien-for-dokumen>
+        </div>
+
+        <div *ngIf="ShowRiwayatRekamMedis" id="riwayat_rekam_medis" class="w-8/12 bg-white rounded-lg shadow-sm p-5">
+            <app-riwayat-rekam-medis></app-riwayat-rekam-medis>
+        </div>
+    </div>
+</app-dashboard>

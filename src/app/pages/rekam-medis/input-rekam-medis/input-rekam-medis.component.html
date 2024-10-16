@@ -1,0 +1,172 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleBackToList()">
+    <div class="grid">
+        <p-stepper>
+            <!-- Anamesis -->
+            <p-stepperPanel header="Anamesis">
+                <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
+                    <div class="flex flex-row gap-3 relative">
+                        <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
+                            <app-anamesis #AnamesisComps></app-anamesis>
+
+                            <div class="flex pt-4 justify-end">
+                                <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
+                                    styleClass="p-button-sm" (onClick)="handleCreateAnamesis(nextCallback)" />
+                            </div>
+                        </div>
+                        <div class="w-4/12 ">
+                            <app-informasi-pasien></app-informasi-pasien>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+
+            <!-- Pemeriksaan Fisik -->
+            <p-stepperPanel header="Pemeriksaan Fisik">
+                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback"
+                    let-index="index">
+                    <div class="flex flex-row gap-3">
+                        <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
+                            <app-pemeriksaan-fisik #PemeriksaanFisikComps></app-pemeriksaan-fisik>
+
+                            <div class="flex pt-4 justify-between">
+                                <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
+                                    styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
+
+                                <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
+                                    styleClass="p-button-sm" (onClick)="handleCreatePemeriksaanFisik(nextCallback)" />
+                            </div>
+                        </div>
+                        <div class="w-4/12 ">
+                            <app-informasi-pasien></app-informasi-pasien>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+
+            <!-- Diagnosis -->
+            <p-stepperPanel header="Diagnosis">
+                <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback"
+                    let-index="index">
+                    <div class="flex flex-row gap-3">
+                        <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
+                            <app-diagnosis #DiagnosisComps></app-diagnosis>
+
+                            <div class="flex pt-4 justify-between">
+                                <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
+                                    styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
+
+                                <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
+                                    styleClass="p-button-sm" (onClick)="handleCreateDiagnosa(nextCallback)" />
+                            </div>
+                        </div>
+                        <div class="w-4/12 ">
+                            <app-informasi-pasien></app-informasi-pasien>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+
+            <!-- Tindakan -->
+            <p-stepperPanel header="Tindakan">
+                <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback"
+                    let-index="index">
+                    <div class="flex flex-row gap-3">
+                        <div class="w-8/12 flex flex-col p-3">
+                            <app-tindakan #TindakanComps></app-tindakan>
+
+                            <div class="flex pt-4 justify-between">
+                                <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
+                                    styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
+
+                                <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
+                                    styleClass="p-button-sm" (onClick)="handleCreateTindakan(nextCallback)" />
+                            </div>
+                        </div>
+                        <div class="w-4/12 ">
+                            <app-informasi-pasien></app-informasi-pasien>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+
+            <!-- Resep Obat -->
+            <p-stepperPanel header="Resep Obat">
+                <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback"
+                    let-index="index">
+                    <div class="flex flex-row gap-3">
+                        <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
+                            <app-resep #ResepComps></app-resep>
+
+                            <div class="flex pt-4 justify-between">
+                                <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
+                                    styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
+
+                                <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
+                                    styleClass="p-button-sm" (onClick)="handleCreateResep(nextCallback)" />
+                            </div>
+                        </div>
+                        <div class="w-4/12 ">
+                            <app-informasi-pasien></app-informasi-pasien>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+
+            <!-- Status -->
+            <p-stepperPanel header="Status">
+                <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback"
+                    let-index="index">
+                    <div class="flex flex-row gap-3">
+                        <div class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
+                            <app-status #StatusComps></app-status>
+
+                            <div class="flex pt-4 justify-between">
+                                <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
+                                    styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
+
+                                <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
+                                    styleClass="p-button-sm" (onClick)="handleCreateStatusPulang(nextCallback)" />
+                            </div>
+                        </div>
+                        <div class="w-4/12 ">
+                            <app-informasi-pasien></app-informasi-pasien>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+
+            <!-- Billing -->
+            <p-stepperPanel header="Billing">
+                <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
+                    <div class="flex flex-row gap-3">
+                        <div *ngIf="!SelectedPasien.status_billing"
+                            class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
+                            <app-billing #BillingComps></app-billing>
+
+                            <div class="flex pt-4 justify-between">
+                                <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
+                                    styleClass="p-button-sm" (onClick)="prevCallback.emit()" />
+
+                                <p-button severity="info" label="Buat Invoice" icon="pi pi-save"
+                                    styleClass="p-button-sm" (onClick)="handleOpenDialogPayment()" />
+                            </div>
+                        </div>
+
+                        <div *ngIf="SelectedPasien.status_billing"
+                            class="w-8/12 flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
+                            <app-history-payment #HistoryPaymentComps (onCancel)="handleCancelInvoice($event)">
+                            </app-history-payment>
+                        </div>
+                        <div class="w-4/12 ">
+                            <app-informasi-pasien></app-informasi-pasien>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+        </p-stepper>
+    </div>
+
+    <app-payment #PaymentComps (onSave)="handleCreateInvoice($event)"></app-payment>
+
+    <p-confirmDialog></p-confirmDialog>
+</app-dashboard>

@@ -1,0 +1,459 @@
+<div *ngIf="ResumeMedis$ | async as resume" class="grid w-full gap-2">
+    <div *ngIf="UserData$  as user" class="flex flex-col w-full items-center text-center gap-0 mb-2
+    border-b border-t-0 border-x-0 border-dashed border-gray-400 pb-2">
+        <p class="text-base font-medium text-gray-800">
+            {{ user.layanan | titlecase }}
+        </p>
+        <p class="text-sm text-gray-800">
+            No. Ijin : -
+        </p>
+        <p class="text-sm text-gray-800">
+            {{ user.alamat_lengkap | titlecase }}
+        </p>
+    </div>
+
+    <p class="text-lg font-semibold text-gray-800 text-center">
+        RESUME MEDIS
+    </p>
+
+    <!-- Data Pasien -->
+    <div *ngIf="Pasien$ | async as pasien" class="flex flex-col gap-0 mb-3">
+        <!-- Nama Pasien -->
+        <div class="flex flex-row gap-0 border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Nama Pasien
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ resume.nama_lengkap | titlecase }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Tanggal Kunjungan -->
+        <div class="flex flex-row gap-0 border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Tanggal Kunjungan
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ formatDate(resume.tanggal_visit!) }}
+                </p>
+            </div>
+        </div>
+
+        <!-- No. RM -->
+        <div class="flex flex-row gap-0 border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Nomor Rekam Medis
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ resume.no_rekam_medis }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Nomor Identitas -->
+        <div class="flex flex-row gap-0 border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Nomor Identitas
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ resume.nik }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Tempat, Tanggal Lahir -->
+        <div class="flex flex-row gap-0 border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Tempat & Tanggal Lahir
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ pasien.tempat_lahir | titlecase }}, {{ formatDate(pasien.tanggal_lahir) }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Usia -->
+        <div class="flex flex-row gap-0 border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Usia
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    -
+                </p>
+            </div>
+        </div>
+
+        <!-- Jenis Kelamin -->
+        <div class="flex flex-row gap-0 border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Jenis Kelamin
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ pasien.jenis_kelamin | titlecase }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Alamat -->
+        <div class="flex flex-row gap-0 border-t border-b border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Alamat
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ pasien.alamat_lengkap | titlecase }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rekam Medis -->
+    <div class="flex flex-col gap-0 mb-4">
+        <!-- Anamesis -->
+        <div class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Anamnesis
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ resume ? (resume.anamnesis!.keluhan_utama | titlecase) : '' }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Riwayat Penyakit Dahulu -->
+        <div class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Riwayat Penyakit Dahulu
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ resume.anamnesis!.riwayat_penyakit_terdahulu | titlecase }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Riwayat Alergi -->
+        <div class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Riwayat Alergi
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ resume.anamnesis!.riwayat_alergi | titlecase }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Pemeriksaan Fisik -->
+        <div class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Pemeriksaan Fisik
+                </p>
+            </div>
+            <div class="w-8/12 flex flex-col">
+                <!-- Tingkat Kesadaran -->
+                <div class="flex flex-row gap-2 border-t-0 border-b border-x-0 border-solid border-gray-300">
+                    <div class="w-5/12 bg-gray-100 py-1 px-2">
+                        <p class="text-xs text-gray-700">
+                            Tingkat Kesadaran
+                        </p>
+                    </div>
+                    <div class="w-7/12 bg-white p-1">
+                        <p class="text-xs text-gray-700">
+                            {{ resume.pemeriksaan_fisik!.tingkat_kesadaran | titlecase }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Status Psikologi -->
+                <div class="flex flex-row gap-2 border-t-0 border-b border-x-0 border-solid border-gray-300">
+                    <div class="w-5/12 bg-gray-100  py-1 px-2">
+                        <p class="text-xs text-gray-700">
+                            Status Psikologi
+                        </p>
+                    </div>
+                    <div class="w-7/12 bg-white p-1">
+                        <p class="text-xs text-gray-700">
+                            {{ resume.pemeriksaan_fisik!.status_psikologi | titlecase }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Vital Sign -->
+                <div class="flex flex-row gap-0 border-t-0 border-b border-x-0 border-solid border-gray-300">
+                    <div class="w-5/12 bg-gray-100 py-1 px-2">
+                        <p class="text-xs text-gray-700">
+                            Vital Sign
+                        </p>
+                    </div>
+                    <div class="w-7/12 flex flex-col">
+                        <!-- TB/BB -->
+                        <div class="flex flex-row gap-2 border-t-0 border-b-0 border-x-0 border-solid border-gray-300">
+                            <div class="w-5/12 bg-gray-100 p-1">
+                                <p class="text-xs text-gray-700">
+                                    TB/BB
+                                </p>
+                            </div>
+                            <div class="w-7/12 bg-white p-1">
+                                <p class="text-xs text-gray-700">
+                                    {{ resume.pemeriksaan_fisik!.tinggi_badan }} cm / {{
+                                    resume.pemeriksaan_fisik!.berat_badan }} kg
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Sistole/Diastole -->
+                        <div class="flex flex-row gap-2 border-t border-b-0 border-x-0 border-solid border-gray-300">
+                            <div class="w-5/12 bg-gray-100 p-1">
+                                <p class="text-xs text-gray-700">
+                                    Sistole/Diastole
+                                </p>
+                            </div>
+                            <div class="w-7/12 bg-white p-1">
+                                <p class="text-xs text-gray-700">
+                                    {{ resume.pemeriksaan_fisik!.sistole }} mmHg / {{
+                                    resume.pemeriksaan_fisik!.distole }} mmHg
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Suhu Tubuh -->
+                        <div class="flex flex-row gap-2 border-t border-b-0 border-x-0 border-solid border-gray-300">
+                            <div class="w-5/12 bg-gray-100 p-1">
+                                <p class="text-xs text-gray-700">
+                                    Suhu Tubuh
+                                </p>
+                            </div>
+                            <div class="w-7/12 bg-white p-1">
+                                <p class="text-xs text-gray-700">
+                                    {{ resume.pemeriksaan_fisik!.suhu_tubuh }} °C
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Denyut Nadi -->
+                        <div class="flex flex-row gap-2 border-t border-b-0 border-x-0 border-solid border-gray-300">
+                            <div class="w-5/12 bg-gray-100 p-1">
+                                <p class="text-xs text-gray-700">
+                                    Denyut Nadi
+                                </p>
+                            </div>
+                            <div class="w-7/12 bg-white p-1">
+                                <p class="text-xs text-gray-700">
+                                    {{ resume.pemeriksaan_fisik!.denyut_nadi }} / menit
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Pernafasan -->
+                        <div class="flex flex-row gap-2 border-t border-b-0 border-x-0 border-solid border-gray-300">
+                            <div class="w-5/12 bg-gray-100 p-1">
+                                <p class="text-xs text-gray-700">
+                                    Pernafasan
+                                </p>
+                            </div>
+                            <div class="w-7/12 bg-white p-1">
+                                <p class="text-xs text-gray-700">
+                                    {{ resume.pemeriksaan_fisik!.pernafasan_menit }} / menit
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Catatan Kondisi Tubuh -->
+                <div class="flex flex-row gap-2 border-t-0 border-b-0 border-x-0 border-solid border-gray-300">
+                    <div class="w-5/12 bg-gray-100  py-1 px-2">
+                        <p class="text-xs text-gray-700">
+                            Catatan Kondisi Tubuh
+                        </p>
+                    </div>
+                    <div class="w-7/12 flex flex-col bg-white p-1 gap-1">
+                        <p *ngFor="let item of resume.pemeriksaan_fisik!.kondisi_tubuh" class="text-xs text-gray-700">
+                            {{ item.anggota_tubuh | titlecase }} : {{ item.catatan_kondisi | titlecase }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diagnosis Primer (ICD-10) -->
+        <div *ngIf="resume.diagnosisi.diagnosisi.length"
+            class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Diagnosis Primer (ICD-10)
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ getDiagnosaPrimer(resume.diagnosisi.diagnosisi) }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Diagnosis Sekunder (ICD-10) -->
+        <div *ngIf="resume.diagnosisi.diagnosisi.length > 1"
+            class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Diagnosis Sekunder (ICD-10)
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ getDiagnosaSekunder(resume.diagnosisi.diagnosisi) }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Terapi -->
+        <div *ngIf="resume.resep!.obat?.length || resume.resep!.racikan.length"
+            class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Terapi
+                </p>
+            </div>
+
+            <div class="w-8/12 bg-white p-1 flex flex-col gap-1">
+                <!-- Obat Non Racikan -->
+                @if (resume.resep!.obat?.length) {
+                <div *ngFor="let item of resume.resep!.obat; let i = index; let last = last"
+                    class="flex flex-row w-full border-t-0 border-b border-x-0 pb-1 border-solid border-gray-300">
+                    <div class="w-6/12">
+                        <p class="text-xs text-gray-700">
+                            {{ item.nama_obat }} x{{ item.qty }}
+                        </p>
+                    </div>
+                    <div class="w-6/12 border-l border-t-0 border-r-0 border-b-0 border-gray-300 border-solid px-1">
+                        <p class="text-xs text-gray-700">
+                            {{ item.aturan_pakai }} | {{ item.waktu }} | {{ item.waktu_spesifik }}
+                        </p>
+                    </div>
+                </div>
+                }
+
+                <!-- Obat Racikan -->
+                @if (resume.resep!.racikan.length) {
+                <div *ngFor="let item of resume.resep!.racikan; let i = index; let last = last"
+                    class="flex flex-row w-full {{ last ? '' : 'border-t-0 border-b border-x-0 pb-1 border-solid border-gray-300' }}">
+                    <div class="w-6/12">
+                        <p class="text-xs text-gray-700">
+                            {{ item.nama_obat }} x{{ item.qty }}
+                        </p>
+                    </div>
+                    <div class="w-6/12 border-l border-t-0 border-r-0 border-b-0 border-gray-300 border-solid px-1">
+                        <p class="text-xs text-gray-700">
+                            {{ item.aturan_pakai }} | {{ item.waktu }} | {{ item.waktu_spesifik }}
+                        </p>
+                    </div>
+                </div>
+                }
+
+            </div>
+        </div>
+
+        <!-- Tindakan Medis -->
+        <div *ngIf="resume.tindakan!.tindakan?.length"
+            class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Tindakan
+                </p>
+            </div>
+
+            <div class="w-8/12 bg-white p-1 flex flex-col gap-1">
+                <div *ngFor="let item of resume.tindakan!.tindakan; let last = last"
+                    class="flex flex-col {{ last ? '' : 'border-t-0 border-b border-x-0 pb-1 border-solid border-gray-300' }}">
+                    <p class="text-xs text-gray-700 font-medium">
+                        {{ item.tindakan }} x{{ item.qty }}
+                    </p>
+                    <p class="text-xs text-gray-700 italic">
+                        {{ item.kode_icd9 }} - {{ item.display_icd9 }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BMHP -->
+        <div *ngIf="resume.tindakan!.bmhp?.length"
+            class="flex flex-row border-t border-b-0 border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Bahan Medis Habis Pakai
+                </p>
+            </div>
+
+            <div class="w-8/12 bg-white p-1 flex flex-col gap-1">
+                <div *ngFor="let item of resume.tindakan!.bmhp; let last = last"
+                    class="flex flex-col {{ last ? '' : 'border-t-0 border-b border-x-0 pb-1 border-solid border-gray-300' }}">
+                    <p class="text-xs text-gray-700">
+                        {{ item.nama_item }} x{{ item.qty }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Pulang -->
+        <div class="flex flex-row border-t border-b border-x border-solid border-gray-300">
+            <div class="w-4/12 bg-gray-200 p-1">
+                <p class="text-xs text-gray-700">
+                    Status Pasien
+                </p>
+            </div>
+            <div class="w-8/12 bg-white p-1">
+                <p class="text-xs text-gray-700">
+                    {{ resume.status_pulang }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex flex-row justify-end gap-0">
+        <div class="w-4/12 flex-col gap-0 items-center justify-center">
+            <p class="text-xs text-gray-700 text-center mb-1">
+                {{ formatDate(resume.tanggal_visit!) }}
+            </p>
+            <p class="text-xs text-gray-700 mb-14 text-center">
+                (DPJP)
+            </p>
+            <p class="text-xs text-gray-700 text-center">
+                ({{ resume.dokter }})
+            </p>
+        </div>
+    </div>
+</div>

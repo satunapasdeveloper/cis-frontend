@@ -1,0 +1,122 @@
+<p-dialog header="Header" [(visible)]="ShowDialogPayment" [modal]="true" [style]="{ width: '40vw' }" [draggable]="false"
+    [resizable]="false">
+    <!-- Header -->
+    <ng-template pTemplate="header">
+        <div class="inline-flex align-items-center justify-content-center gap-2">
+            <span class="font-bold white-space-nowrap text-2xl">
+                Invoice Pembayaran
+            </span>
+        </div>
+    </ng-template>
+
+    <!-- Content -->
+    <div class="w-full flex flex-col gap-3">
+        <!-- Tanggal -->
+        <div class="flex flex-row gap-2 items-center">
+            <div class="w-3/12">
+                <p class="text-sm font-medium">
+                    Tanggal Invoice
+                </p>
+            </div>
+            <div class="w-1/12">
+                <p class="text-sm text-end font-medium">
+                    :
+                </p>
+            </div>
+            <div class="w-8/12">
+                <input pInputText readonly disabled class="p-inputtext-sm w-full" [(ngModel)]="tagihan.tanggal">
+            </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="flex flex-row gap-2 items-center">
+            <div class="w-3/12">
+                <p class="text-sm font-medium">
+                    Metode Bayar
+                </p>
+            </div>
+            <div class="w-1/12">
+                <p class="text-sm text-end font-medium">
+                    :
+                </p>
+            </div>
+            <div class="w-8/12">
+                <p-dropdown [filter]="true" styleClass="p-inputtext-sm w-full" [options]="PaymentMethodDatasource"
+                    optionLabel="label" optionValue="value" appendTo="body" [(ngModel)]="tagihan.payment_method"
+                    [autoDisplayFirst]="true">
+                </p-dropdown>
+            </div>
+        </div>
+
+        <!-- Total Invoice -->
+        <div class="flex flex-row gap-2 items-center">
+            <div class="w-3/12">
+                <p class="text-sm font-medium">
+                    Total Invoice
+                </p>
+            </div>
+            <div class="w-1/12">
+                <p class="text-sm text-end font-medium">
+                    :
+                </p>
+            </div>
+            <div class="w-8/12 flex gap-2 items-center">
+                <p class="text-sm font-medium">
+                    Rp.
+                </p>
+                <p-inputNumber [(ngModel)]="tagihan.total" styleClass="p-inputtext-sm w-full" [disabled]="true">
+                </p-inputNumber>
+            </div>
+        </div>
+
+        <!-- Total Bayar -->
+        <div class="flex flex-row gap-2 items-center">
+            <div class="w-3/12">
+                <p class="text-sm font-medium">
+                    Jumlah Bayar
+                </p>
+            </div>
+            <div class="w-1/12">
+                <p class="text-sm text-end font-medium">
+                    :
+                </p>
+            </div>
+            <div class="w-8/12 flex gap-2 items-center">
+                <p class="text-sm font-medium">
+                    Rp.
+                </p>
+                <p-inputNumber [(ngModel)]="tagihan.bayar" styleClass="p-inputtext-sm w-full"
+                    (ngModelChange)="handleChangeJumlahBayar($event)">
+                </p-inputNumber>
+            </div>
+        </div>
+
+        <!-- Kembalian -->
+        <div class="flex flex-row gap-2 items-center">
+            <div class="w-3/12">
+                <p class="text-sm font-medium">
+                    Kembalian
+                </p>
+            </div>
+            <div class="w-1/12">
+                <p class="text-sm text-end font-medium">
+                    :
+                </p>
+            </div>
+            <div class="w-8/12 flex gap-2 items-center">
+                <p class="text-sm font-medium">
+                    Rp.
+                </p>
+                <p-inputNumber [(ngModel)]="tagihan.kembalian" styleClass="p-inputtext-sm w-full">
+                </p-inputNumber>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <ng-template pTemplate="footer">
+        <p-button label="Tutup" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialogPayment = false" />
+
+        <p-button label="Simpan" severity="info" styleClass="p-button-sm" (onClick)="handleSave()" />
+    </ng-template>
+</p-dialog>

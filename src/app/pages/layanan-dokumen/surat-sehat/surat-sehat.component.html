@@ -1,0 +1,213 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="flex flex-row w-full gap-3">
+        <div class="w-4/12 grid max-h-[100%]">
+            <app-form-pilih-pasien-for-dokumen #FormPilihPasienForDokumenComps [props]="FormPilihPasienProps"
+                (onSelectRiwayatKunjungan)="handleChooseRiwayatKunjungan($event)">
+            </app-form-pilih-pasien-for-dokumen>
+        </div>
+
+        <div *ngIf="FormValue | async as form" id="surat_sehat"
+            class="w-8/12 flex flex-col bg-white rounded-lg shadow-sm p-5">
+            <!-- Nama Klinik -->
+            <app-header-layanan-dokumen></app-header-layanan-dokumen>
+
+            <!-- Heading -->
+            <div class="flex flex-col mb-10">
+                <p class="text-xl font-semibold text-gray-700 text-center">
+                    Surat Keterangan Sehat
+                </p>
+                <p class="text-base text-gray-700 text-center">
+                    Nomor : (Terisi Otomatis)
+                </p>
+            </div>
+
+            <!-- Data Pasien -->
+            <div class="flex flex-col gap-0 mb-3">
+                <p class="text-sm text-gray-700 mb-5">
+                    Yang bertanda tangan dibawah ini, menerangkan bahwa :
+                </p>
+
+                <!-- Nama Pasien -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Nama
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.nama_lengkap }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tanggal Lahir -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Tanggal Lahir
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.tanggal_lahir }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Jenis Kelamin -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Jenis Kelamin
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.jenis_kelamin }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pekerjaan -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Pekerjaan
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.pekerjaan }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Alamat -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Alamat
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.alamat }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keterangan -->
+            <div class="flex flex-col gap-0 mb-5">
+                <p class="text-sm text-gray-700 mb-5">
+                    Keterangan :
+                </p>
+
+                <!-- Berat Badan -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Berat Badan
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.berat_badan }} kg
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tinggi Badan -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Tinggi Badan
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.tinggi_badan }} cm
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tekanan Darah -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Tekanan Darah
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.sistole }} mmHg / {{ form.diastole }} mmHg
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Buta Warna -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Buta Warna
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.buta_warna }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Keterangan Lain -->
+                <div class="flex flex-row gap-2 pl-5 mb-2">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Keterangan Lain
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-800 font-medium">
+                            : {{ form.keterangan_lain }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex flex-col gap-0 mb-5">
+                <p class="text-sm text-gray-700 mb-2">
+                    Telah dilakukan pemeriksaan dan dinyatakan
+                    <span class="font-semibold text-gray-800">
+                        {{ form.kondisi | uppercase }}
+                    </span>
+                </p>
+                <p class="text-sm text-gray-700 mb-2">
+                    Surat Keterangan Sehat ini dipergunakan sebagai :
+                    <span class="font-semibold text-gray-800">
+                        {{ form.tujuan | titlecase }}
+                    </span>
+                </p>
+                <p class="text-sm text-gray-700 mb-10">
+                    Demikian surat ini dibuat dengan sebenarnya dan untuk digunakan sebagaimana mestinya.
+                </p>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex flex-row justify-end gap-0">
+                <div class="w-4/12 flex-col gap-0 items-center justify-center">
+                    <p class="text-xs text-gray-700 text-center mb-1">
+                        {{ formatDate(form.tanggal_visit!) }}
+                    </p>
+                    <p class="text-xs text-gray-700 mb-14 text-center">
+                        (DPJP)
+                    </p>
+                    <p class="text-xs text-gray-700 text-center">
+                        ({{ form.dokter }})
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-dashboard>

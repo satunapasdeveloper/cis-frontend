@@ -1,0 +1,131 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="grid w-full bg-white rounded-lg shadow-sm py-3 px-2">
+        <!-- Search -->
+        <div class="flex flex-row items-end w-full mb-5 gap-3">
+            <div class="flex flex-col gap-1 w-3/12">
+                <p class="text-sm text-gray-700">
+                    Tanggal Visit
+                </p>
+
+                <p-calendar appendTo="body" styleClass="p-inputtext-sm w-full" placeholder="Filter Tanggal Visit"
+                    dateFormat="dd/mm/yy" [showClear]="true" [(ngModel)]="TanggalSearch"
+                    (onSelect)="handleChangeFilter('pendaftaran.tanggal_visit', $event)"
+                    (onClear)="handleChangeFilter('pendaftaran.tanggal_visit', null)">
+                </p-calendar>
+            </div>
+
+            <div class="flex flex-col gap-1 w-3/12">
+                <p class="text-sm text-gray-700">
+                    Poli
+                </p>
+
+                <p-dropdown appendTo="body" styleClass="p-inputtext-sm w-full" placeholder="Filter Poli"
+                    [options]="Poli" optionValue="kode_poli" optionLabel="poli" [showClear]="true" filter="true"
+                    (onChange)="handleChangeFilter('poli.kode_poli', $event)" [(ngModel)]="PoliSearch">
+                </p-dropdown>
+            </div>
+
+            <div class="flex flex-col gap-1 w-3/12">
+                <p class="text-sm text-gray-700">
+                    Dokter
+                </p>
+
+                <p-dropdown appendTo="body" styleClass="p-inputtext-sm w-full" placeholder="Filter Dokter"
+                    [options]="UserDokter" optionLabel="nama" optionValue="id_user" [showClear]="true" filter="true"
+                    (onChange)="handleChangeFilter('jadwal_dokter.id_dokter', $event)" [(ngModel)]="DokterSearch">
+                </p-dropdown>
+            </div>
+
+            <div class="flex flex-col gap-1 w-3/12">
+                <p class="text-sm text-gray-700">
+                    Nama Pasien
+                </p>
+
+                <input #NamaPasienSearch type="text" pInputText class="p-inputtext-sm w-full"
+                    placeholder="Filter Nama Pasien"
+                    (blur)="handleChangeFilter('pasien.nama_lengkap', NamaPasienSearch.value)"
+                    [(ngModel)]="PasienSearch">
+            </div>
+
+            <p-button severity="info" styleClass="p-button-sm" label="Cari" (onClick)="getAll(SearchParameter$.value)">
+            </p-button>
+        </div>
+
+        <!-- Grid -->
+        <!-- <app-grid [props]="GridProps" (aksiClicked)="onToolbarClicked($event)">
+        </app-grid> -->
+
+        <p-table [value]="GridProps.dataSource" [tableStyle]="{'min-width': '50rem'}" rowGroupMode="subheader"
+            groupRowsBy="id_dokter">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-sm">No. Antrian</th>
+                    <th class="text-sm">No. Rekam Medis</th>
+                    <th class="text-sm">Poli</th>
+                    <th class="text-sm">Nama Pasien</th>
+                    <th class="text-sm">Metode Bayar</th>
+                    <th class="text-sm text-center">Assesment</th>
+                    <th class="text-sm text-center">Terbayar</th>
+                    <th class="text-sm text-center">Status</th>
+                    <th class="text-sm text-center">Aksi</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="groupheader" let-antrian>
+                <tr pRowGroupHeader>
+                    <td colspan="9" class="bg-sky-50">
+                        <span class="font-normal text-base text-sky-800">
+                            Antrian Kunjungan :
+                            <span class="font-bold">
+                                {{ antrian.dokter }}
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-antrian>
+                <tr>
+                    <td class="text-sm">{{ antrian.no_antrian }}</td>
+                    <td class="text-sm">{{ antrian.no_rekam_medis }}</td>
+                    <td class="text-sm">{{ antrian.poli }}</td>
+                    <td class="text-sm">{{ antrian.nama_lengkap }}</td>
+                    <td class="text-sm">{{ antrian.debitur }}</td>
+                    <td class="text-sm text-center">
+                        @if (antrian.pre_assessment) {
+                        Sudah
+                        } @else {
+                        Belum
+                        }
+                    </td>
+                    <td class="text-sm text-center">
+                        @if (antrian.status_billing) {
+                        Sudah
+                        } @else {
+                        Belum
+                        }
+                    </td>
+                    <td class="text-center">
+                        <span
+                            class="py-1 px-2 text-xs {{ handleFormatStatusAntrian(antrian.status_pasien) }} rounded-lg font-medium">
+                            {{ antrian.status_pasien }}
+                        </span>
+                    </td>
+                    <td class="text-sm text-center">
+                        <span (click)="op.toggle($event)">
+                            <i class="pi pi-ellipsis-v"></i>
+                        </span>
+
+                        <p-overlayPanel #op>
+                            <div class="flex flex-col gap-3 w-[12rem] p-2">
+                                <span class="text-sm text-gray-700 cursor-pointer"
+                                    (click)="handleGoToInputRekamMedis(antrian)">
+                                    <i class="pi pi-play" style="font-size: 12px"></i>
+                                    Mulai Periksa
+                                </span>
+                            </div>
+                        </p-overlayPanel>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</app-dashboard>

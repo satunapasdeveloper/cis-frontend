@@ -1,0 +1,215 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="grid w-full gap-2 mb-5">
+        <div class="flex flex-col gap-0">
+            <p class="text-xl font-medium text-gray-800">
+                Dalam Pemeriksaan
+            </p>
+            <p class="text-sm text-gray-600">
+                Daftar pasien dalam pemeriksaan poli
+            </p>
+        </div>
+
+        <div *ngIf="AntrianDalamPemeriksaan.length" class="flex w-full gap-5">
+            @for (item of AntrianDalamPemeriksaan; track $index) {
+            <div class="flex flex-col items-center w-3/12 bg-white rounded-lg shadow-sm p-3">
+                <p class="text-sm text-gray-700">
+                    {{ item.poli }}
+                </p>
+
+                <p
+                    class="text-sm text-gray-700 font-medium pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    {{ item.nama_dokter }}
+                </p>
+
+                <div class="flex gap-1 cursor-pointer">
+                    <p class="text-3xl font-medium text-sky-500 mb-1 hover:text-sky-700 transition-all">
+                        {{ item.no_antrian }}
+                    </p>
+                    <span class="text-gray-700">
+                        <i class="pi pi-arrow-up-right" style="font-size: 10px"></i>
+                    </span>
+                </div>
+
+                <p class="text-sm text-gray-700 text-center">
+                    Pasien<br>
+                    <span class="font-medium">
+                        {{ item.nama_lengkap }}
+                    </span>
+                </p>
+            </div>
+            }
+        </div>
+
+        <div *ngIf="!AntrianDalamPemeriksaan.length" class="flex w-full items-center justify-center p-5">
+            <p class="text-gray-800 font-semibold">
+                Tidak Ada Pemeriksaan
+            </p>
+        </div>
+    </div>
+
+    <div class="grid w-full bg-white rounded-xl shadow p-2">
+        <!-- Search & Aksi -->
+        <div class="flex justify-between mb-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <div class="flex items-center w-6/12 gap-3">
+                <!-- Dropdown Poli -->
+                <div class="w-5/12">
+                    <p-dropdown styleClass="p-inputtext-sm w-full" placeholder="Pilih Poli" [options]="PoliDatasource"
+                        optionLabel="poli" optionValue="kode_poli" appendTo="body" [(ngModel)]="SelectedPoli">
+                    </p-dropdown>
+                </div>
+
+                <!-- Calendar Tanggal -->
+                <div class="w-5/12">
+                    <p-calendar styleClass="p-inputtext-sm w-full" placeholder="Pilih Tanggal" appendTo="body"
+                        [(ngModel)]="SelectedTanggal" dateFormat="dd-mm-yy">
+                    </p-calendar>
+                </div>
+
+                <!-- Button -->
+                <div class="w-2/12">
+                    <p-button severity="info" label="Cari" styleClass="p-button-sm"
+                        (onClick)="handleSearchAntrian(SelectedPoli, SelectedTanggal)">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+
+        <p-table [value]="AntrianDatasource" [tableStyle]="{'min-width': '50rem'}" rowGroupMode="subheader"
+            groupRowsBy="id_dokter">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-sm">No. Antrian</th>
+                    <th class="text-sm">No. Rekam Medis</th>
+                    <th class="text-sm">Poli</th>
+                    <th class="text-sm">Nama Pasien</th>
+                    <th class="text-sm">Metode Bayar</th>
+                    <th class="text-sm text-center">Assesment</th>
+                    <th class="text-sm text-center">Terbayar</th>
+                    <th class="text-sm text-center">Status</th>
+                    <th class="text-sm text-center">Aksi</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="groupheader" let-antrian>
+                <tr pRowGroupHeader>
+                    <td colspan="9" class="bg-sky-50">
+                        <span class="font-normal text-base text-sky-800">
+                            Antrian Kunjungan :
+                            <span class="font-bold">
+                                {{ antrian.dokter }}
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-antrian>
+                <tr>
+                    <td class="text-sm">{{ antrian.no_antrian }}</td>
+                    <td class="text-sm">{{ antrian.no_rekam_medis }}</td>
+                    <td class="text-sm">{{ antrian.poli }}</td>
+                    <td class="text-sm">{{ antrian.nama_lengkap }}</td>
+                    <td class="text-sm">{{ antrian.debitur }}</td>
+                    <td class="text-sm text-center">
+                        @if (antrian.pre_assessment) {
+                        Sudah
+                        } @else {
+                        Belum
+                        }
+                    </td>
+                    <td class="text-sm text-center">
+                        @if (antrian.status_billing) {
+                        Sudah
+                        } @else {
+                        Belum
+                        }
+                    </td>
+                    <td class="text-center">
+                        <span
+                            class="py-1 px-2 text-xs {{ handleFormatStatusAntrian(antrian.status_pasien) }} rounded-lg font-medium">
+                            {{ antrian.status_pasien }}
+                        </span>
+                    </td>
+                    <td class="text-sm text-center">
+                        <span (click)="op.toggle($event)">
+                            <i class="pi pi-ellipsis-v"></i>
+                        </span>
+
+                        <p-overlayPanel #op>
+                            <div class="flex flex-col gap-3 w-[12rem] p-2">
+                                <span
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
+                                    (click)="handleGoToAssesmentAwal(antrian)">
+                                    <i class="pi pi-file-o" style="font-size: 12px"></i>
+                                    Mulai Assesment
+                                </span>
+
+                                <span
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
+                                    (click)="handleOpenDialogPanggil(antrian)">
+                                    <i class="pi pi-megaphone" style="font-size: 12px"></i>
+                                    Panggil
+                                </span>
+
+                                <span
+                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
+                                    (click)="handleGoToInputRekamMedis(antrian)">
+                                    <i class="pi pi-play" style="font-size: 12px"></i>
+                                    Mulai Periksa
+                                </span>
+
+                                <span class="text-sm text-gray-700 cursor-pointer"
+                                    (click)="handleCancelAntrian(antrian)">
+                                    <i class="pi pi-trash" style="font-size: 12px"></i>
+                                    Hapus
+                                </span>
+                            </div>
+                        </p-overlayPanel>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <!-- Dialog Call Pasien -->
+    <p-dialog header="Memanggil Pasien" [modal]="true" [(visible)]="ShowModalPanggilPasien" [style]="{ width: '35rem' }"
+        [draggable]="false" [resizable]="false" [showHeader]="false">
+        <div class="flex flex-col items-center">
+            <img src="../../../assets/gif/loading.gif" alt="loading">
+
+            <p class="text-xl font-semibold text-gray-800 mb-2">
+                Memanggil Pasien
+            </p>
+
+            <p class="text-4xl text-sky-500 mb-1 font-medium">
+                {{ SelectedPasien?.no_antrian }}
+            </p>
+
+            <p class="text-base text-gray-700 font-medium mb-1">
+                {{ SelectedPasien?.nama_lengkap }}
+            </p>
+
+            <p class="text-sm text-gray-700 mb-5">
+                {{ SelectedPasien?.nama_poli }}
+            </p>
+
+            <div class="flex justify-center gap-3 pt-5 border-t border-x-0 border-b-0 border-dashed border-gray-400">
+                <p-button label="Tutup" severity="secondary" styleClass="p-button-sm"
+                    (click)="ShowModalPanggilPasien = false" />
+
+                <p-button label="Tidak Hadir" severity="danger" styleClass="p-button-sm"
+                    (click)="handleTidakHadirAntrian(SelectedPasien.id_pendaftaran)" />
+
+                <p-button label="Mulai Periksa" severity="info" styleClass="p-button-sm"
+                    (click)="handleGoToInputRekamMedis(SelectedPasien)" />
+
+                <p-button label=" Panggil Ulang" severity="success" styleClass="p-button-sm"
+                    (click)="onCallAntrian(SelectedPasien)" />
+            </div>
+        </div>
+    </p-dialog>
+
+    <!-- Dialog Search Pasien -->
+    <app-search-pasien-dialog #SearchPasienDialogComps (onSelect)="handleSelectLookupPasien($event)">
+    </app-search-pasien-dialog>
+
+    <p-confirmDialog />
+</app-dashboard>

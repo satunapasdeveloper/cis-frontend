@@ -1,0 +1,106 @@
+<p-dialog [header]="FormState == 'insert' ? 'Tambah Obat Non Racikan' : 'Edit Obat Non Racikan'" [modal]="true"
+    [(visible)]="ShowDialog" [style]="{ width: '50rem' }" [draggable]="false" [resizable]="false">
+
+    <div class="flex flex-col w-full" [formGroup]="FormResep">
+        <div class="flex flex-row gap-2 mb-4">
+            <!-- Nama Obat -->
+            <div class="w-6/12 flex flex-col gap-1">
+                <p class="text-gray-700 text-sm font-medium">
+                    Nama Obat
+                </p>
+                <p-dropdown #DropdownObatComps [options]="ObatDatasource" optionLabel="nama_item" filter="true"
+                    [autoDisplayFirst]="false" appendTo="body" styleClass="p-inputtext-sm" [showClear]="true"
+                    (onChange)="handleChangeObat($event)" (onFilter)="handleSearchItemObat($event)">
+                </p-dropdown>
+            </div>
+
+            <!-- Qty -->
+            <div class="w-2/12 flex flex-col gap-1">
+                <p class="text-gray-700 text-sm font-medium">
+                    Qty
+                </p>
+                <p-inputNumber styleClass="p-inputtext-sm" formControlName="qty" [min]="1"
+                    (ngModelChange)="handleChangeQty($event)">
+                </p-inputNumber>
+            </div>
+
+            <!-- Total -->
+            <div class="w-4/12 flex flex-col gap-1">
+                <p class="text-gray-700 text-sm font-medium">
+                    Total
+                </p>
+                <p-inputNumber styleClass="p-inputtext-sm" [disabled]="true" [readonly]="true"
+                    formControlName="subtotal">
+                </p-inputNumber>
+            </div>
+        </div>
+
+        <div class="flex flex-row gap-2 mb-4">
+            <!-- Aturan Pakai -->
+            <div class="w-6/12 flex flex-col gap-1">
+                <p class="text-gray-700 text-sm font-medium">
+                    Aturan Pakai
+                </p>
+                <input type="text" pInputText class="p-inputtext-sm w-full" formControlName="aturan_pakai"
+                    placeholder="Contoh: 3 kali sehari, 1 tablet">
+            </div>
+
+            <!-- Rute Pemberian Obat -->
+            <div class="w-6/12 flex flex-col gap-1">
+                <p class="text-gray-700 text-sm font-medium">
+                    Rute Pemberian Obat
+                </p>
+                <p-dropdown filter="true" [autoDisplayFirst]="false" appendTo="body" styleClass="p-inputtext-sm"
+                    [options]="RutePemberianObat" optionLabel="title" optionValue="value"
+                    formControlName="rute_pemberian_obat">
+                </p-dropdown>
+            </div>
+        </div>
+
+        <div class="flex flex-row gap-2 mb-4">
+            <!-- Waktu Pemberian Obat -->
+            <div class="w-6/12 flex flex-col gap-1">
+                <p class="text-gray-700 text-sm font-medium">
+                    Waktu Pemberian Obat
+                </p>
+                <div class="flex flex-col gap-2">
+                    <div *ngFor="let item of WaktuPemberianObat" class="field-checkbox">
+                        <p-radioButton [inputId]="item.value" name="waktu_pemberian_obat" [value]="item.value"
+                            formControlName="waktu_pemberian_obat" styleClass="p-inputtext-sm" />
+
+                        <label [for]="item.value" class="ml-2 text-sm">
+                            {{ item.title }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rute Pemberian Obat -->
+            <div class="w-6/12 flex flex-col gap-1">
+                <p class="text-gray-700 text-sm font-medium">
+                    Waktu Spesifik Pemberian Obat
+                </p>
+                <div class="flex flex-col gap-2">
+                    <div *ngFor="let item of WaktuSpesifikPemberianObat" class="field-checkbox">
+                        <p-radioButton [inputId]="item.value" name="waktu_spesifik_pemberian_obat" [value]="item.value"
+                            formControlName="waktu_spesifik_pemberian_obat" styleClass="p-inputtext-sm" />
+
+                        <label [for]="item.value" class="ml-2 text-sm">
+                            {{ item.title }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-3">
+            <p-button label="Tutup" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialog = false" />
+
+            <p-button *ngIf="FormState == 'insert'" label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleSave(FormResep.value)" />
+
+            <p-button *ngIf="FormState == 'update'" label="Update" severity="warning" styleClass="p-button-sm"
+                (onClick)="handleSave(FormResep.value)" />
+        </div>
+    </div>
+</p-dialog>
