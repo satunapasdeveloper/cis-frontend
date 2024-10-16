@@ -53,7 +53,7 @@ export class AuthenticationService {
             caption: 'Pasien',
             icon: 'pi pi-users',
             toggle_child: false,
-            url: '/pasien'
+            url: '/pendaftaran/pasien'
         },
         {
             id: '12',
@@ -61,7 +61,7 @@ export class AuthenticationService {
             caption: 'Antrian',
             icon: 'pi pi-list-check',
             toggle_child: false,
-            url: '/antrian'
+            url: '/pendaftaran/antrian'
         },
         // !! Pelayanan Klinik Sidebar Menu
         {
@@ -76,35 +76,35 @@ export class AuthenticationService {
                     caption: 'Setup Poli',
                     icon: 'pi pi-shop',
                     toggle_child: false,
-                    url: '/setup-data/setup-poli'
+                    url: '/pelayanan-klinik/setup-data/setup-poli'
                 },
                 {
                     id: '12',
                     caption: 'Setup Item',
                     icon: 'pi pi-clone',
                     toggle_child: false,
-                    url: '/setup-data/setup-item'
+                    url: '/pelayanan-klinik/setup-data/setup-item'
                 },
                 {
                     id: '13',
                     caption: 'Setup Tindakan Medis',
                     icon: 'pi pi-arrows-alt',
                     toggle_child: false,
-                    url: '/setup-data/setup-tindakan-medis'
+                    url: '/pelayanan-klinik/setup-data/setup-tindakan-medis'
                 },
                 {
                     id: '14',
                     caption: 'Setup Rekanan Penunjang',
                     icon: 'pi pi-address-book',
                     toggle_child: false,
-                    url: '/setup-data/setup-rekanan-penunjang'
+                    url: '/pelayanan-klinik/setup-data/setup-rekanan-penunjang'
                 },
                 {
                     id: '15',
                     caption: 'Manajemen User',
                     icon: 'pi pi-users',
                     toggle_child: false,
-                    url: '/setup-data/manajemen-user'
+                    url: '/pelayanan-klinik/setup-data/manajemen-user'
                 },
             ]
         },
@@ -114,11 +114,12 @@ export class AuthenticationService {
             caption: 'Rekam Medis',
             icon: 'pi pi-file-edit',
             toggle_child: false,
-            url: '/rekam-medis/data'
+            url: '/pelayanan-klinik/rekam-medis/data'
         },
         // !! Layanan Dokumen Sidebar Menu
         {
             id: '51',
+            navbar_id: '5',
             caption: 'Resume Medis',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -126,6 +127,7 @@ export class AuthenticationService {
         },
         {
             id: '52',
+            navbar_id: '5',
             caption: 'Surat Sehat',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -133,6 +135,7 @@ export class AuthenticationService {
         },
         {
             id: '53',
+            navbar_id: '5',
             caption: 'Surat Sakit',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -140,6 +143,7 @@ export class AuthenticationService {
         },
         {
             id: '54',
+            navbar_id: '5',
             caption: 'Surat Rujukan',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -147,6 +151,7 @@ export class AuthenticationService {
         },
         {
             id: '55',
+            navbar_id: '5',
             caption: 'Invoice',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -155,6 +160,7 @@ export class AuthenticationService {
         // !! Laporan Sidebar Menu
         {
             id: '61',
+            navbar_id: '6',
             caption: 'Laporan Pendapatan',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -162,6 +168,7 @@ export class AuthenticationService {
         },
         {
             id: '62',
+            navbar_id: '6',
             caption: 'Laporan Penyakit',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -169,6 +176,7 @@ export class AuthenticationService {
         },
         {
             id: '63',
+            navbar_id: '6',
             caption: 'Laporan Kunjungan',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -176,6 +184,7 @@ export class AuthenticationService {
         },
         {
             id: '64',
+            navbar_id: '6',
             caption: 'Laporan Kunjungan Harian',
             icon: 'pi pi-file',
             toggle_child: false,
@@ -183,6 +192,7 @@ export class AuthenticationService {
         },
         {
             id: '65',
+            navbar_id: '6',
             caption: 'Laporan Pemakaian Obat & BMHP',
             icon: 'pi pi-file',
             toggle_child: false,
