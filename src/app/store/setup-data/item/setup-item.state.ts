@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
-import { ItemService } from "src/app/services/setup-data/item.service";
+import { ItemService } from "src/app/services/pelayanan-klinik/setup-data/item.service";
 import { SetupItemActions } from "./setup-item.action";
 import { ItemModel } from "src/app/model/pages/setup-data/item.model";
 

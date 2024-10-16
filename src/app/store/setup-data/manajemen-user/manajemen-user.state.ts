@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
 import { ManajemenUserModel } from "src/app/model/pages/setup-data/manajemen-user.model";
-import { ManajemenUserService } from "src/app/services/setup-data/manajemen-user.service";
+import { ManajemenUserService } from "src/app/services/pelayanan-klinik/setup-data/manajemen-user.service";
 import { ManajemenUserActions } from "./manajemen-user.action";
 
 interface ManajemenUserStateModel {

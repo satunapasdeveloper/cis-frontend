@@ -3,7 +3,7 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
 import { RekamMedisModel } from "src/app/model/pages/rekam-medis/rekam-medis.model";
 import { RekamMedisActions } from "./rekam-medis.action";
-import { RekamMedisService } from "src/app/services/rekam-medis/rekam-medis.service";
+import { RekamMedisService } from "src/app/services/pelayanan-klinik/rekam-medis/rekam-medis.service";
 import { ActivatedRoute } from "@angular/router";
 import { BillingModel } from "src/app/model/pages/rekam-medis/billing.model";
 

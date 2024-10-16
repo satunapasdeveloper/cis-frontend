@@ -7,7 +7,7 @@ import { UtilityService } from 'src/app/services/utility/utility.service';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { AuthenticationModel } from 'src/app/model/pages/authentication/authentication.model';
 
 @Component({
@@ -62,8 +62,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this._router.events
             .pipe(takeUntil(this.Destroy$))
             .subscribe(event => {
-                if (event instanceof NavigationStart) {
+                if (event instanceof NavigationStart || event instanceof NavigationEnd) {
                     this._utilityService.ShowSidebar$.next(false);
+                }
+            });
+
+        // ** Listen to _utilityService show sidebar toggle
+        this._utilityService.ShowSidebar$
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.ShowSidebar = result;
+
+                if (result) {
+                    const sidebarEl = document.getElementById('sidebar') as HTMLElement;
+                    sidebarEl.classList.replace("w-[5rem]", "w-[24rem]");
+                } else {
+                    const sidebarEl = document.getElementById('sidebar') as HTMLElement;
+                    sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
+
+                    let sidebarMenu = this._authenticationService.SidebarMenu$.value.map((item) => {
+                        return {
+                            ...item,
+                            toggle_child: false
+                        }
+                    });
+
+                    this._authenticationService.SidebarMenu$.next([]);
+                    this._authenticationService.SidebarMenu$.next(sidebarMenu);
                 }
             });
     }
@@ -78,7 +103,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleShowSidebarWhenMouseOver() {
         this._utilityService.ShowSidebar$.next(true);
-        this.ShowSidebar = true;
 
         const sidebarEl = document.getElementById('sidebar') as HTMLElement;
         sidebarEl.classList.replace("w-[5rem]", "w-[24rem]");
@@ -86,7 +110,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleHideSidebarWhenMouseLeave() {
         this._utilityService.ShowSidebar$.next(false);
-        this.ShowSidebar = false;
 
         const sidebarEl = document.getElementById('sidebar') as HTMLElement;
         sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
@@ -107,7 +130,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     handleClickSidebarMenu(item: any) {
-        this.handleHideSidebarWhenMouseLeave();
+        this.ShowSidebar = false;
+
+        const sidebarEl = document.getElementById('sidebar') as HTMLElement;
+        sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
+
+        let sidebarMenu = this._authenticationService.SidebarMenu$.value.map((item) => {
+            return {
+                ...item,
+                toggle_child: false
+            }
+        });
+
+        this._authenticationService.SidebarMenu$.next([]);
+        this._authenticationService.SidebarMenu$.next(sidebarMenu);
+
         this._router.navigateByUrl(item.url);
     }
 }

@@ -12,9 +12,61 @@ export class AuthenticationService {
 
     UserData$ = new BehaviorSubject<AuthenticationModel.IAuthentication>({} as any);
 
-    SidebarMenu$ = new BehaviorSubject<AuthenticationModel.ISidebarMenu[]>([
+    NavbarMenu$ = new BehaviorSubject<AuthenticationModel.INavbarMenu[]>([
         {
             id: '1',
+            caption: 'Pendaftaran',
+            icon: 'pi pi-user'
+        },
+        {
+            id: '2',
+            caption: 'Pelayanan Klinik',
+            icon: 'pi pi-user'
+        },
+        {
+            id: '3',
+            caption: 'Billing Kasir',
+            icon: 'pi pi-user'
+        },
+        {
+            id: '4',
+            caption: 'Farmasi',
+            icon: 'pi pi-user'
+        },
+        {
+            id: '5',
+            caption: 'Layanan Dokumen',
+            icon: 'pi pi-user'
+        },
+        {
+            id: '6',
+            caption: 'Laporan',
+            icon: 'pi pi-user'
+        },
+    ]);
+
+    AllSidebarMenu$ = new BehaviorSubject<AuthenticationModel.ISidebarMenu[]>([
+        // !! Pendaftaran Sidebar Menu
+        {
+            id: '11',
+            navbar_id: '1',
+            caption: 'Pasien',
+            icon: 'pi pi-users',
+            toggle_child: false,
+            url: '/pendaftaran/pasien'
+        },
+        {
+            id: '12',
+            navbar_id: '1',
+            caption: 'Antrian',
+            icon: 'pi pi-list-check',
+            toggle_child: false,
+            url: '/pendaftaran/antrian'
+        },
+        // !! Pelayanan Klinik Sidebar Menu
+        {
+            id: '21',
+            navbar_id: '2',
             caption: 'Setup Data',
             icon: 'pi pi-cog',
             toggle_child: false,
@@ -24,153 +76,131 @@ export class AuthenticationService {
                     caption: 'Setup Poli',
                     icon: 'pi pi-shop',
                     toggle_child: false,
-                    url: '/setup-data/setup-poli'
+                    url: '/pelayanan-klinik/setup-data/setup-poli'
                 },
                 {
                     id: '12',
                     caption: 'Setup Item',
                     icon: 'pi pi-clone',
                     toggle_child: false,
-                    url: '/setup-data/setup-item'
+                    url: '/pelayanan-klinik/setup-data/setup-item'
                 },
                 {
                     id: '13',
                     caption: 'Setup Tindakan Medis',
                     icon: 'pi pi-arrows-alt',
                     toggle_child: false,
-                    url: '/setup-data/setup-tindakan-medis'
+                    url: '/pelayanan-klinik/setup-data/setup-tindakan-medis'
                 },
                 {
                     id: '14',
                     caption: 'Setup Rekanan Penunjang',
                     icon: 'pi pi-address-book',
                     toggle_child: false,
-                    url: '/setup-data/setup-rekanan-penunjang'
+                    url: '/pelayanan-klinik/setup-data/setup-rekanan-penunjang'
                 },
                 {
                     id: '15',
                     caption: 'Manajemen User',
                     icon: 'pi pi-users',
                     toggle_child: false,
-                    url: '/setup-data/manajemen-user'
+                    url: '/pelayanan-klinik/setup-data/manajemen-user'
                 },
             ]
         },
         {
-            id: '2',
-            caption: 'Pasien',
-            icon: 'pi pi-users',
-            toggle_child: false,
-            url: '/pasien'
-        },
-        // {
-        //     id: '3',
-        //     caption: 'Dokter',
-        //     icon: 'pi pi-shield',
-        //     toggle_child: false,
-        //     url: '/dokter'
-        // },
-        {
-            id: '4',
-            caption: 'Antrian',
-            icon: 'pi pi-list-check',
-            toggle_child: false,
-            url: '/antrian'
-        },
-        {
-            id: '5',
+            id: '22',
+            navbar_id: '2',
             caption: 'Rekam Medis',
             icon: 'pi pi-file-edit',
             toggle_child: false,
-            url: '/rekam-medis/data'
+            url: '/pelayanan-klinik/rekam-medis/data'
+        },
+        // !! Layanan Dokumen Sidebar Menu
+        {
+            id: '51',
+            navbar_id: '5',
+            caption: 'Resume Medis',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/layanan-dokumen/resume-medis'
         },
         {
-            id: '7',
-            caption: 'Layanan Dokumen',
-            icon: 'pi pi-file-o',
+            id: '52',
+            navbar_id: '5',
+            caption: 'Surat Sehat',
+            icon: 'pi pi-file',
             toggle_child: false,
-            sidebarChild: [
-                {
-                    id: '71',
-                    caption: 'Resume Medis',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/layanan-dokumen/resume-medis'
-                },
-                {
-                    id: '72',
-                    caption: 'Surat Sehat',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/layanan-dokumen/surat-sehat'
-                },
-                {
-                    id: '73',
-                    caption: 'Surat Sakit',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/layanan-dokumen/surat-sakit'
-                },
-                {
-                    id: '74',
-                    caption: 'Surat Rujukan',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/layanan-dokumen/surat-rujukan'
-                },
-                {
-                    id: '74',
-                    caption: 'Invoice',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/layanan-dokumen/invoice'
-                },
-            ]
+            url: '/layanan-dokumen/surat-sehat'
         },
         {
-            id: '8',
-            caption: 'Laporan',
-            icon: 'pi pi-folder',
+            id: '53',
+            navbar_id: '5',
+            caption: 'Surat Sakit',
+            icon: 'pi pi-file',
             toggle_child: false,
-            sidebarChild: [
-                {
-                    id: '81',
-                    caption: 'Laporan Pendapatan',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/laporan/laporan-pendapatan'
-                },
-                {
-                    id: '82',
-                    caption: 'Laporan Penyakit',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/laporan/laporan-penyakit'
-                },
-                {
-                    id: '83',
-                    caption: 'Laporan Kunjungan',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/laporan/laporan-kunjungan'
-                },
-                {
-                    id: '84',
-                    caption: 'Laporan Kunjungan Harian',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/laporan/laporan-kunjungan-harian'
-                },
-                {
-                    id: '85',
-                    caption: 'Laporan Pemakaian Obat & BMHP',
-                    icon: 'pi pi-file',
-                    toggle_child: false,
-                    url: '/laporan/laporan-pemakaian-obat-dan-bmhp'
-                },
-            ]
+            url: '/layanan-dokumen/surat-sakit'
+        },
+        {
+            id: '54',
+            navbar_id: '5',
+            caption: 'Surat Rujukan',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/layanan-dokumen/surat-rujukan'
+        },
+        {
+            id: '55',
+            navbar_id: '5',
+            caption: 'Invoice',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/layanan-dokumen/invoice'
+        },
+        // !! Laporan Sidebar Menu
+        {
+            id: '61',
+            navbar_id: '6',
+            caption: 'Laporan Pendapatan',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/laporan/laporan-pendapatan'
+        },
+        {
+            id: '62',
+            navbar_id: '6',
+            caption: 'Laporan Penyakit',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/laporan/laporan-penyakit'
+        },
+        {
+            id: '63',
+            navbar_id: '6',
+            caption: 'Laporan Kunjungan',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/laporan/laporan-kunjungan'
+        },
+        {
+            id: '64',
+            navbar_id: '6',
+            caption: 'Laporan Kunjungan Harian',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/laporan/laporan-kunjungan-harian'
+        },
+        {
+            id: '65',
+            navbar_id: '6',
+            caption: 'Laporan Pemakaian Obat & BMHP',
+            icon: 'pi pi-file',
+            toggle_child: false,
+            url: '/laporan/laporan-pemakaian-obat-dan-bmhp'
         },
     ]);
+
+    SidebarMenu$ = new BehaviorSubject<AuthenticationModel.ISidebarMenu[]>([]);
 
     constructor(
         private _cookieService: CookieService,
@@ -214,6 +244,17 @@ export class AuthenticationService {
         const user_data = localStorage.getItem("_CISUD_");
         const layanan_data = localStorage.getItem("_CISPL_");
         return { ...JSON.parse(user_data as any), ...JSON.parse(layanan_data as any) };
+    }
+
+    setSidebarMenu(navbar_id: string) {
+        const sidebarMenu = this.AllSidebarMenu$.value.filter(item => item.navbar_id == navbar_id);
+        localStorage.setItem('_CIS_MENU_SIDEBAR_', JSON.stringify(sidebarMenu));
+        this.SidebarMenu$.next(sidebarMenu);
+    }
+
+    getSidebarMenu() {
+        const sidebarMenu = JSON.parse(localStorage.getItem('_CIS_MENU_SIDEBAR_')!);
+        this.SidebarMenu$.next(sidebarMenu)
     }
 
     private handleSignIn(data: AuthenticationModel.IAuthentication) {

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
 import { TindakanMedisModel } from "src/app/model/pages/setup-data/tindakan-medis.model";
-import { TindakanMedisService } from "src/app/services/setup-data/tindakan-medis.service";
+import { TindakanMedisService } from "src/app/services/pelayanan-klinik/setup-data/tindakan-medis.service";
 import { SetupTindakanMedisActions } from "./setup-tindakan-medis.action";
 
 interface SetupTindakanMedisStateModel {

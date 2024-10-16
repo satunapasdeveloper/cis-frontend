@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { PoliModel } from "src/app/model/pages/setup-data/poli.model";
-import { PoliService } from "src/app/services/setup-data/poli.service";
+import { PoliService } from "src/app/services/pelayanan-klinik/setup-data/poli.service";
 import { SetupPoliActions } from "./setup-poli.action";
 import { of, switchMap, tap } from "rxjs";
 

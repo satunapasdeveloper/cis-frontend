@@ -10,7 +10,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { RekamMedisService } from 'src/app/services/pelayanan-klinik/rekam-medis/rekam-medis.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { HeaderLayananDokumenComponent } from '../header-layanan-dokumen/header-layanan-dokumen.component';
