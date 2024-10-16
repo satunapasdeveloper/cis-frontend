@@ -8,7 +8,7 @@ import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, takeUntil
 import { PilihPasienFormModel } from 'src/app/model/components/pilih-pasien-form.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { Store } from '@ngxs/store';
-import { PasienService } from 'src/app/services/pasien/pasien.service';
+import { PasienService } from 'src/app/services/pendaftaran-klinik/pasien/pasien.service';
 import { PasienModel } from 'src/app/model/pages/pasien/pasien.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';

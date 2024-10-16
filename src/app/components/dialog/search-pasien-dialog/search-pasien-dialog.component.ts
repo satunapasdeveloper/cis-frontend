@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
-import { PasienService } from 'src/app/services/pasien/pasien.service';
+import { PasienService } from 'src/app/services/pendaftaran-klinik/pasien/pasien.service';
 
 @Component({
     selector: 'app-search-pasien-dialog',

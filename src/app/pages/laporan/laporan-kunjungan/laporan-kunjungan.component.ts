@@ -14,7 +14,7 @@ import { LaporanService } from 'src/app/services/laporan/laporan.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { HeaderLaporanComponent } from '../header-laporan/header-laporan.component';
 import { DropdownModule } from 'primeng/dropdown';
-import { RekamMedisService } from 'src/app/services/rekam-medis/rekam-medis.service';
+import { RekamMedisService } from 'src/app/services/pelayanan-klinik/rekam-medis/rekam-medis.service';
 
 @Component({
     selector: 'app-laporan-kunjungan',

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
 import { RekananPenunjangModel } from "src/app/model/pages/setup-data/rekanan-penunjang.model";
-import { RekananPenunjangService } from "src/app/services/setup-data/rekanan-penunjang.service";
+import { RekananPenunjangService } from "src/app/services/pelayanan-klinik/setup-data/rekanan-penunjang.service";
 import { RekananPenunjangActions } from "./rekanan-penunjang.action";
 
 interface RekananPenunjangStateModel {

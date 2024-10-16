@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormPilihPasienForDokumenComponent } from 'src/app/components/form/form-pilih-pasien-for-dokumen/form-pilih-pasien-for-dokumen.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { RiwayatRekamMedisComponent } from '../../rekam-medis/riwayat-rekam-medis/riwayat-rekam-medis.component';
+import { RiwayatRekamMedisComponent } from '../../pelayanan-klinik/rekam-medis/riwayat-rekam-medis/riwayat-rekam-medis.component';
 import { Store } from '@ngxs/store';
 import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { Subject, takeUntil } from 'rxjs';
