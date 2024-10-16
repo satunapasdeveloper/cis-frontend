@@ -9,8 +9,15 @@ export namespace AuthenticationModel {
         token: string
     }
 
+    export interface INavbarMenu {
+        id: string;
+        caption: string;
+        icon: string;
+    }
+
     export interface ISidebarMenu {
         id: string;
+        navbar_id?: string;
         caption: string;
         icon: string;
         toggle_child: boolean;
