@@ -45,7 +45,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     handleClickNavbarMenu(item: AuthenticationModel.INavbarMenu) {
         localStorage.setItem('_CIS_ACTIVE_MENU_', JSON.stringify(item));
-        this.handleToggleSidebar();
+        this.SelectedNavbarMenu = item;
+        this._authenticationService.setSidebarMenu(item.id);
+        this._utilityService.ShowSidebar$.next(true);
     }
 
     handleToggleSidebar() {

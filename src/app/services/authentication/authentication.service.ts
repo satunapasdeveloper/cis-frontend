@@ -45,7 +45,7 @@ export class AuthenticationService {
         },
     ]);
 
-    SidebarMenu$ = new BehaviorSubject<AuthenticationModel.ISidebarMenu[]>([
+    AllSidebarMenu$ = new BehaviorSubject<AuthenticationModel.ISidebarMenu[]>([
         // !! Pendaftaran Sidebar Menu
         {
             id: '11',
@@ -190,6 +190,8 @@ export class AuthenticationService {
         },
     ]);
 
+    SidebarMenu$ = new BehaviorSubject<AuthenticationModel.ISidebarMenu[]>([]);
+
     constructor(
         private _cookieService: CookieService,
         private _httpRequestService: HttpRequestService,
@@ -235,12 +237,14 @@ export class AuthenticationService {
     }
 
     setSidebarMenu(navbar_id: string) {
-        const sidebarMenu = this.SidebarMenu$.value.filter(item => item.navbar_id == navbar_id);
+        const sidebarMenu = this.AllSidebarMenu$.value.filter(item => item.navbar_id == navbar_id);
         localStorage.setItem('_CIS_MENU_SIDEBAR_', JSON.stringify(sidebarMenu));
+        this.SidebarMenu$.next(sidebarMenu);
     }
 
-    getSidebarMenu(): AuthenticationModel.ISidebarMenu[] {
-        return JSON.parse(localStorage.getItem('_CIS_MENU_SIDEBAR_')!);
+    getSidebarMenu() {
+        const sidebarMenu = JSON.parse(localStorage.getItem('_CIS_MENU_SIDEBAR_')!);
+        this.SidebarMenu$.next(sidebarMenu)
     }
 
     private handleSignIn(data: AuthenticationModel.IAuthentication) {

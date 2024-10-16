@@ -66,6 +66,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this._utilityService.ShowSidebar$.next(false);
                 }
             });
+
+        // ** Listen to _utilityService show sidebar toggle
+        this._utilityService.ShowSidebar$
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.ShowSidebar = result;
+
+                if (result) {
+                    const sidebarEl = document.getElementById('sidebar') as HTMLElement;
+                    sidebarEl.classList.replace("w-[5rem]", "w-[24rem]");
+                } else {
+                    const sidebarEl = document.getElementById('sidebar') as HTMLElement;
+                    sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
+
+                    let sidebarMenu = this._authenticationService.SidebarMenu$.value.map((item) => {
+                        return {
+                            ...item,
+                            toggle_child: false
+                        }
+                    });
+
+                    this._authenticationService.SidebarMenu$.next([]);
+                    this._authenticationService.SidebarMenu$.next(sidebarMenu);
+                }
+            });
     }
 
     ngOnInit(): void {
@@ -78,7 +103,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleShowSidebarWhenMouseOver() {
         this._utilityService.ShowSidebar$.next(true);
-        this.ShowSidebar = true;
 
         const sidebarEl = document.getElementById('sidebar') as HTMLElement;
         sidebarEl.classList.replace("w-[5rem]", "w-[24rem]");
@@ -86,7 +110,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     handleHideSidebarWhenMouseLeave() {
         this._utilityService.ShowSidebar$.next(false);
-        this.ShowSidebar = false;
 
         const sidebarEl = document.getElementById('sidebar') as HTMLElement;
         sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
