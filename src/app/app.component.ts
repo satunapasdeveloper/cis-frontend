@@ -110,22 +110,22 @@ export class AppComponent implements OnInit, OnDestroy {
 
         // ** Get All Supplier
         this._store
-            .dispatch(new SetupSupplierActions.GetAllSupplier({ page: 1, count: 10 }))
+            .dispatch(new SetupSupplierActions.GetAllSupplier({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
 
         // ** Get All Pabrik
         this._store
-            .dispatch(new SetupPabrikActions.GetAllPabrik({ page: 1, count: 10 }))
+            .dispatch(new SetupPabrikActions.GetAllPabrik({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
 
         // ** Get All Stockroom
         this._store
-            .dispatch(new SetupStockroomActions.GetAllStockroom({ page: 1, count: 10 }))
+            .dispatch(new SetupStockroomActions.GetAllStockroom({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
 
         // ** Get All Golongan
         this._store
-            .dispatch(new SetupGolonganActions.GetAllGolongan({ page: 1, count: 10 }))
+            .dispatch(new SetupGolonganActions.GetAllGolongan({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
     }
 

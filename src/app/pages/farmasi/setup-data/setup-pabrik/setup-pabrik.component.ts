@@ -47,8 +47,8 @@ export class SetupPabrikComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'Setup_Pabrik',
         column: [
-            { field: 'kode_pabrik', headerName: 'Kode Pabrik', class: 'font-semibold' },
-            { field: 'nama_pabrik', headerName: 'Nama Pabrik', },
+            { field: 'kode_manufacture', headerName: 'Kode Pabrik', class: 'font-semibold' },
+            { field: 'nama_manufacture', headerName: 'Nama Pabrik', },
             { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],

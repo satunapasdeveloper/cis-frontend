@@ -25,3 +25,25 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Version
+
+- 0.0.1
+
+```bash
+    - **Release date -> 16 Okt 2024**
+    - Initial Commit
+    - Adjustment Dashboard, Navbar and Sidebar
+    - Fix folder restructuring
+    - Add menu searching feature
+```
+
+- 0.0.2
+
+```bash
+    - **Release date -> 17 Okt 2024**
+    - Add farmasi master data branch
+    - Add farmasi master data states, services and models
+    - Add grid pagination feature (server side pagination)
+    - Add Setup Supplier, Setup Pabrik, Setup Golongan & Setup Stockroom
+```

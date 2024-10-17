@@ -28,7 +28,7 @@ export class SetupStockroomState {
     ) { }
 
     @Selector()
-    static poliEntities(state: SetupStockroomStateModel) {
+    static stockroomEntities(state: SetupStockroomStateModel) {
         return state;
     }
 
