@@ -5,11 +5,13 @@ import { SETUP_DATA_STATE } from "./setup-data";
 import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
 import { RekamMedisState } from "./rekam-medis";
 import { BerandaState } from "./beranda";
+import { FARMASI_STATE } from "./farmasi";
 
 const STATES = [
     ...SETUP_DATA_STATE,
     RekamMedisState,
-    BerandaState
+    BerandaState,
+    ...FARMASI_STATE
 ];
 
 @NgModule({
@@ -17,7 +19,7 @@ const STATES = [
         NgxsModule.forRoot([...STATES], {
             developmentMode: !environment.production,
         }),
-        // NgxsLoggerPluginModule.forRoot(),
+        NgxsLoggerPluginModule.forRoot(),
     ],
 })
 export class StateModule {

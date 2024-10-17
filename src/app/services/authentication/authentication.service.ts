@@ -116,6 +116,59 @@ export class AuthenticationService {
             toggle_child: false,
             url: '/pelayanan-klinik/rekam-medis/data'
         },
+        // !! Farmasi Sidebar Menu
+        {
+            id: '41',
+            navbar_id: '4',
+            caption: 'Setup Data',
+            icon: 'pi pi-cog',
+            toggle_child: false,
+            sidebarChild: [
+                {
+                    id: '411',
+                    caption: 'Setup Item',
+                    icon: 'pi pi-clone',
+                    toggle_child: false,
+                    url: '/farmasi/setup-data/setup-item'
+                },
+                {
+                    id: '412',
+                    caption: 'Setup Supplier',
+                    icon: 'pi pi-address-book',
+                    toggle_child: false,
+                    url: '/farmasi/setup-data/setup-supplier'
+                },
+                {
+                    id: '413',
+                    caption: 'Setup Pabrik',
+                    icon: 'pi pi-warehouse',
+                    toggle_child: false,
+                    url: '/farmasi/setup-data/setup-pabrik'
+                },
+                {
+                    id: '414',
+                    caption: 'Setup Stockroom',
+                    icon: 'pi pi-building-columns',
+                    toggle_child: false,
+                    url: '/farmasi/setup-data/setup-stockroom'
+                },
+                {
+                    id: '415',
+                    caption: 'Setup Golongan',
+                    icon: 'pi pi-microchip',
+                    toggle_child: false,
+                    url: '/farmasi/setup-data/setup-golongan'
+                },
+            ]
+        },
+        {
+            id: '42',
+            navbar_id: '2',
+            caption: 'Rekam Medis',
+            icon: 'pi pi-file-edit',
+            toggle_child: false,
+            url: '/pelayanan-klinik/rekam-medis/data'
+        },
         // !! Layanan Dokumen Sidebar Menu
         {
             id: '51',
