@@ -4,6 +4,7 @@ import { Store } from '@ngxs/store';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { PaginatorModule } from 'primeng/paginator';
 import { Subject, BehaviorSubject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
@@ -24,7 +25,8 @@ import { SetupSupplierState, SetupSupplierActions } from 'src/app/store/farmasi/
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        PaginatorModule,
     ],
     templateUrl: './setup-supplier.component.html',
     styleUrl: './setup-supplier.component.scss'
@@ -46,11 +48,13 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'Setup_Supplier',
         column: [
-            { field: 'kode_kfa', headerName: 'Kode Supplier', class: 'font-semibold' },
+            { field: 'kode_supplier', headerName: 'Kode Supplier', class: 'font-semibold' },
             { field: 'nama_supplier', headerName: 'Nama Supplier', },
-            { field: 'kategori', headerName: 'Kategori', },
-            { field: 'satuan', headerName: 'Satuan', },
-            { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency' },
+            { field: 'npwp', headerName: 'NPWP', },
+            { field: 'alamat', headerName: 'Alamat', },
+            { field: 'provinsi', headerName: 'Provinsi', },
+            { field: 'kota', headerName: 'Kota', },
+            { field: 'kecamatan', headerName: 'Kecamatan', },
             { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -60,9 +64,14 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
         showSearch: true,
         showSort: true,
         searchKeyword: 'nama_supplier',
-        searchPlaceholder: 'Cari Nama Supplier Disini'
+        searchPlaceholder: 'Cari Nama Supplier Disini',
+        totalRows: 0,
     };
     GridSelectedData: any;
+
+    First: number = 0;
+
+    Rows: number = 10;
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -109,7 +118,7 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                 {
                     id: 'alamat',
                     label: 'Alamat',
-                    required: false,
+                    required: true,
                     type: 'textarea',
                     textareaRow: 5,
                     value: '',
@@ -129,19 +138,26 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     onChange: (args: any) => {
                         if (args) {
                             this.getKota(args.id);
+                            this.FormComps.FormGroup.get('provinsi')?.setValue(args.name);
                         } else {
                             this.FormComps.FormGroup.get('id_kabupaten')?.setValue(null);
                             this.FormComps.FormGroup.get('id_kecamatan')?.setValue(null);
-                            this.FormComps.FormGroup.get('id_kelurahan')?.setValue(null);
-
-                            this.FormProps.fields[2].dropdownProps.options = [];
-                            this.FormProps.fields[3].dropdownProps.options = [];
-                            this.FormProps.fields[4].dropdownProps.options = [];
+                            this.FormProps.fields[6].dropdownProps.options = [];
+                            this.FormProps.fields[8].dropdownProps.options = [];
                         }
                     },
                 },
                 {
-                    id: 'id_kabupaten',
+                    id: 'provinsi',
+                    label: 'Provinsi',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false,
+                    hidden: true,
+                },
+                {
+                    id: 'id_kota',
                     label: 'Kota / Kabupaten',
                     required: true,
                     type: 'select',
@@ -154,13 +170,21 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     onChange: (args: any) => {
                         if (args) {
                             this.getKecamatan(args.id);
+                            this.FormComps.FormGroup.get('kota')?.setValue(args.name);
                         } else {
                             this.FormComps.FormGroup.get('id_kecamatan')?.setValue(null);
-                            this.FormComps.FormGroup.get('id_kelurahan')?.setValue(null);
-                            this.FormProps.fields[3].dropdownProps.options = [];
-                            this.FormProps.fields[4].dropdownProps.options = [];
+                            this.FormProps.fields[8].dropdownProps.options = [];
                         }
                     },
+                },
+                {
+                    id: 'kota',
+                    label: 'Kota',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false,
+                    hidden: true,
                 },
                 {
                     id: 'id_kecamatan',
@@ -176,23 +200,36 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     onChange: (args: any) => {
                         if (args) {
                             this.getKelurahan(args.id);
-                        } else {
-                            this.FormComps.FormGroup.get('id_kelurahan')?.setValue(null);
-                            this.FormProps.fields[4].dropdownProps.options = [];
+                            this.FormComps.FormGroup.get('kecamatan')?.setValue(args.name);
                         }
                     },
                 },
                 {
-                    id: 'id_kelurahan',
-                    label: 'Kelurahan',
-                    required: true,
-                    type: 'select',
-                    dropdownProps: {
-                        options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
-                    },
+                    id: 'kecamatan',
+                    label: 'Kecamatan',
+                    required: false,
+                    type: 'text',
                     value: '',
+                    readonly: false,
+                    hidden: true,
+                },
+                {
+                    id: 'contact_person',
+                    label: 'Nama Kontak Person',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false,
+                },
+                {
+                    id: 'no_wa',
+                    label: 'No. Whatsapp',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false,
+                    mask: '0000-0000-00000',
+                    dropSpecialCharacters: true,
                 },
                 {
                     id: 'id_supplier',
@@ -212,6 +249,7 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getAll();
+        this.getProvinsi();
     }
 
     ngOnDestroy(): void {
@@ -226,7 +264,8 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 if (result) {
                     console.log("get data from setup supplier =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -236,7 +275,7 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
             .getProvinsi()
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.FormProps.fields[1].dropdownProps.options = result.data;
+                    this.FormProps.fields[4].dropdownProps.options = result.data;
                 }
             })
     }
@@ -361,6 +400,12 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any): void {
+        this._store
+            .dispatch(new SetupSupplierActions.GetAllSupplier({ count: args.rows, page: args.page + 1 }))
+            .pipe(takeUntil(this.Destroy$));
     }
 
     saveSupplier(data: any) {

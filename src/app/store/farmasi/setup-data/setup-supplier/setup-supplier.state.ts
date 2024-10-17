@@ -29,7 +29,7 @@ export class SetupSupplierState {
 
     @Selector()
     static supplierEntities(state: SetupSupplierStateModel) {
-        return state.entities;
+        return state;
     }
 
     @Action(SetupSupplierActions.GetAllSupplier)
@@ -72,7 +72,7 @@ export class SetupSupplierState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupSupplierActions.GetAllSupplier({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupSupplierActions.GetAllSupplier({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -102,7 +102,7 @@ export class SetupSupplierState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupSupplierActions.GetAllSupplier({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupSupplierActions.GetAllSupplier({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -132,7 +132,7 @@ export class SetupSupplierState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupSupplierActions.GetAllSupplier({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupSupplierActions.GetAllSupplier({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }

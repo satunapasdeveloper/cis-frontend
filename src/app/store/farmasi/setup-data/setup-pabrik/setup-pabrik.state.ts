@@ -72,7 +72,7 @@ export class SetupPabrikState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupPabrikActions.GetAllPabrik({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupPabrikActions.GetAllPabrik({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -102,7 +102,7 @@ export class SetupPabrikState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupPabrikActions.GetAllPabrik({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupPabrikActions.GetAllPabrik({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -132,7 +132,7 @@ export class SetupPabrikState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupPabrikActions.GetAllPabrik({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupPabrikActions.GetAllPabrik({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }

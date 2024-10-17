@@ -19,7 +19,7 @@ const STATES = [
         NgxsModule.forRoot([...STATES], {
             developmentMode: !environment.production,
         }),
-        NgxsLoggerPluginModule.forRoot(),
+        // NgxsLoggerPluginModule.forRoot(),
     ],
 })
 export class StateModule {

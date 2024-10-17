@@ -72,7 +72,7 @@ export class SetupGolonganState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupGolonganActions.GetAllGolongan({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupGolonganActions.GetAllGolongan({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -102,7 +102,7 @@ export class SetupGolonganState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupGolonganActions.GetAllGolongan({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupGolonganActions.GetAllGolongan({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -132,7 +132,7 @@ export class SetupGolonganState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupGolonganActions.GetAllGolongan({ count: 100, page: 1 }));
+                        return ctx.dispatch(new SetupGolonganActions.GetAllGolongan({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }

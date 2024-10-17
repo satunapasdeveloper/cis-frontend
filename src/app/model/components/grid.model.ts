@@ -28,5 +28,6 @@ export namespace GridModel {
         searchPlaceholder?: string;
         showSort?: boolean;
         toolbar?: string[];
+        totalRows?: number;
     }
 }
