@@ -10,7 +10,7 @@
 
         <div *ngIf="NavbarMenu$ | async as navbar" class="flex gap-7">
             <span *ngFor="let item of navbar"
-                class="{{ SelectedNavbarMenu.id == item.id ? 'text-blue-500 font-medium' : 'text-gray-700' }} text-sm cursor-pointer hover:text-blue-500 hover:font-medium"
+                class="{{ SelectedNavbarMenu && SelectedNavbarMenu.id == item.id ? 'text-blue-500 font-medium' : 'text-gray-700' }} text-sm cursor-pointer hover:text-blue-500 hover:font-medium"
                 (click)="handleClickNavbarMenu(item)">
                 {{ item.caption }}
             </span>

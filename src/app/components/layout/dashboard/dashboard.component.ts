@@ -94,6 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this._authenticationService.getSidebarMenu();
     }
 
     ngOnDestroy(): void {

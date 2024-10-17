@@ -7,6 +7,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import * as FileSaver from 'file-saver';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
     selector: 'app-grid',
@@ -17,6 +18,7 @@ import * as FileSaver from 'file-saver';
         ButtonModule,
         TableModule,
         OverlayPanelModule,
+        PaginatorModule
     ],
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.scss']
@@ -30,6 +32,8 @@ export class GridComponent implements OnInit {
     @Output('rowDoubleClicked') rowDoubleClicked = new EventEmitter<any>();
 
     @Output('aksiClicked') aksiClicked = new EventEmitter<any>();
+
+    @Output('pageChanged') pageChanged = new EventEmitter<any>();
 
     defaultColDef: ColDef = {
         sortable: true,
@@ -46,6 +50,10 @@ export class GridComponent implements OnInit {
     gridDatasource: any[] = [];
 
     SelectedRow: any;
+
+    first: number = 0;
+
+    rows: number = 10;
 
     constructor(
         // private _documentService: DocumentService,
@@ -138,6 +146,12 @@ export class GridComponent implements OnInit {
 
     onAksiClicked(type: string, data: any) {
         this.aksiClicked.emit({ type: type, data: data });
+    }
+
+    onPageChanged(args: any) {
+        this.first = args.first;
+        this.rows = args.rows;
+        this.pageChanged.emit(args);
     }
 
     handleFormatStringToNumber(data: string): number {

@@ -30,6 +30,11 @@ const routes: Routes = [
         loadChildren: async () => (await import('./pages/pelayanan-klinik/pelayanan-klinik.routes')).pelayananKlinikRoutes
     },
     {
+        path: 'farmasi',
+        canActivate: [AuthGuard],
+        loadChildren: async () => (await import('./pages/farmasi/farmasi.routes')).farmasiRoutes
+    },
+    {
         path: 'layanan-dokumen',
         canActivate: [AuthGuard],
         loadChildren: async () => (await import('./pages/layanan-dokumen/layanan-dokumen.routes')).layananDokumenRoutes

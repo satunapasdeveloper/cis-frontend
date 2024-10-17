@@ -29,8 +29,10 @@ export class HttpRequestService {
 
         let query = {};
 
-        if (queryString) {
+        if (Array.isArray(queryString)) {
             query = Object.assign({}, ...queryString);
+        } else {
+            query = queryString;
         }
 
         return this._httpClient.get<HttpBaseResponse>(url, {
@@ -41,7 +43,9 @@ export class HttpRequestService {
 
                 if (!result.responseResult) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(result.message) })
+                    (<any>result.message).forEach((item: string) => {
+                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: this._titleCasePipe.transform(item) })
+                    })
                 }
 
                 return result;

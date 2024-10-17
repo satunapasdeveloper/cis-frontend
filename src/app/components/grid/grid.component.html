@@ -17,7 +17,7 @@
 <div class="grid w-full">
     <p-table *ngIf="props.showSort; else noSortMode" [value]="props.dataSource" [columns]="props.column"
         styleClass="p-datatable-striped" [tableStyle]="{'min-width': '50rem'}" selectionMode="single"
-        [(selection)]="SelectedRow" sortMode="multiple">
+        [(selection)]="SelectedRow" sortMode="multiple" [paginator]="false">
         <ng-template pTemplate="header" let-columns>
             <tr class="bg-gray-100">
                 <th *ngFor="let col of columns" class="text-sm" [pSortableColumn]="col.field">
@@ -165,4 +165,8 @@
         </p-table>
 
     </ng-template>
+
+    <p-paginator *ngIf="props.showPaging" (onPageChange)="onPageChanged($event)" [first]="0" [rows]="5"
+        [totalRecords]="props.totalRows" [rowsPerPageOptions]="[5, 10, 25, 50, 100]" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Menampilkan data ke {first} - {last} dari {totalRecords} data" />
 </div>
