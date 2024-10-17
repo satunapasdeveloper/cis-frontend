@@ -8,13 +8,16 @@ import { SupplierModel } from "src/app/model/pages/farmasi/setup-data/setup-supp
 interface SetupSupplierStateModel {
     entities: SupplierModel.ISupplier[];
     success?: boolean;
+    page?: string;
+    totalRows?: number;
+    totalPage?: number;
 }
 
 @State<SetupSupplierStateModel>({
     name: 'setup_supplier',
     defaults: {
         entities: [],
-        success: true
+        success: true,
     }
 })
 @Injectable()
@@ -25,7 +28,7 @@ export class SetupSupplierState {
     ) { }
 
     @Selector()
-    static poliEntities(state: SetupSupplierStateModel) {
+    static supplierEntities(state: SetupSupplierStateModel) {
         return state.entities;
     }
 
@@ -38,7 +41,10 @@ export class SetupSupplierState {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        page: result.data.page,
+                        totalRows: result.data.totalRows,
+                        totalPage: Math.ceil(result.data.totalRows / actions.payload.count)
                     });
                 })
             )

@@ -23,7 +23,11 @@ export namespace StockroomModel {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IStockroom[]
+        data!: {
+            page: string;
+            rows: IStockroom[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdStockroom implements HttpBaseResponse {

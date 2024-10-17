@@ -32,7 +32,11 @@ export namespace PabrikModel {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IPabrik[]
+        data!: {
+            page: string;
+            rows: IPabrik[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdPabrik implements HttpBaseResponse {

@@ -15,7 +15,7 @@ export class SetupGolonganService {
     ) { }
 
     getAll(params: GolonganModel.IQueryString): Observable<GolonganModel.GetAllGolongan> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/golongan/getAllPaginate`, params);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/golongan`, params);
     }
 
     create(payload: GolonganModel.CreateGolongan): Observable<HttpBaseResponse> {

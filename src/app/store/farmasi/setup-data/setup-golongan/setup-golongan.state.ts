@@ -8,6 +8,9 @@ import { GolonganModel } from "src/app/model/pages/farmasi/setup-data/setup-golo
 interface SetupGolonganStateModel {
     entities: GolonganModel.IGolongan[];
     success?: boolean;
+    page?: string,
+    totalRows?: number,
+    totalPage?: number;
 }
 
 @State<SetupGolonganStateModel>({
@@ -30,15 +33,18 @@ export class SetupGolonganState {
     }
 
     @Action(SetupGolonganActions.GetAllGolongan)
-    getAllGolongan(ctx: StateContext<SetupGolonganStateModel>) {
+    getAllGolongan(ctx: StateContext<SetupGolonganStateModel>, actions: any) {
         return this._setupGolonganService
-            .getAll({ count: 100, page: 1 })
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        page: result.data.page,
+                        totalRows: result.data.totalRows,
+                        totalPage: Math.ceil(result.data.totalRows / actions.payload.count)
                     });
                 })
             )

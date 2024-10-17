@@ -8,6 +8,9 @@ import { PabrikModel } from "src/app/model/pages/farmasi/setup-data/setup-pabrik
 interface SetupPabrikStateModel {
     entities: PabrikModel.IPabrik[];
     success?: boolean;
+    page?: string,
+    totalRows?: number,
+    totalPage?: number;
 }
 
 @State<SetupPabrikStateModel>({
@@ -38,7 +41,10 @@ export class SetupPabrikState {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        page: result.data.page,
+                        totalRows: result.data.totalRows,
+                        totalPage: Math.ceil(result.data.totalRows / actions.payload.count)
                     });
                 })
             )

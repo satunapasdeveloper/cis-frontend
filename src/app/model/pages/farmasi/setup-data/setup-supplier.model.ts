@@ -33,7 +33,11 @@ export namespace SupplierModel {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: ISupplier[]
+        data!: {
+            page: string;
+            rows: ISupplier[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdSupplier implements HttpBaseResponse {

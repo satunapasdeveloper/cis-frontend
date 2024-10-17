@@ -8,6 +8,9 @@ import { StockroomModel } from "src/app/model/pages/farmasi/setup-data/setup-sto
 interface SetupStockroomStateModel {
     entities: StockroomModel.IStockroom[];
     success?: boolean;
+    page?: string,
+    totalRows?: number,
+    totalPage?: number;
 }
 
 @State<SetupStockroomStateModel>({
@@ -38,7 +41,10 @@ export class SetupStockroomState {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        page: result.data.page,
+                        totalRows: result.data.totalRows,
+                        totalPage: Math.ceil(result.data.totalRows / actions.payload.count)
                     });
                 })
             )

@@ -23,7 +23,11 @@ export namespace GolonganModel {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IGolongan[]
+        data!: {
+            page: string;
+            rows: IGolongan[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdGolongan implements HttpBaseResponse {
