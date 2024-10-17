@@ -13,7 +13,6 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { SetupGolonganService } from 'src/app/services/farmasi/setup-data/setup-golongan.service';
-import { LokasiService } from 'src/app/services/pelayanan-klinik/setup-data/lokasi.service';
 import { SetupGolonganState, SetupGolonganActions } from 'src/app/store/farmasi/setup-data/setup-golongan';
 
 @Component({

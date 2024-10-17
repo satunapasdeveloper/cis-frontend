@@ -28,7 +28,7 @@ export class SetupPabrikState {
     ) { }
 
     @Selector()
-    static poliEntities(state: SetupPabrikStateModel) {
+    static pabrikEntities(state: SetupPabrikStateModel) {
         return state;
     }
 
