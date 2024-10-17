@@ -27,6 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     isLoading = false;
 
+    IsFarmasiStateHitted = false;
+
     constructor(
         private _store: Store,
         private _router: Router,
@@ -38,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 if (event instanceof NavigationEnd) {
 
                     // ** Load farmasi state
-                    if (event.url.includes('farmasi')) {
+                    if (event.url.includes('farmasi') && !this.IsFarmasiStateHitted) {
                         this.initAllFarmasiState();
                     }
                 }
@@ -99,6 +101,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private initAllFarmasiState() {
+        this.IsFarmasiStateHitted = true;
+
         // ** Get All Item
         this._store
             .dispatch(new SetupItemActions.GetAllItem())

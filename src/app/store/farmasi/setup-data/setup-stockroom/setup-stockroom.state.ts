@@ -29,7 +29,7 @@ export class SetupStockroomState {
 
     @Selector()
     static poliEntities(state: SetupStockroomStateModel) {
-        return state.entities;
+        return state;
     }
 
     @Action(SetupStockroomActions.GetAllStockroom)

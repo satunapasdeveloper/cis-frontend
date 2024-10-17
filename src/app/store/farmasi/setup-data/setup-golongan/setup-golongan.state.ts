@@ -29,7 +29,7 @@ export class SetupGolonganState {
 
     @Selector()
     static golonganEntities(state: SetupGolonganStateModel) {
-        return state.entities;
+        return state;
     }
 
     @Action(SetupGolonganActions.GetAllGolongan)

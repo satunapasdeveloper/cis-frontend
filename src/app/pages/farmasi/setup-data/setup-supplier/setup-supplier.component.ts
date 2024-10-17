@@ -59,7 +59,7 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', "Ubah Status", 'Detail'],
+        toolbar: ['Delete', 'Detail'],
         showPaging: true,
         showSearch: true,
         showSort: true,

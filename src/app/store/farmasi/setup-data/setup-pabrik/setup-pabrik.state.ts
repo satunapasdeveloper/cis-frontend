@@ -29,7 +29,7 @@ export class SetupPabrikState {
 
     @Selector()
     static poliEntities(state: SetupPabrikStateModel) {
-        return state.entities;
+        return state;
     }
 
     @Action(SetupPabrikActions.GetAllPabrik)
