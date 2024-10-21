@@ -1,1 +1,18 @@
-<p>input-pemesanan-po works!</p>
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Form -->
+    <div class="flex flex-col w-full p-3 bg-white rounded-lg shadow-sm mb-3">
+        <div class="grid w-full">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (pageChanged)="onPageChanged($event)">
+        </app-grid>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>
