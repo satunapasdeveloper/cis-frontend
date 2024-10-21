@@ -1,10 +1,11 @@
 import { HttpBaseResponse } from "src/app/model/http/http-request.model"
 
-export namespace PenerimaanBarangModel {
-    export interface IPenerimaanBarang {
-        id_penerimaan: string
-        no_penerimaan: string
-        tgl_penerimaan: string
+export namespace PenerimaanKonsinyasiModel {
+    export interface IPenerimaanKonsinyasi {
+        id_penerimaan_konsinyasi: string
+        no_pemesanan: string
+        tgl_pemesanan: string
+        tgl_expired: string
         id_stockroom: string
         kode_stockroom: string
         nama_stockroom: string
@@ -12,15 +13,24 @@ export namespace PenerimaanBarangModel {
         kode_supplier: string
         nama_supplier: string
         keterangan: string
-        jumlah_item: string
+        jumlah_item: number
+        total_harga: number
+        diskon_persen: number
+        diskon_nominal: number
+        subtotal_1: number
+        ppn_persen: number
+        ppn_nominal: number
+        subtotal_2: number
+        pembulatan: number
+        grand_total: number
         created_at: string
         updated_at: string
         created_by: string
         updated_by: string
-        detail: IPenerimaanBarangDetail[]
+        detail: IPenerimaanKonsinyasiDetail[]
     }
 
-    export interface IPenerimaanBarangDetail {
+    export interface IPenerimaanKonsinyasiDetail {
         nomor_urut: string
         barcode: string
         id_item: string
@@ -32,13 +42,15 @@ export namespace PenerimaanBarangModel {
         satuan: string
         isi: number
         qty: number
+        harga_netto: number
+        sub_total: number
     }
 
     export interface IQueryString {
         page: number;
         count: number;
-        no_penerimaan?: string;
-        tgl_penerimaan?: string;
+        no_pemesanan?: string;
+        tgl_pemesanan?: string;
     }
 
     export class GetAll implements HttpBaseResponse {
@@ -47,7 +59,7 @@ export namespace PenerimaanBarangModel {
         message!: string
         data!: {
             page: string;
-            rows: IPenerimaanBarang[];
+            rows: IPenerimaanKonsinyasi[];
             totalRows: number;
         }
     }
@@ -56,15 +68,24 @@ export namespace PenerimaanBarangModel {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IPenerimaanBarang
+        data!: IPenerimaanKonsinyasi
     }
 
     export interface Create {
-        tgl_penerimaan: string
+        tgl_pemesanan: string
         id_stockroom: string
         id_supplier: string
         keterangan: string
         jumlah_item: number
+        total_harga: number
+        diskon_persen: number
+        diskon_nominal: number
+        subtotal_1: number
+        ppn_persen: number
+        ppn_nominal: number
+        subtotal_2: number
+        pembulatan: number
+        grand_total: number
     }
 
     export interface CreateDetail {
@@ -76,10 +97,12 @@ export namespace PenerimaanBarangModel {
         satuan: string
         isi: number
         qty: number
+        harga_netto: number
+        sub_total: number
     }
 
     export interface Cancel {
-        id_purchasing_order: string;
+        id_penerimaan_konsinyasi: string;
         keterangan: string;
     }
 }

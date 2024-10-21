@@ -1,46 +1,46 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
-import { PurchasingOrderActions } from "./purchasing-order.action";
-import { PurchasingOrderModel } from "src/app/model/pages/farmasi/purchasing/pemesanan-po.model";
-import { PurchasingOrderService } from "src/app/services/farmasi/purchasing-order/purchasing-order.service";
+import { PenerimaanKonsinyasiActions } from "./penerimaan-konsinyasi.action";
+import { PenerimaanKonsinyasiModel } from "src/app/model/pages/farmasi/purchasing/penerimaan-konsinyasi.model";
+import { PenerimaanKonsinyasiService } from "src/app/services/farmasi/purchasing/penerimaan-konsinyasi.service";
 
-interface PurchasingOrderStateModel {
-    entities: PurchasingOrderModel.IPurchasingOrder[];
-    single?: PurchasingOrderModel.IPurchasingOrder;
+interface PenerimaanKonsinyasiStateModel {
+    entities: PenerimaanKonsinyasiModel.IPenerimaanKonsinyasi[];
+    single?: PenerimaanKonsinyasiModel.IPenerimaanKonsinyasi;
     success?: boolean;
     page?: string,
     totalRows?: number,
     totalPage?: number;
 }
 
-@State<PurchasingOrderStateModel>({
-    name: 'purchasing_order',
+@State<PenerimaanKonsinyasiStateModel>({
+    name: 'penerimaan_konsinyasi',
     defaults: {
         entities: [],
         success: true
     }
 })
 @Injectable()
-export class PurchasingOrderState {
+export class PenerimaanKonsinyasiState {
 
     constructor(
-        private _purchasingOrderService: PurchasingOrderService,
+        private _penerimaanKonsinyasiService: PenerimaanKonsinyasiService,
     ) { }
 
     @Selector()
-    static purchasingOrderEntities(state: PurchasingOrderStateModel) {
+    static penerimaanKonsinyasiEntities(state: PenerimaanKonsinyasiStateModel) {
         return state;
     }
 
     @Selector()
-    static purchasingOrderSingle(state: PurchasingOrderStateModel) {
+    static penerimaanKonsinyasiSingle(state: PenerimaanKonsinyasiStateModel) {
         return state.single;
     }
 
-    @Action(PurchasingOrderActions.GetAllPurchasingOrder)
-    getAllPurchasingOrder(ctx: StateContext<PurchasingOrderStateModel>, actions: any) {
-        return this._purchasingOrderService
+    @Action(PenerimaanKonsinyasiActions.GetAllPenerimaanKonsinyasi)
+    getAllPenerimaanKonsinyasi(ctx: StateContext<PenerimaanKonsinyasiStateModel>, actions: any) {
+        return this._penerimaanKonsinyasiService
             .getAll(actions.payload)
             .pipe(
                 tap((result) => {
@@ -56,9 +56,9 @@ export class PurchasingOrderState {
             )
     }
 
-    @Action(PurchasingOrderActions.GetAllPurchasingOrder)
-    getByIdPurchasingOrder(ctx: StateContext<PurchasingOrderStateModel>, actions: any) {
-        return this._purchasingOrderService
+    @Action(PenerimaanKonsinyasiActions.GetAllPenerimaanKonsinyasi)
+    getByIdPenerimaanKonsinyasi(ctx: StateContext<PenerimaanKonsinyasiStateModel>, actions: any) {
+        return this._penerimaanKonsinyasiService
             .getById(actions.payload)
             .pipe(
                 tap((result) => {
@@ -71,9 +71,9 @@ export class PurchasingOrderState {
             )
     }
 
-    @Action(PurchasingOrderActions.CreatePurchasingOrder)
-    createPurchasingOrder(ctx: StateContext<PurchasingOrderStateModel>, actions: any) {
-        return this._purchasingOrderService
+    @Action(PenerimaanKonsinyasiActions.CreatePenerimaanKonsinyasi)
+    createPenerimaanKonsinyasi(ctx: StateContext<PenerimaanKonsinyasiStateModel>, actions: any) {
+        return this._penerimaanKonsinyasiService
             .create(actions.payload)
             .pipe(
                 tap((result) => {
@@ -93,7 +93,7 @@ export class PurchasingOrderState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new PurchasingOrderActions.GetAllPurchasingOrder({ count: 10, page: 1 }));
+                        return ctx.dispatch(new PenerimaanKonsinyasiActions.GetAllPenerimaanKonsinyasi({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -101,9 +101,9 @@ export class PurchasingOrderState {
             )
     }
 
-    @Action(PurchasingOrderActions.ValidasiPurchasingOrder)
-    validasiPurchasingOrder(ctx: StateContext<PurchasingOrderStateModel>, actions: any) {
-        return this._purchasingOrderService
+    @Action(PenerimaanKonsinyasiActions.ValidasiPenerimaanKonsinyasi)
+    validasiPenerimaanKonsinyasi(ctx: StateContext<PenerimaanKonsinyasiStateModel>, actions: any) {
+        return this._penerimaanKonsinyasiService
             .validasi(actions.payload)
             .pipe(
                 tap((result) => {
@@ -123,7 +123,7 @@ export class PurchasingOrderState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new PurchasingOrderActions.GetAllPurchasingOrder({ count: 10, page: 1 }));
+                        return ctx.dispatch(new PenerimaanKonsinyasiActions.GetAllPenerimaanKonsinyasi({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }
@@ -131,9 +131,9 @@ export class PurchasingOrderState {
             )
     }
 
-    @Action(PurchasingOrderActions.CancelPurchasingOrder)
-    cancelPurchasingOrder(ctx: StateContext<PurchasingOrderStateModel>, actions: any) {
-        return this._purchasingOrderService
+    @Action(PenerimaanKonsinyasiActions.CancelPenerimaanKonsinyasi)
+    cancelPenerimaanKonsinyasi(ctx: StateContext<PenerimaanKonsinyasiStateModel>, actions: any) {
+        return this._penerimaanKonsinyasiService
             .cancel(actions.payload)
             .pipe(
                 tap((result) => {
@@ -153,7 +153,7 @@ export class PurchasingOrderState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new PurchasingOrderActions.GetAllPurchasingOrder({ count: 10, page: 1 }));
+                        return ctx.dispatch(new PenerimaanKonsinyasiActions.GetAllPenerimaanKonsinyasi({ count: 10, page: 1 }));
                     } else {
                         return of([]);
                     }

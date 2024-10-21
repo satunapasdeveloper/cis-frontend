@@ -12,11 +12,9 @@ export namespace PurchasingOrderModel {
         id_supplier: string
         kode_supplier: string
         nama_supplier: string
-        kode_golongan: string
-        nama_golongan: string
         keterangan: string
-        jml_item: string
-        total: string
+        jumlah_item: string
+        total_harga: string
         is_active: boolean
         created_at: string
         updated_at: string
@@ -71,6 +69,8 @@ export namespace PurchasingOrderModel {
         id_stockroom: string
         id_supplier: string
         keterangan: string
+        jumlah_item: number
+        total_harga: number
     }
 
     export interface CreateDetail {
