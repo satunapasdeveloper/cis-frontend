@@ -163,11 +163,47 @@ export class AuthenticationService {
         },
         {
             id: '42',
-            navbar_id: '2',
-            caption: 'Rekam Medis',
-            icon: 'pi pi-file-edit',
+            navbar_id: '4',
+            caption: 'Purchasing',
+            icon: 'pi pi-box',
             toggle_child: false,
-            url: '/pelayanan-klinik/rekam-medis/data'
+            sidebarChild: [
+                {
+                    id: '411',
+                    caption: 'Pemesanan PO',
+                    icon: 'pi pi-file',
+                    toggle_child: false,
+                    url: '/farmasi/purchasing/pemesanan-po/history'
+                },
+                {
+                    id: '412',
+                    caption: 'Penerimaan Barang',
+                    icon: 'pi pi-expand',
+                    toggle_child: false,
+                    url: '/farmasi/purchasing/penerimaan-barang/history'
+                },
+                {
+                    id: '413',
+                    caption: 'Retur Pembelian',
+                    icon: 'pi pi-arrow-up-left',
+                    toggle_child: false,
+                    url: '/farmasi/purchasing/retur-pembelian/history'
+                },
+                {
+                    id: '414',
+                    caption: 'Penerimaan Konsinyasi',
+                    icon: 'pi pi-link',
+                    toggle_child: false,
+                    url: '/farmasi/purchasing/penerimaan-konsinyasi/history'
+                },
+                {
+                    id: '415',
+                    caption: 'Retur Konsinyasi',
+                    icon: 'pi pi-arrow-up-left',
+                    toggle_child: false,
+                    url: '/farmasi/purchasing/retur-konsinyasi/history'
+                },
+            ]
         },
         // !! Layanan Dokumen Sidebar Menu
         {
