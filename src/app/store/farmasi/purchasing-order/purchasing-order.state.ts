@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
 import { PurchasingOrderActions } from "./purchasing-order.action";
-import { PurchasingOrderModel } from "src/app/model/pages/farmasi/purchasing-order/purchasing-order.model";
+import { PurchasingOrderModel } from "src/app/model/pages/farmasi/purchasing/pemesanan-po.model";
 import { PurchasingOrderService } from "src/app/services/farmasi/purchasing-order/purchasing-order.service";
 
 interface PurchasingOrderStateModel {

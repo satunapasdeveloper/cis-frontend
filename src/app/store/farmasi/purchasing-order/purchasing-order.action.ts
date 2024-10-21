@@ -1,4 +1,4 @@
-import { PurchasingOrderModel } from "src/app/model/pages/farmasi/purchasing-order/purchasing-order.model";
+import { PurchasingOrderModel } from "src/app/model/pages/farmasi/purchasing/pemesanan-po.model";
 
 export namespace PurchasingOrderActions {
     export class GetAllPurchasingOrder {
