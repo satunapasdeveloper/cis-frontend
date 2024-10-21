@@ -13,6 +13,9 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
 import { ItemService } from 'src/app/services/pelayanan-klinik/setup-data/item.service';
 import { SetupItemActions, SetupItemState } from 'src/app/store/setup-data/item';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { SetupPabrikState } from 'src/app/store/farmasi/setup-data/setup-pabrik';
+import { SetupGolonganState } from 'src/app/store/farmasi/setup-data/setup-golongan';
+import { SetupSupplierState } from 'src/app/store/farmasi/setup-data/setup-supplier';
 
 @Component({
     selector: 'app-setup-item',
@@ -79,8 +82,24 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             id: 'form_setup_item',
             fields: [
                 {
+                    id: 'jenis',
+                    label: 'Jenis Item',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [
+                            { name: 'Konsinyasi', value: 'KONSINYASI' },
+                            { name: 'Non Konsinyasi', value: 'NON KONSINYASI' },
+                        ],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
                     id: 'kategori',
-                    label: 'Kategori',
+                    label: 'Kategori Item',
                     required: true,
                     type: 'select',
                     dropdownProps: {
@@ -116,6 +135,14 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     }
                 },
                 {
+                    id: 'kode_item',
+                    label: 'Kode Item',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false
+                },
+                {
                     id: 'kode_kfa',
                     label: 'Kode Item KFA',
                     required: false,
@@ -139,6 +166,73 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     value: 0,
                 },
                 {
+                    id: 'kandungan',
+                    label: 'Kandungan',
+                    required: false,
+                    type: 'number',
+                    value: 0,
+                },
+                {
+                    id: 'indikasi',
+                    label: 'Indikasi',
+                    required: false,
+                    type: 'number',
+                    value: 0,
+                },
+                {
+                    id: 'id_manufacture',
+                    label: 'Pabrik',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'nama_manufacture',
+                        optionValue: 'id_manufacture',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
+                    id: 'id_golongan',
+                    label: 'Golongan',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'nama_golongan',
+                        optionValue: 'id_golongan',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
+                    id: 'id_supplier',
+                    label: 'Supplier',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'nama_supplier',
+                        optionValue: 'id_supplier',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
+                    id: 'hpp_average',
+                    label: 'HPP Average',
+                    required: false,
+                    type: 'number',
+                    value: 0,
+                },
+                {
+                    id: 'harga_order',
+                    label: 'Harga Order',
+                    required: false,
+                    type: 'number',
+                    value: 0,
+                },
+                {
                     id: 'uuid',
                     label: 'UUID',
                     hidden: true,
@@ -148,7 +242,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-5 grid-cols-1',
+            class: 'grid-rows-7 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -181,8 +275,37 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get data from setup item =>", result);
                     this.GridProps.dataSource = result;
+                }
+            });
+
+        this._store
+            .select(SetupPabrikState.pabrikEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_manufacture');
+                    this.FormProps.fields[index].dropdownProps.options = result.entities;
+                }
+            });
+
+        this._store
+            .select(SetupGolonganState.golonganEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_golongan');
+                    this.FormProps.fields[index].dropdownProps.options = result.entities;
+                }
+            });
+
+        this._store
+            .select(SetupSupplierState.supplierEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_supplier');
+                    this.FormProps.fields[index].dropdownProps.options = result.entities;
                 }
             });
     }
