@@ -40,12 +40,13 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 - 0.0.2
 
-````bash
+```bash
     - **Release date -> 17 Okt 2024**
     - Add farmasi master data branch
     - Add farmasi master data states, services and models
     - Add grid pagination feature (server side pagination)
     - Add Setup Supplier, Setup Pabrik, Setup Golongan & Setup Stockroom
+```
 
 - 0.0.3
 
@@ -53,4 +54,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     - **Release date -> 21 Okt 2024**
     - Adjustment Setup Item Farmasi
     - Fix angular.json : allowedCommonJsDependencies
-````
+```
