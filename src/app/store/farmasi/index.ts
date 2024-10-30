@@ -1,11 +1,7 @@
-import { SetupGolonganState } from "./setup-data/setup-golongan";
-import { SetupPabrikState } from "./setup-data/setup-pabrik";
-import { SetupStockroomState } from "./setup-data/setup-stockroom";
-import { SetupSupplierState } from "./setup-data/setup-supplier";
+import { FARMASI_PURCHASING_STATE } from "./purchasing-order";
+import { FARMASI_SETUP_DATA_STATE } from "./setup-data";
 
 export const FARMASI_STATE = [
-    SetupGolonganState,
-    SetupPabrikState,
-    SetupStockroomState,
-    SetupSupplierState,
+    ...FARMASI_SETUP_DATA_STATE,
+    ...FARMASI_PURCHASING_STATE,
 ]

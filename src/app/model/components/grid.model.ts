@@ -15,6 +15,7 @@ export namespace GridModel {
         renderAsCheckbox?: boolean;
         renderAsPills?: boolean;
         pillClass?: string;
+        width?: string;
     }
 
     export interface IGrid {

@@ -91,7 +91,8 @@
 
                 <!-- Content -->
                 <div class="w-full p-2 overflow-y-auto bg-transparent "
-                    [style.height]="IsBeranda ? 'calc(100vh - 6rem)' : 'calc(100vh - 10rem)'">
+                    [style.height]="IsBeranda ? 'calc(100vh - 6rem)' : 'calc(100vh - 10rem)'"
+                    [style.max-width]="'calc(100vw - 8rem)'">
                     <ng-content></ng-content>
                 </div>
             </div>

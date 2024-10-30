@@ -1,0 +1,7 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps">
+        </app-grid>
+    </div>
+</app-dashboard>
