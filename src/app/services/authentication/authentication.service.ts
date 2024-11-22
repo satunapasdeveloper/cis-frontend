@@ -68,6 +68,13 @@ export class AuthenticationService {
                     toggle_child: false,
                     url: '/pendaftaran/setup-data/setup-unit'
                 },
+                {
+                    id: '113',
+                    caption: 'Setup Kategori Kamar',
+                    icon: 'pi pi-filter-slash',
+                    toggle_child: false,
+                    url: '/pendaftaran/setup-data/setup-kategori-kamar'
+                },
             ]
         },
         {

@@ -31,11 +31,11 @@ export const pendaftaranRoutes: Routes = [
             {
                 path: 'setup-kategori-kamar',
                 canActivate: [AuthGuard],
-                loadComponent: async () => (await import('./setup-data/setup-unit/setup-unit.component')).SetupUnitComponent,
+                loadComponent: async () => (await import('./setup-data/setup-kategori-kamar/setup-kategori-kamar.component')).SetupKategoriKamarComponent,
                 data: {
-                    title: 'Setup Unit',
+                    title: 'Setup Kategori Kamar',
                     breadcrumbs: [
-                        "Beranda", "Pendafaran", "Setup Data", "Setup Unit"
+                        "Beranda", "Pendafaran", "Setup Data", "Setup Kategori Kamar"
                     ]
                 }
             },
