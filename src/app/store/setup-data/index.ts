@@ -5,6 +5,7 @@ import { SetupKamarState } from "./kamar";
 import { SetupKategoriKamarState } from "./kategori-kamar";
 import { SetupKelasState } from "./kelas";
 import { ManajemenUserState } from "./manajemen-user";
+import { SetupPenjaminState } from "./penjamin";
 import { RekananPenunjangState } from "./rekanan-penunjang";
 import { SetupPoliState } from "./setup-poli";
 import { SetupTindakanMedisState } from "./tindakan-medis";
@@ -22,4 +23,5 @@ export const SETUP_DATA_STATE = [
     SetupKategoriKamarState,
     SetupJabatanState,
     SetupBedState,
+    SetupPenjaminState,
 ]
