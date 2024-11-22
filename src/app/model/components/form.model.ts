@@ -52,7 +52,7 @@ export namespace FormModel {
 
     export interface IFormFields {
         id: string;
-        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password' | 'lookup' | 'text_split' | 'switch' | 'time' | 'number_split';
+        type: 'text' | 'date' | 'daterange' | 'number' | 'select' | 'checkbox' | 'radio' | 'textarea' | 'password' | 'lookup' | 'text_split' | 'switch' | 'time' | 'number_split' | 'fileinput';
         label: string;
         required: boolean;
         value: any;
@@ -69,6 +69,7 @@ export namespace FormModel {
         lookupSetValueField?: any[]; // id_field yg lain yg mau di set value nya
         hideLabel?: boolean;
         placeholder?: string;
+        file_accept?: string;
         onChange?: (args: any) => any;
         onFilter?: (args: any) => any;
     }
