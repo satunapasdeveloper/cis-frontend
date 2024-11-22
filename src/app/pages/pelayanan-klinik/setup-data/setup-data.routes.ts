@@ -66,6 +66,16 @@ export const setupDataRoutes: Route[] = [
         }
     },
     {
+        path: 'setup-role',
+        loadComponent: async () => (await import('./setup-role/setup-role.component')).SetupRoleComponent,
+        data: {
+            title: 'Setup Role',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Role"
+            ]
+        }
+    },
+    {
         path: 'setup-tindakan-medis',
         loadComponent: async () => (await import('./setup-tindakan-medis/setup-tindakan-medis.component')).SetupTindakanMedisComponent,
         data: {

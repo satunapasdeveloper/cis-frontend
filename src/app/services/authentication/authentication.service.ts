@@ -138,6 +138,13 @@ export class AuthenticationService {
                 },
                 {
                     id: '217',
+                    caption: 'Setup Role',
+                    icon: 'pi pi-star-fill',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setup-role'
+                },
+                {
+                    id: '218',
                     caption: 'Setup Nakes',
                     icon: 'pi pi-users',
                     toggle_child: false,
