@@ -12,6 +12,7 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { SetupPoliActions, SetupPoliState } from 'src/app/store/setup-data/setup-poli';
+import { SetupUnitState } from 'src/app/store/setup-data/unit';
 
 @Component({
     selector: 'app-setup-poli',
@@ -46,6 +47,9 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         column: [
             { field: 'kode_poli', headerName: 'Kode Poli', },
             { field: 'poli', headerName: 'Nama Poli', },
+            { field: 'nama_unit', headerName: 'Nama Unit', },
+            { field: 'kode_poli_bpjs', headerName: 'Kode Poli BPJS', },
+            { field: 'id_poli_satusehat', headerName: 'Id Poli SatuSehat', },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
@@ -92,9 +96,36 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                     type: 'text',
                     value: '',
                 },
+                {
+                    id: 'id_unit',
+                    label: 'Unit',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
+                    id: 'kode_poli_bpjs',
+                    label: 'Kode Poli BPJS',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
+                    id: 'id_poli_satusehat',
+                    label: 'Id Poli Satu Sehat',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
             ],
             style: 'not_inline',
-            class: 'grid-rows-2 grid-cols-1',
+            class: 'grid-rows-5 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
@@ -102,6 +133,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getAll();
+        this.getAllUnit();
     }
 
     ngOnDestroy(): void {
@@ -117,6 +149,23 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                 if (result) {
                     console.log("get from setup poli =>", result);
                     this.GridProps.dataSource = result;
+                }
+            });
+    }
+
+    private getAllUnit() {
+        this._store
+            .select(SetupUnitState.unitEntities)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_unit');
+                    this.FormProps.fields[index].dropdownProps = result.map((item: any) => {
+                        return {
+                            name: item.nama_unit,
+                            value: item.id_unit
+                        }
+                    })
                 }
             });
     }

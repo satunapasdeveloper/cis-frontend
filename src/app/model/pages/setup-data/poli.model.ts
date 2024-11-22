@@ -3,10 +3,12 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 export namespace PoliModel {
     export interface IPoli {
         id_poli: string
-        uuid: any
         kode_poli: string
-        satusehat_id_poli: string
         poli: string
+        id_unit: string;
+        nama_unit: string;
+        kode_poli_bpjs: string
+        id_poli_satusehat: string
     }
 
     export class GetAllPoli implements HttpBaseResponse {
@@ -25,14 +27,18 @@ export namespace PoliModel {
 
     export interface CreatePoli {
         kode_poli: string
-        satusehat_id_poli: string
         poli: string
+        id_unit: string;
+        kode_poli_bpjs: string
+        id_poli_satusehat: string
     }
 
     export interface UpdatePoli {
-        id_poli: number
+        id_poli: string
         kode_poli: string
-        satusehat_id_poli: string
         poli: string
+        id_unit: string;
+        kode_poli_bpjs: string
+        id_poli_satusehat: string
     }
 }
