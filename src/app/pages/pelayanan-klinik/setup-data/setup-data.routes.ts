@@ -46,6 +46,16 @@ export const setupDataRoutes: Route[] = [
         }
     },
     {
+        path: 'setup-penjamin',
+        loadComponent: async () => (await import('./setup-penjamin/setup-penjamin.component')).SetupPenjaminComponent,
+        data: {
+            title: 'Setup Penjamin',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Penjamin"
+            ]
+        }
+    },
+    {
         path: 'setup-jabatan',
         loadComponent: async () => (await import('./setup-jabatan/setup-jabatan.component')).SetupJabatanComponent,
         data: {
