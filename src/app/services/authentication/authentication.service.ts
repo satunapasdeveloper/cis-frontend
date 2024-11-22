@@ -61,6 +61,13 @@ export class AuthenticationService {
                     toggle_child: false,
                     url: '/pendaftaran/setup-data/setup-kelas'
                 },
+                {
+                    id: '112',
+                    caption: 'Setup Unit',
+                    icon: 'pi pi-building-columns',
+                    toggle_child: false,
+                    url: '/pendaftaran/setup-data/setup-unit'
+                },
             ]
         },
         {
