@@ -109,40 +109,68 @@ export class AuthenticationService {
                     url: '/pelayanan-klinik/setup-data/setup-kamar'
                 },
                 {
-                    id: '11',
+                    id: '213',
+                    caption: 'Setup Bed',
+                    icon: 'pi pi-tag',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setup-bed'
+                },
+                {
+                    id: '214',
                     caption: 'Setup Poli',
                     icon: 'pi pi-shop',
                     toggle_child: false,
                     url: '/pelayanan-klinik/setup-data/setup-poli'
                 },
                 {
-                    id: '12',
-                    caption: 'Setup Item',
-                    icon: 'pi pi-clone',
+                    id: '215',
+                    caption: 'Setup Penjamin',
+                    icon: 'pi pi-lock',
                     toggle_child: false,
-                    url: '/pelayanan-klinik/setup-data/setup-item'
+                    url: '/pelayanan-klinik/setup-data/setup-penjamin'
                 },
                 {
-                    id: '13',
-                    caption: 'Setup Tindakan Medis',
-                    icon: 'pi pi-arrows-alt',
+                    id: '216',
+                    caption: 'Setup Jabatan',
+                    icon: 'pi pi-pencil',
                     toggle_child: false,
-                    url: '/pelayanan-klinik/setup-data/setup-tindakan-medis'
+                    url: '/pelayanan-klinik/setup-data/setup-jabatan'
                 },
                 {
-                    id: '14',
-                    caption: 'Setup Rekanan Penunjang',
-                    icon: 'pi pi-address-book',
-                    toggle_child: false,
-                    url: '/pelayanan-klinik/setup-data/setup-rekanan-penunjang'
-                },
-                {
-                    id: '15',
-                    caption: 'Manajemen User',
+                    id: '217',
+                    caption: 'Setup Nakes',
                     icon: 'pi pi-users',
                     toggle_child: false,
-                    url: '/pelayanan-klinik/setup-data/manajemen-user'
+                    url: '/pelayanan-klinik/setup-data/setup-nakes'
                 },
+                // {
+                //     id: '12',
+                //     caption: 'Setup Item',
+                //     icon: 'pi pi-clone',
+                //     toggle_child: false,
+                //     url: '/pelayanan-klinik/setup-data/setup-item'
+                // },
+                // {
+                //     id: '13',
+                //     caption: 'Setup Tindakan Medis',
+                //     icon: 'pi pi-arrows-alt',
+                //     toggle_child: false,
+                //     url: '/pelayanan-klinik/setup-data/setup-tindakan-medis'
+                // },
+                // {
+                //     id: '14',
+                //     caption: 'Setup Rekanan Penunjang',
+                //     icon: 'pi pi-address-book',
+                //     toggle_child: false,
+                //     url: '/pelayanan-klinik/setup-data/setup-rekanan-penunjang'
+                // },
+                // {
+                //     id: '15',
+                //     caption: 'Manajemen User',
+                //     icon: 'pi pi-users',
+                //     toggle_child: false,
+                //     url: '/pelayanan-klinik/setup-data/manajemen-user'
+                // },
             ]
         },
         {
