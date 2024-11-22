@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
 import { KategoriKamarModel } from "src/app/model/pages/setup-data/kategori-kamar.model";
-import { SetupKategoriKamarService } from "src/app/services/pendaftaran-klinik/setup-data/setup-kategori-kamar.service";
+import { SetupKategoriKamarService } from "src/app/services/pelayanan-klinik/setup-data/setup-kategori-kamar.service";
 import { SetupKategoriKamarActions } from "./setup-kategori-kamar.action";
 
 interface SetupKategoriKamarStateModel {

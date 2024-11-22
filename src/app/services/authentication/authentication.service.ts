@@ -68,13 +68,6 @@ export class AuthenticationService {
                     toggle_child: false,
                     url: '/pendaftaran/setup-data/setup-unit'
                 },
-                {
-                    id: '113',
-                    caption: 'Setup Kategori Kamar',
-                    icon: 'pi pi-filter-slash',
-                    toggle_child: false,
-                    url: '/pendaftaran/setup-data/setup-kategori-kamar'
-                },
             ]
         },
         {
@@ -101,6 +94,20 @@ export class AuthenticationService {
             icon: 'pi pi-cog',
             toggle_child: false,
             sidebarChild: [
+                {
+                    id: '211',
+                    caption: 'Setup Kategori Kamar',
+                    icon: 'pi pi-filter-slash',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setup-kategori-kamar'
+                },
+                {
+                    id: '212',
+                    caption: 'Setup Kamar',
+                    icon: 'pi pi-sitemap',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setup-kamar'
+                },
                 {
                     id: '11',
                     caption: 'Setup Poli',
