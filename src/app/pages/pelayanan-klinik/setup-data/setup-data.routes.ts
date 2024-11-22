@@ -16,7 +16,7 @@ export const setupDataRoutes: Route[] = [
     {
         path: 'setup-kamar',
         canActivate: [AuthGuard],
-        loadComponent: async () => (await import('./setup-kategori-kamar/setup-kategori-kamar.component')).SetupKategoriKamarComponent,
+        loadComponent: async () => (await import('./setup-kamar/setup-kamar.component')).SetupKamarComponent,
         data: {
             title: 'Setup Kamar',
             breadcrumbs: [

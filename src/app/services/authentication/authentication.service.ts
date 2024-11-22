@@ -99,14 +99,14 @@ export class AuthenticationService {
                     caption: 'Setup Kategori Kamar',
                     icon: 'pi pi-filter-slash',
                     toggle_child: false,
-                    url: '/pelayanan/setup-data/setup-kategori-kamar'
+                    url: '/pelayanan-klinik/setup-data/setup-kategori-kamar'
                 },
                 {
                     id: '212',
                     caption: 'Setup Kamar',
                     icon: 'pi pi-sitemap',
                     toggle_child: false,
-                    url: '/pelayanan/setup-data/setup-kamar'
+                    url: '/pelayanan-klinik/setup-data/setup-kamar'
                 },
                 {
                     id: '11',
