@@ -1,6 +1,29 @@
 import { Route } from "@angular/router";
+import { AuthGuard } from "src/app/middleware/auth.guard";
 
 export const setupDataRoutes: Route[] = [
+    {
+        path: 'setup-kategori-kamar',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./setup-kategori-kamar/setup-kategori-kamar.component')).SetupKategoriKamarComponent,
+        data: {
+            title: 'Setup Kategori Kamar',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Kategori Kamar"
+            ]
+        }
+    },
+    {
+        path: 'setup-kamar',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./setup-kategori-kamar/setup-kategori-kamar.component')).SetupKategoriKamarComponent,
+        data: {
+            title: 'Setup Kamar',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Kamar"
+            ]
+        }
+    },
     {
         path: 'setup-poli',
         loadComponent: async () => (await import('./setup-poli/setup-poli.component')).SetupPoliComponent,
