@@ -28,6 +28,17 @@ export const pendaftaranRoutes: Routes = [
                     ]
                 }
             },
+            {
+                path: 'setup-kategori-kamar',
+                canActivate: [AuthGuard],
+                loadComponent: async () => (await import('./setup-data/setup-unit/setup-unit.component')).SetupUnitComponent,
+                data: {
+                    title: 'Setup Unit',
+                    breadcrumbs: [
+                        "Beranda", "Pendafaran", "Setup Data", "Setup Unit"
+                    ]
+                }
+            },
         ]
     },
     {
