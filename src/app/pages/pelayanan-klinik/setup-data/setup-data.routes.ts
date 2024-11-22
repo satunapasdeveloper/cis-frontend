@@ -25,6 +25,17 @@ export const setupDataRoutes: Route[] = [
         }
     },
     {
+        path: 'setup-bed',
+        canActivate: [AuthGuard],
+        loadComponent: async () => (await import('./setup-bed/setup-bed.component')).SetupBedComponent,
+        data: {
+            title: 'Setup Bed',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Bed"
+            ]
+        }
+    },
+    {
         path: 'setup-poli',
         loadComponent: async () => (await import('./setup-poli/setup-poli.component')).SetupPoliComponent,
         data: {

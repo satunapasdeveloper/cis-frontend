@@ -1,4 +1,8 @@
+import { SetupBedState } from "./bed";
 import { SetupItemState } from "./item";
+import { SetupJabatanState } from "./jabatan";
+import { SetupKamarState } from "./kamar";
+import { SetupKategoriKamarState } from "./kategori-kamar";
 import { SetupKelasState } from "./kelas";
 import { ManajemenUserState } from "./manajemen-user";
 import { RekananPenunjangState } from "./rekanan-penunjang";
@@ -14,4 +18,8 @@ export const SETUP_DATA_STATE = [
     RekananPenunjangState,
     SetupKelasState,
     SetupUnitState,
+    SetupKamarState,
+    SetupKategoriKamarState,
+    SetupJabatanState,
+    SetupBedState,
 ]
