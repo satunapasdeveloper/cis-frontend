@@ -76,6 +76,16 @@ export const setupDataRoutes: Route[] = [
         }
     },
     {
+        path: 'setup-nakes',
+        loadComponent: async () => (await import('./setup-nakes/setup-nakes.component')).SetupNakesComponent,
+        data: {
+            title: 'Setup Nakes',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Nakes"
+            ]
+        }
+    },
+    {
         path: 'setup-tindakan-medis',
         loadComponent: async () => (await import('./setup-tindakan-medis/setup-tindakan-medis.component')).SetupTindakanMedisComponent,
         data: {

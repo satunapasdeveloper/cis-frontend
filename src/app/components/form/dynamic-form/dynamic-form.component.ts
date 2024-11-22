@@ -65,6 +65,8 @@ export class DynamicFormComponent implements OnInit {
 
     FormGroup: FormGroup
 
+    ImagePreviews: { [key: string]: string | ArrayBuffer | null } = {};
+
     constructor(
         private _formBuilder: FormBuilder,
         private _messageService: MessageService,
@@ -218,8 +220,38 @@ export class DynamicFormComponent implements OnInit {
     }
 
     handleChangeSwitch(args: any, fields: FormModel.IFormFields): any {
-        console.log(args);
         return fields?.onChange?.(args);
+    }
+
+    handleChangeFileInput(args: any, fields: FormModel.IFormFields) {
+        const files = args.target.files[0];
+
+        fields?.onChange?.(files)
+
+        const el = document.getElementById(fields.id + '_file_title') as HTMLInputElement;
+        el.value = files.name;
+
+        this.FormGroup.get(fields.id)?.setValue(files);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.ImagePreviews[fields.id] = reader.result; // Store the image preview based on item.id
+        };
+        reader.readAsDataURL(files);
+    }
+
+    // Check if the accepted file type is an image
+    isImageFile(accept: string): boolean {
+        return accept.includes('image');
+    }
+
+    // Check if the accepted file type is a video
+    isVideoFile(accept: string): boolean {
+        return accept.includes('video');
+    }
+
+    removeFile(id: string): void {
+        this.ImagePreviews[id] = null;
     }
 
     onResetForm(): any {

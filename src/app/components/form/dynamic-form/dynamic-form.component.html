@@ -143,6 +143,64 @@
                     {{ item.label }}
                 </p>
             </div>
+
+            <!-- File -->
+            <div *ngIf="item.type == 'fileinput'" class="flex items-center flex-col w-full">
+                <div
+                    class="flex flex-col items-center justify-center w-full p-3 rounded-md border border-dashed border-gray-300">
+                    <!-- If file input el is empty -->
+                    <div *ngIf="!ImagePreviews[item.id]"
+                        class="flex flex-col items-center justify-center w-full gap-0 cursor-pointer h-[10rem]"
+                        (click)="FileInputEl.click()">
+                        <i class="pi pi-plus-circle"></i>
+                        <p class="text-sm text-gray-700 font-semibold mt-1">Click here to browse files</p>
+                        <p class="text-xs text-gray-600">
+                            You can choose
+                            {{ isImageFile(item.file_accept!) ? 'image' :'video' }}
+                            with all type
+                        </p>
+                    </div>
+
+                    <div *ngIf="ImagePreviews[item.id]" class="flex flex-col gap-5 items-center justify-center">
+
+                        <!-- Image Preview -->
+                        <img *ngIf="isImageFile(item.file_accept!)" id="{{ item.id }}_file_preview"
+                            [src]="ImagePreviews[item.id]" alt="{{ item.id }}_file_preview" class="h-[5rem] w-[5rem]">
+
+                        <!-- Video Preview -->
+                        <video *ngIf="isVideoFile(item.file_accept!)" id="{{ item.id }}_video_preview" preload="auto"
+                            controls class="h-[20rem] w-full">
+                            <source [src]="ImagePreviews[item.id]" type="video/mp4">
+                        </video>
+
+                        <!-- <vg-player>
+                            <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls>
+                                <source [src]="ImagePreviews[item.id]" type="video/mp4">
+                            </video>
+                        </vg-player> -->
+
+
+                        <!-- Button -->
+                        <div class="flex w-full gap-3 justify-center">
+                            <span
+                                class="px-2 py-1 text-sm bg-gray-100 text-gray-800 font-semibold rounded-md cursor-pointer"
+                                (click)="FileInputEl.click()">
+                                Change File
+                            </span>
+
+                            <span
+                                class="px-2 py-1 text-sm bg-red-100 text-red-800 font-semibold rounded-md cursor-pointer"
+                                (click)="FileInputEl.value = ''; removeFile(item.id)">
+                                Delete File
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden file input element -->
+                <input #FileInputEl [id]="'fileInputEl_' + item.id" type="file" [accept]="item.file_accept"
+                    class="hidden p-inputtext-sm w-full readonlyState" (change)="handleChangeFileInput($event, item)" />
+            </div>
         </div>
     </div>
 </div>
