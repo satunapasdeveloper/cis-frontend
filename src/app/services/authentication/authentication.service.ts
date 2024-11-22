@@ -183,6 +183,14 @@ export class AuthenticationService {
         {
             id: '22',
             navbar_id: '2',
+            caption: 'Dokter',
+            icon: 'pi pi-users',
+            toggle_child: false,
+            url: '/pelayanan-klinik/dokter'
+        },
+        {
+            id: '23',
+            navbar_id: '2',
             caption: 'Rekam Medis',
             icon: 'pi pi-file-edit',
             toggle_child: false,
