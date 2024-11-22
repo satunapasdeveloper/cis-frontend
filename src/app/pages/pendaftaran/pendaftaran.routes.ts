@@ -3,6 +3,23 @@ import { AuthGuard } from 'src/app/middleware/auth.guard';
 
 export const pendaftaranRoutes: Routes = [
     {
+        path: 'setup-data',
+        canActivate: [AuthGuard],
+        children: [
+            {
+                path: 'setup-kelas',
+                canActivate: [AuthGuard],
+                loadComponent: async () => (await import('./setup-data/setup-kelas/setup-kelas.component')).SetupKelasComponent,
+                data: {
+                    title: 'Setup Kelas',
+                    breadcrumbs: [
+                        "Beranda", "Pendafaran", "Setup Data", "Setup Kelas"
+                    ]
+                }
+            },
+        ]
+    },
+    {
         path: 'pasien',
         canActivate: [AuthGuard],
         loadComponent: async () => (await import('./pasien/pasien.component')).PasienComponent,

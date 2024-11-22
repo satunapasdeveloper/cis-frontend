@@ -50,13 +50,29 @@ export class AuthenticationService {
         {
             id: '11',
             navbar_id: '1',
+            caption: 'Setup Data',
+            icon: 'pi pi-cog',
+            toggle_child: false,
+            sidebarChild: [
+                {
+                    id: '111',
+                    caption: 'Setup Kelas',
+                    icon: 'pi pi-list-check',
+                    toggle_child: false,
+                    url: '/pendaftaran/setup-data/setup-kelas'
+                },
+            ]
+        },
+        {
+            id: '12',
+            navbar_id: '1',
             caption: 'Pasien',
             icon: 'pi pi-users',
             toggle_child: false,
             url: '/pendaftaran/pasien'
         },
         {
-            id: '12',
+            id: '13',
             navbar_id: '1',
             caption: 'Antrian',
             icon: 'pi pi-list-check',
