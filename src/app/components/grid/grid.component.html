@@ -20,7 +20,7 @@
     class="flex items-center justify-between w-full mb-4 pt-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
     <!-- Custom Search -->
     <div class="grid grid-cols-{{ props.customSearchProps!.length + 1 }} w-9/12 gap-3" [formGroup]="CustomSearchForm">
-        <div *ngFor="let item of props.customSearchProps" class="flex w-full">
+        <div *ngFor="let item of props.customSearchProps" class="grid w-full">
             <!-- Inputtext -->
             <input *ngIf="item.type == 'text'" type="text" pInputText class="p-inputtext-sm w-full"
                 formControlName="{{ item.id }}" placeholder="{{ item.placeholder ? item.placeholder : '' }}" />
@@ -39,7 +39,7 @@
             <p-dropdown *ngIf="item.type == 'dropdown'" [options]="item.dropdownProps!.options"
                 [optionLabel]="item.dropdownProps!.optionName" [optionValue]="item.dropdownProps!.optionValue"
                 [autoDisplayFirst]="false" [showClear]="true" [filter]="true" styleClass="p-inputtext-sm w-full"
-                formControlName="{{ item.id }}" appendTo="body">
+                formControlName="{{ item.id }}" appendTo="body" [placeholder]="item.placeholder">
             </p-dropdown>
         </div>
     </div>

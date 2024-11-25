@@ -79,6 +79,11 @@ export class AppComponent implements OnInit, OnDestroy {
         this._store
             .dispatch(new SetupUnitActions.GetAllUnit({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Poli
+        this._store
+            .dispatch(new SetupPoliActions.GetAllPoli({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
     }
 
     private initAllFarmasiState() {
