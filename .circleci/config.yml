@@ -47,8 +47,8 @@ jobs:
           name: Push Docker Image
           command: |
             docker push mitraptek/his-satunapas-frontend:$CIRCLE_SHA1
-            docker tag mitraptek/his-satunapas-frontend:$CIRCLE_SHA1 mitraptek/his-satunapas-frontend:developmnet-latest
-            docker push mitraptek/his-satunapas-frontend:developmnet-latest
+            docker tag mitraptek/his-satunapas-frontend:$CIRCLE_SHA1 mitraptek/his-satunapas-frontend:development-latest
+            docker push mitraptek/his-satunapas-frontend:development-latest
       - add_ssh_keys:
           fingerprints:
             - "SHA256:q8SKv5JwNXWKo2bPR1RgdhyflZtN59wWpABbB3VB1zo"
