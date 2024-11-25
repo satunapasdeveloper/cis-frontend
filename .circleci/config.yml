@@ -51,7 +51,11 @@ jobs:
             docker push mitraptek/his-satunapas-frontend:developmnet-latest
       - add_ssh_keys:
           fingerprints:
-            - "7a:54:b4:aa:a2:32:67:43:d9:06:5e:90:eb:0c:19:c2"
+            - "SHA256:q8SKv5JwNXWKo2bPR1RgdhyflZtN59wWpABbB3VB1zo"
+      - run:
+          name: Deploy app to server
+          command: |
+            ssh -o StrictHostKeyChecking=no satunafas-admin@167.99.72.153 "cd deployer/ && ./deploy-satunapas-backend.sh"
 workflows:
   basic-workflow:
     jobs:
