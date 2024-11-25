@@ -55,7 +55,7 @@ jobs:
       - run:
           name: Deploy app to server
           command: |
-            ssh -o StrictHostKeyChecking=no satunafas-admin@167.99.72.153 "cd deployer/ && ./deploy-satunapas-backend.sh"
+            ssh -o StrictHostKeyChecking=no satunafas-admin@167.99.72.153 "cd deployer/ && ./deploy-his-satunapas-frontend.sh"
 workflows:
   basic-workflow:
     jobs:
