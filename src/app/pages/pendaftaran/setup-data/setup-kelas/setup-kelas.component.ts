@@ -44,7 +44,7 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupKelas',
         column: [
-            { field: 'kelas', headerName: 'Nama Kelas', },
+            { field: 'nama_kelas', headerName: 'Nama Kelas', class: 'text-blue-500 font-semibold' },
             { field: 'kode_kelas', headerName: 'Kode Kelas', },
             { field: 'kode_kelas_bpjs', headerName: 'Kode Kelas BPJS', },
             { field: 'id_kelas_satu_sehat', headerName: 'Kelas SatuSehat', },
@@ -81,7 +81,7 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'kelas',
+                    id: 'nama_kelas',
                     label: 'Nama Kelas',
                     required: true,
                     type: 'text',
@@ -131,7 +131,7 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup poli =>", result);
+                    console.log("get from setup kelas =>", result);
                     this.GridProps.dataSource = result;
                 }
             });
