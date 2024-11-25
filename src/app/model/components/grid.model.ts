@@ -1,4 +1,5 @@
 import { ColDef } from "ag-grid-community";
+import { FormModel } from "./form.model";
 
 export namespace GridModel {
     export interface IGridToolbar {
@@ -18,6 +19,13 @@ export namespace GridModel {
         width?: string;
     }
 
+    export interface IGridCustomSearch {
+        id: string;
+        placeholder: string;
+        type: 'text' | 'dropdown' | 'date' | 'number';
+        dropdownProps?: FormModel.DropdownProps;
+    }
+
     export interface IGrid {
         id: string;
         column: IGridColumn[];
@@ -25,6 +33,8 @@ export namespace GridModel {
         height: string;
         showPaging: boolean;
         showSearch?: boolean;
+        isCustomSearch?: boolean;
+        customSearchProps?: IGridCustomSearch[];
         searchKeyword?: string;
         searchPlaceholder?: string;
         showSort?: boolean;

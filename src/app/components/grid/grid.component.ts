@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { ColDef, GridApi, ColumnApi } from 'ag-grid-community';
@@ -8,13 +8,23 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import * as FileSaver from 'file-saver';
 import { PaginatorModule } from 'primeng/paginator';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
 
 @Component({
     selector: 'app-grid',
     standalone: true,
     imports: [
         CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
         InputTextModule,
+        InputNumberModule,
+        DropdownModule,
+        CalendarModule,
         ButtonModule,
         TableModule,
         OverlayPanelModule,
@@ -23,7 +33,9 @@ import { PaginatorModule } from 'primeng/paginator';
     templateUrl: './grid.component.html',
     styleUrls: ['./grid.component.scss']
 })
-export class GridComponent implements OnInit {
+export class GridComponent implements OnInit, OnDestroy {
+
+    Destroy$ = new Subject();
 
     @Input('props') props!: GridModel.IGrid;
 
@@ -34,6 +46,8 @@ export class GridComponent implements OnInit {
     @Output('aksiClicked') aksiClicked = new EventEmitter<any>();
 
     @Output('pageChanged') pageChanged = new EventEmitter<any>();
+
+    @Output('customSearchClicked') customSearchClicked = new EventEmitter<any>();
 
     defaultColDef: ColDef = {
         sortable: true,
@@ -55,12 +69,22 @@ export class GridComponent implements OnInit {
 
     rows: number = 10;
 
+    CustomSearchForm: FormGroup;
+
     constructor(
+        private _formBuilder: FormBuilder,
         // private _documentService: DocumentService,
-    ) { };
+    ) {
+        this.CustomSearchForm = this._formBuilder.group({});
+    };
 
     ngOnInit(): void {
         this.onGridReady();
+    }
+
+    ngOnDestroy(): void {
+        this.Destroy$.next(0);
+        this.Destroy$.complete();
     }
 
     onGridReady(): void {
@@ -116,6 +140,12 @@ export class GridComponent implements OnInit {
                 });
             });
         };
+
+        if (this.props.customSearchProps?.length) {
+            this.props.customSearchProps.forEach((item) => {
+                this.CustomSearchForm.addControl(item.id, new FormControl(null, []));
+            })
+        }
     }
 
     onCellClicked(args: any): void {
@@ -156,6 +186,16 @@ export class GridComponent implements OnInit {
 
     handleFormatStringToNumber(data: string): number {
         return parseFloat(data);
+    }
+
+    onClickCustomSearch() {
+        const value = this.CustomSearchForm.value;
+
+        const filteredObj = Object.fromEntries(
+            Object.entries(value).filter(([key, value]) => value !== null)
+        );
+
+        this.customSearchClicked.emit(filteredObj);
     }
 
     onExportExcel(): void {

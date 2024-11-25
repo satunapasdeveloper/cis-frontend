@@ -1,4 +1,5 @@
-<div *ngIf="props.showSearch"
+<!-- Show Search and Not Custom Search -->
+<div *ngIf="props.showSearch && !props.isCustomSearch"
     class="flex items-center justify-between w-full mb-4 pt-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
     <div class="flex w-5/12">
         <input #KeywordSearch type="text" pInputText class="w-full p-inputtext-sm"
@@ -8,6 +9,44 @@
     <div class="flex gap-3">
         <p-button severity="info" label="Cari" styleClass="p-button-sm"
             (onClick)="onSearchKeyword(KeywordSearch.value)">
+        </p-button>
+
+        <p-button severity="secondary" label="Export" styleClass="p-button-sm" (onClick)="onExportExcel()"></p-button>
+    </div>
+</div>
+
+<!-- Show Search and Custom Search -->
+<div *ngIf="props.showSearch && props.isCustomSearch"
+    class="flex items-center justify-between w-full mb-4 pt-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+    <!-- Custom Search -->
+    <div class="grid grid-cols-{{ props.customSearchProps!.length + 1 }} w-9/12 gap-3" [formGroup]="CustomSearchForm">
+        <div *ngFor="let item of props.customSearchProps" class="flex w-full">
+            <!-- Inputtext -->
+            <input *ngIf="item.type == 'text'" type="text" pInputText class="p-inputtext-sm w-full"
+                formControlName="{{ item.id }}" placeholder="{{ item.placeholder ? item.placeholder : '' }}" />
+
+            <!-- Number -->
+            <p-inputNumber *ngIf="item.type == 'number'" inputId="integeronly" class="p-inputtext-sm w-full"
+                formControlName="{{ item.id }}">
+            </p-inputNumber>
+
+            <!-- Datepicker -->
+            <p-calendar *ngIf="item.type == 'date'" appendTo="body" styleClass="p-inputtext-sm w-full"
+                dateFormat="dd MM yy" [showClear]="true" formControlName="{{ item.id }}" [readonlyInput]="true">
+            </p-calendar>
+
+            <!-- Dropdown -->
+            <p-dropdown *ngIf="item.type == 'dropdown'" [options]="item.dropdownProps!.options"
+                [optionLabel]="item.dropdownProps!.optionName" [optionValue]="item.dropdownProps!.optionValue"
+                [autoDisplayFirst]="false" [showClear]="true" [filter]="true" styleClass="p-inputtext-sm w-full"
+                formControlName="{{ item.id }}" appendTo="body">
+            </p-dropdown>
+        </div>
+    </div>
+
+    <!-- Button -->
+    <div class="flex gap-3">
+        <p-button severity="info" label="Cari" styleClass="p-button-sm" (onClick)="onClickCustomSearch()">
         </p-button>
 
         <p-button severity="secondary" label="Export" styleClass="p-button-sm" (onClick)="onExportExcel()"></p-button>

@@ -31,12 +31,22 @@ export class SetupKelasState {
     ) { }
 
     @Selector()
+    static kelasState(state: SetupKelasStateModel) {
+        return state;
+    }
+
+    @Selector()
     static kelasEntities(state: SetupKelasStateModel) {
         return state.entities;
     }
 
     @Selector()
-    static kelasActiveEntities(state: SetupKelasStateModel) {
+    static kelasTotalRows(state: SetupKelasStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static kelasActives(state: SetupKelasStateModel) {
         return state.actives;
     }
 

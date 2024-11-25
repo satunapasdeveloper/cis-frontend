@@ -47,18 +47,41 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
             { field: 'nama_kelas', headerName: 'Nama Kelas', class: 'text-blue-500 font-semibold' },
             { field: 'kode_kelas', headerName: 'Kode Kelas', },
             { field: 'kode_kelas_bpjs', headerName: 'Kode Kelas BPJS', },
-            { field: 'id_kelas_satu_sehat', headerName: 'Kelas SatuSehat', },
+            { field: 'id_kelas_satu_sehat', headerName: 'Kelas Satu Sehat', },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'nama_kelas',
+                placeholder: 'Cari Nama Kelas Disini',
+                type: 'text'
+            },
+            {
+                id: 'kode_kelas',
+                placeholder: 'Cari Kode Kelas Disini',
+                type: 'text'
+            },
+            {
+                id: 'kode_kelas_bpjs',
+                placeholder: 'Cari Kode Kelas BPJS Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'kelas',
-        searchPlaceholder: 'Cari Nama Kelas Disini'
+        searchPlaceholder: 'Cari Nama Kelas Disini',
+        totalRows: 0
+
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -127,12 +150,12 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupKelasState.kelasEntities)
+            .select(SetupKelasState.kelasState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup kelas =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -176,10 +199,10 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -189,7 +212,7 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deleteKelas(args.data.id_kelas);
+                    this.updateStatusKelas(args.data);
                 }
             });
         }
@@ -197,6 +220,16 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupKelasActions.GetAllKelas({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupKelasActions.GetAllKelas({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveKelas(data: any) {
@@ -225,14 +258,14 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteKelas(id_kelas: string) {
+    private updateStatusKelas(data: any) {
         this._store
-            .dispatch(new SetupKelasActions.DeleteKelas(id_kelas))
+            .dispatch(new SetupKelasActions.UpdateStatusKelas(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_kelas.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })
