@@ -13,6 +13,7 @@ import { SetupSupplierActions } from './store/farmasi/setup-data/setup-supplier'
 import { SetupPabrikActions } from './store/farmasi/setup-data/setup-pabrik';
 import { SetupStockroomActions } from './store/farmasi/setup-data/setup-stockroom';
 import { SetupGolonganActions } from './store/farmasi/setup-data/setup-golongan';
+import { SetupKelasActions } from './store/setup-data/kelas';
 
 @Component({
     selector: 'app-root',
@@ -27,6 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     isLoading = false;
 
+    IsSetupDataStateHitted = false;
+
     IsFarmasiStateHitted = false;
 
     constructor(
@@ -38,6 +41,11 @@ export class AppComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((event: any) => {
                 if (event instanceof NavigationEnd) {
+
+                    // ** Load setup data state
+                    if ((event.url.includes('pendaftaran') || event.url.includes('pelayanan-klinik')) && !this.IsSetupDataStateHitted) {
+                        this.initAllSetupDataState();
+                    }
 
                     // ** Load farmasi state
                     if (event.url.includes('farmasi') && !this.IsFarmasiStateHitted) {
@@ -58,45 +66,12 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     }
 
-    private initAllNeededState() {
-        // ** Get All
-        this._store
-            .dispatch(new BerandaActions.GetAll())
-            .pipe(takeUntil(this.Destroy$));
+    private initAllSetupDataState() {
+        this.IsSetupDataStateHitted = true;
 
-        // ** Get All Poli
+        // ** Get All Kelas
         this._store
-            .dispatch(new SetupPoliActions.GetAllPoli())
-            .pipe(takeUntil(this.Destroy$));
-
-        // ** Get All Tindakan Medis
-        this._store
-            .dispatch(new SetupTindakanMedisActions.GetAllTindakanMedis())
-            .pipe(takeUntil(this.Destroy$));
-
-        // ** Get All Item
-        this._store
-            .dispatch(new SetupItemActions.GetAllItem())
-            .pipe(takeUntil(this.Destroy$));
-
-        // ** Get All Rekanan Penunjang
-        this._store
-            .dispatch(new RekananPenunjangActions.GetAllRekananPenunjang())
-            .pipe(takeUntil(this.Destroy$));
-
-        // ** Get All User
-        this._store
-            .dispatch(new ManajemenUserActions.GetAllUser())
-            .pipe(takeUntil(this.Destroy$));
-
-        // ** Get All User Dokter
-        this._store
-            .dispatch(new ManajemenUserActions.GetAllUserDokter())
-            .pipe(takeUntil(this.Destroy$));
-
-        // ** Get All Variable Rekam Medis
-        this._store
-            .dispatch(new RekamMedisActions.GetAllVariableRekamMedis())
+            .dispatch(new SetupKelasActions.GetAllKelas({ page: 1, count: 10 }))
             .pipe(takeUntil(this.Destroy$));
     }
 

@@ -378,7 +378,7 @@ export class AuthenticationService {
 
     signIn(payload: AuthenticationModel.ISignIn): Observable<AuthenticationModel.SignIn> {
         return this._httpRequestService
-            .postRequest(`${environment.webApiUrl}/satunapas/auth/login`, payload)
+            .postRequest(`https://apidevklinik.satunapas.com/api/v1/satunapas/auth/login`, payload)
             .pipe(
                 tap((result) => {
                     if (result.responseResult) {
@@ -390,7 +390,7 @@ export class AuthenticationService {
 
     getProfile() {
         this._httpRequestService
-            .getRequest(`${environment.webApiUrl}/satunapas/profile_layanan/ProfileLayanan`)
+            .getRequest(`https://apidevklinik.satunapas.com/api/v1/satunapas/profile_layanan/ProfileLayanan`)
             .pipe(
                 tap((result) => {
                     if (result.responseResult) {

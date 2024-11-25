@@ -7,7 +7,10 @@ import { SetupKelasService } from "src/app/services/pendaftaran-klinik/setup-dat
 
 interface SetupKelasStateModel {
     entities: KelasModel.IKelas[];
+    actives?: KelasModel.IKelas[];
     single?: KelasModel.IKelas;
+    query?: KelasModel.IKelasQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupKelasStateModel {
     name: 'setup_kelas',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,54 @@ export class SetupKelasState {
     ) { }
 
     @Selector()
+    static kelasState(state: SetupKelasStateModel) {
+        return state;
+    }
+
+    @Selector()
     static kelasEntities(state: SetupKelasStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static kelasTotalRows(state: SetupKelasStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static kelasActives(state: SetupKelasStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupKelasActions.GetAllKelas)
-    getAllKelas(ctx: StateContext<SetupKelasStateModel>) {
+    getAllKelas(ctx: StateContext<SetupKelasStateModel>, actions: any) {
         return this._setupKelasService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupKelasActions.GetAllActiveKelas)
+    getAllActiveKelas(ctx: StateContext<SetupKelasStateModel>, actions: any) {
+        return this._setupKelasService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
                     });
                 })
             )
@@ -82,7 +121,8 @@ export class SetupKelasState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKelasActions.GetAllKelas());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKelasActions.GetAllKelas(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +152,9 @@ export class SetupKelasState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKelasActions.GetAllKelas());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKelasActions.GetAllKelas(state.query!));
+
                     } else {
                         return of([]);
                     }
@@ -142,7 +184,9 @@ export class SetupKelasState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKelasActions.GetAllKelas());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKelasActions.GetAllKelas(state.query!));
+
                     } else {
                         return of([]);
                     }
@@ -172,7 +216,8 @@ export class SetupKelasState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKelasActions.GetAllKelas());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKelasActions.GetAllKelas(state.query!));
                     } else {
                         return of([]);
                     }
