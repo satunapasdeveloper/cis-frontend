@@ -1,0 +1,66 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.2
+
+jobs:
+  build-development:
+    machine:
+      image: ubuntu-2004:current
+    resource_class: medium
+    steps:
+      - run:
+          name: validate branch and repo
+          command: echo $CIRCLE_BRANCH && echo $CIRCLE_REPOSITORY_URL
+      - run:
+          name: checkout
+          command: git clone -b "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
+      - node/install:
+          install-yarn: false
+          node-version: "18.13.0"
+      - run:
+          name: list dir
+          command: ls
+      - run:
+          name: verify node version
+          command: node --version
+      - run:
+          name: install angular 17.3.8
+          command: npm install -g @angular/cli@17.3.8
+      - run:
+          name: install package
+          command: npm install -f
+      - run:
+          name: npm version patch --no-git-tag-version
+          command: npm version patch --no-git-tag-version
+      - run:
+          name: build angular
+          command: ng build --configuration=production --output-hashing=all
+      - run:
+          name: Login to dockerhub
+          command: |
+            echo "$DOCKER_PASS" | docker login  --username $DOCKER_USER --password-stdin
+      - run:
+          name: Build dockerfile
+          command: |
+            docker build --no-cache -t mitraptek/his-satunapas-frontend:$CIRCLE_SHA1 .
+      - run:
+          name: Push Docker Image
+          command: |
+            docker push mitraptek/his-satunapas-frontend:$CIRCLE_SHA1
+            docker tag mitraptek/his-satunapas-frontend:$CIRCLE_SHA1 mitraptek/his-satunapas-frontend:development-latest
+            docker push mitraptek/his-satunapas-frontend:development-latest
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:q8SKv5JwNXWKo2bPR1RgdhyflZtN59wWpABbB3VB1zo"
+      - run:
+          name: Deploy app to server
+          command: |
+            ssh -o StrictHostKeyChecking=no satunafas-admin@167.99.72.153 "cd deployer/ && ./deploy-satunapas-frontend.sh"
+workflows:
+  basic-workflow:
+    jobs:
+      - build-development:
+          filters:
+            branches:
+              only:
+                - main
