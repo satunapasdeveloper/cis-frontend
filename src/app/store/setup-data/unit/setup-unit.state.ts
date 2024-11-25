@@ -7,7 +7,10 @@ import { SetupUnitActions } from "./setup-unit.action";
 
 interface SetupUnitStateModel {
     entities: UnitModel.IUnit[];
+    actives?: UnitModel.IUnit[];
     single?: UnitModel.IUnit;
+    query?: UnitModel.IUnitQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupUnitStateModel {
     name: 'setup_unit',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,54 @@ export class SetupUnitState {
     ) { }
 
     @Selector()
+    static unitState(state: SetupUnitStateModel) {
+        return state;
+    }
+
+    @Selector()
     static unitEntities(state: SetupUnitStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static unitTotalRows(state: SetupUnitStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static unitActives(state: SetupUnitStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupUnitActions.GetAllUnit)
-    getAllUnit(ctx: StateContext<SetupUnitStateModel>) {
+    getAllUnit(ctx: StateContext<SetupUnitStateModel>, actions: any) {
         return this._setupUnitService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupUnitActions.GetAllActiveUnit)
+    getAllActiveKelas(ctx: StateContext<SetupUnitStateModel>, actions: any) {
+        return this._setupUnitService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
                     });
                 })
             )
@@ -82,7 +121,8 @@ export class SetupUnitState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupUnitActions.GetAllUnit());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupUnitActions.GetAllUnit(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +152,8 @@ export class SetupUnitState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupUnitActions.GetAllUnit());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupUnitActions.GetAllUnit(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +183,8 @@ export class SetupUnitState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupUnitActions.GetAllUnit());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupUnitActions.GetAllUnit(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +214,8 @@ export class SetupUnitState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupUnitActions.GetAllUnit());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupUnitActions.GetAllUnit(state.query!));
                     } else {
                         return of([]);
                     }

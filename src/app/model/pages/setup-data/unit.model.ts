@@ -5,13 +5,25 @@ export namespace UnitModel {
         id_unit: string
         kode_unit: string
         nama_unit: string
+        is_active: boolean
+    }
+
+    export interface IUnitQueryParams {
+        page: number;
+        count: number;
+        kode_unit?: string
+        nama_unit?: string
     }
 
     export class GetAllUnit implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IUnit[]
+        data!: {
+            page: string;
+            rows: IUnit[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdUnit implements HttpBaseResponse {
@@ -30,5 +42,6 @@ export namespace UnitModel {
         id_unit: string
         kode_unit: string
         nama_unit: string
+        is_active: boolean
     }
 }

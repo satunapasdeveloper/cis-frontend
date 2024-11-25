@@ -14,29 +14,39 @@ export class SetupUnitService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(): Observable<UnitModel.GetAllUnit> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Unit/GetAll`);
+    getAll(query: UnitModel.IUnitQueryParams): Observable<UnitModel.GetAllUnit> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-unit/getAll`, query);
+    }
+
+    getAllActive(query: UnitModel.IUnitQueryParams): Observable<UnitModel.GetAllUnit> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-unit/getForLookUp`, query);
     }
 
     getById(id_unit: string): Observable<UnitModel.GetByIdUnit> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Unit/GetByUuid/${id_unit}`);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-unit/getById/${id_unit}`);
     }
 
     create(payload: UnitModel.CreateUnit): Observable<HttpBaseResponse> {
         delete (<any>payload)['id_unit'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Unit/Create`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-unit/create`, payload);
     }
 
     update(payload: UnitModel.UpdateUnit): Observable<HttpBaseResponse> {
         const { id_unit, ...data } = payload;
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Unit/Update/${payload.id_unit}`, data);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-unit/update/${payload.id_unit}`, data);
     }
 
-    updateStatus(id_unit: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Unit/UpdateStatus/${id_unit}`, null);
+    updateStatus(payload: UnitModel.UpdateUnit): Observable<HttpBaseResponse> {
+        const { id_unit, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-unit/update/${id_unit}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 
     delete(id_unit: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/Unit/Delete/${id_unit}`);
+        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/setup-unit/delete/${id_unit}`);
     }
 }

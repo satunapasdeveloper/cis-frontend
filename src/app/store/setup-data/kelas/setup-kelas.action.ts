@@ -3,6 +3,12 @@ import { KelasModel } from "src/app/model/pages/setup-data/kelas.model";
 export namespace SetupKelasActions {
     export class GetAllKelas {
         static readonly type = '[KELAS] Get All Kelas';
+        constructor(public payload: KelasModel.IKelasQueryParams) { }
+    }
+
+    export class GetAllActiveKelas {
+        static readonly type = '[KELAS] Get All Active Kelas';
+        constructor(public payload: KelasModel.IKelasQueryParams) { }
     }
 
     export class GetByIdKelas {
@@ -22,7 +28,7 @@ export namespace SetupKelasActions {
 
     export class UpdateStatusKelas {
         static readonly type = '[KELAS] Update Status Kelas';
-        constructor(public payload: string) { }
+        constructor(public payload: KelasModel.UpdateKelas) { }
     }
 
     export class DeleteKelas {

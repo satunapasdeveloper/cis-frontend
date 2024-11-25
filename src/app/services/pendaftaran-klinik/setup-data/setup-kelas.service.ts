@@ -14,29 +14,40 @@ export class SetupKelasService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(): Observable<KelasModel.GetAllKelas> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Kelas/GetAll`);
+    getAll(query: KelasModel.IKelasQueryParams): Observable<KelasModel.GetAllKelas> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-kelas/getAll`, query);
+    }
+
+    getAllActive(query: KelasModel.IKelasQueryParams): Observable<KelasModel.GetAllKelas> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-kelas/getForLookUp`, query);
     }
 
     getById(id_kelas: string): Observable<KelasModel.GetByIdKelas> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Kelas/GetByUuid/${id_kelas}`);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-kelas/getById/${id_kelas}`);
     }
 
     create(payload: KelasModel.CreateKelas): Observable<HttpBaseResponse> {
         delete (<any>payload)['id_kelas'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Kelas/Create`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-kelas/create`, payload);
     }
 
     update(payload: KelasModel.UpdateKelas): Observable<HttpBaseResponse> {
         const { id_kelas, ...data } = payload;
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Kelas/Update/${payload.id_kelas}`, data);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-kelas/update/${payload.id_kelas}`, data);
     }
 
-    updateStatus(id_kelas: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Kelas/UpdateStatus/${id_kelas}`, null);
+    updateStatus(payload: KelasModel.UpdateKelas): Observable<HttpBaseResponse> {
+        const { id_kelas, ...data } = payload;
+
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-kelas/update/${id_kelas}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 
     delete(id_kelas: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/Kelas/Delete/${id_kelas}`);
+        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/setup-kelas/delete/${id_kelas}`);
     }
 }
