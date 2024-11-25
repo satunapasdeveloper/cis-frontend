@@ -46,17 +46,34 @@ export class SetupUnitComponent implements OnInit, OnDestroy {
         column: [
             { field: 'kode_unit', headerName: 'Kode Unit', },
             { field: 'nama_unit', headerName: 'Nama Unit', },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'nama_unit',
+                placeholder: 'Cari Nama Unit Disini',
+                type: 'text'
+            },
+            {
+                id: 'kode_unit',
+                placeholder: 'Cari Kode Unit Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'nama_unit',
-        searchPlaceholder: 'Cari Nama Unit Disini'
+        searchPlaceholder: 'Cari Nama Unit Disini',
+        totalRows: 0
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -111,12 +128,12 @@ export class SetupUnitComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupUnitState.unitEntities)
+            .select(SetupUnitState.unitState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup poli =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -160,10 +177,10 @@ export class SetupUnitComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -173,14 +190,25 @@ export class SetupUnitComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deleteUnit(args.data.id_unit);
+                    this.updateStatusUnit(args.data);
                 }
             });
         }
 
+
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupUnitActions.GetAllUnit({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupUnitActions.GetAllUnit({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveUnit(data: any) {
@@ -209,14 +237,14 @@ export class SetupUnitComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteUnit(id_unit: string) {
+    private updateStatusUnit(data: any) {
         this._store
-            .dispatch(new SetupUnitActions.DeleteUnit(id_unit))
+            .dispatch(new SetupUnitActions.UpdateStatusUnit(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_unit.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })
