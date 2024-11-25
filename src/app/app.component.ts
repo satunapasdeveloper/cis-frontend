@@ -14,6 +14,7 @@ import { SetupPabrikActions } from './store/farmasi/setup-data/setup-pabrik';
 import { SetupStockroomActions } from './store/farmasi/setup-data/setup-stockroom';
 import { SetupGolonganActions } from './store/farmasi/setup-data/setup-golongan';
 import { SetupKelasActions } from './store/setup-data/kelas';
+import { SetupUnitActions } from './store/setup-data/unit';
 
 @Component({
     selector: 'app-root',
@@ -71,7 +72,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
         // ** Get All Kelas
         this._store
-            .dispatch(new SetupKelasActions.GetAllKelas({ page: 1, count: 10 }))
+            .dispatch(new SetupKelasActions.GetAllKelas({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Unit
+        this._store
+            .dispatch(new SetupUnitActions.GetAllUnit({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
     }
 
