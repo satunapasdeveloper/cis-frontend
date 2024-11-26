@@ -16,6 +16,7 @@ import { SetupGolonganActions } from './store/farmasi/setup-data/setup-golongan'
 import { SetupKelasActions } from './store/setup-data/kelas';
 import { SetupUnitActions } from './store/setup-data/unit';
 import { SetupJabatanActions } from './store/setup-data/jabatan';
+import { SetupRoleActions } from './store/setup-data/role';
 
 @Component({
     selector: 'app-root',
@@ -89,6 +90,11 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All Jabatan
         this._store
             .dispatch(new SetupJabatanActions.GetAllJabatan({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Role
+        this._store
+            .dispatch(new SetupRoleActions.GetAllRole({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
     }
 

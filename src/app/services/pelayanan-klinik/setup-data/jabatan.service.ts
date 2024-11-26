@@ -19,7 +19,7 @@ export class JabatanService {
     }
 
     getAllActive(query: JabatanModel.IJabatanQueryParams): Observable<JabatanModel.GetAllJabatan> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-kelas/getForLookUp`, query);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-jabatan/getForLookUp`, query);
     }
 
     getById(id_jabatan: string): Observable<JabatanModel.GetByIdJabatan> {

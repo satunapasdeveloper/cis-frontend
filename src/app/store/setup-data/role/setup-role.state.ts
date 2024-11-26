@@ -7,7 +7,10 @@ import { SetupRoleActions } from "./setup-role.action";
 
 interface SetupRoleStateModel {
     entities: RoleModel.IRole[];
+    actives?: RoleModel.IRole[];
     single?: RoleModel.IRole;
+    query?: RoleModel.IRoleQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupRoleStateModel {
     name: 'setup_role',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,54 @@ export class SetupRoleState {
     ) { }
 
     @Selector()
+    static roleState(state: SetupRoleStateModel) {
+        return state;
+    }
+
+    @Selector()
     static roleEntities(state: SetupRoleStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static roleTotalRows(state: SetupRoleStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static roleActives(state: SetupRoleStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupRoleActions.GetAllRole)
-    getAllRole(ctx: StateContext<SetupRoleStateModel>) {
+    getAllRole(ctx: StateContext<SetupRoleStateModel>, actions: any) {
         return this._setupRoleService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupRoleActions.GetAllActiveRole)
+    getAllActiveRole(ctx: StateContext<SetupRoleStateModel>, actions: any) {
+        return this._setupRoleService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
                     });
                 })
             )
@@ -82,7 +121,8 @@ export class SetupRoleState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupRoleActions.GetAllRole());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupRoleActions.GetAllRole(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +152,8 @@ export class SetupRoleState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupRoleActions.GetAllRole());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupRoleActions.GetAllRole(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +183,8 @@ export class SetupRoleState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupRoleActions.GetAllRole());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupRoleActions.GetAllRole(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +214,8 @@ export class SetupRoleState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupRoleActions.GetAllRole());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupRoleActions.GetAllRole(state.query!));
                     } else {
                         return of([]);
                     }

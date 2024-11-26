@@ -14,29 +14,39 @@ export class RoleService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(): Observable<RoleModel.GetAllRole> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Role/GetAll`);
+    getAll(query: RoleModel.IRoleQueryParams): Observable<RoleModel.GetAllRole> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-role/getAll`, query);
+    }
+
+    getAllActive(query: RoleModel.IRoleQueryParams): Observable<RoleModel.GetAllRole> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-role/getForLookUp`, query);
     }
 
     getById(id_role: string): Observable<RoleModel.GetByIdRole> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Role/GetByUuid/${id_role}`);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-role/getById/${id_role}`);
     }
 
     create(payload: RoleModel.CreateRole): Observable<HttpBaseResponse> {
         delete (<any>payload)['id_role'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Role/Create`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-role/create`, payload);
     }
 
     update(payload: RoleModel.UpdateRole): Observable<HttpBaseResponse> {
         const { id_role, ...data } = payload;
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Role/Update/${payload.id_role}`, data);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-role/update/${payload.id_role}`, data);
     }
 
-    updateStatus(id_role: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Role/UpdateStatus/${id_role}`, null);
+    updateStatus(payload: RoleModel.UpdateRole): Observable<HttpBaseResponse> {
+        const { id_role, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-role/update/${id_role}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 
     delete(id_role: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/Role/Delete/${id_role}`);
+        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/setup-role/delete/${id_role}`);
     }
 }
