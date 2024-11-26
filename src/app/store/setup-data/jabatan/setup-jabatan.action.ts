@@ -3,6 +3,12 @@ import { JabatanModel } from "src/app/model/pages/setup-data/jabatan.model";
 export namespace SetupJabatanActions {
     export class GetAllJabatan {
         static readonly type = '[JABATAN] Get All Jabatan';
+        constructor(public payload: JabatanModel.IJabatanQueryParams) { }
+    }
+
+    export class GetAllActiveJabatan {
+        static readonly type = '[JABATAN] Get All Active Jabatan';
+        constructor(public payload: JabatanModel.IJabatanQueryParams) { }
     }
 
     export class GetByIdJabatan {

@@ -7,7 +7,10 @@ import { SetupJabatanActions } from "./setup-jabatan.action";
 
 interface SetupJabatanStateModel {
     entities: JabatanModel.IJabatan[];
+    actives?: JabatanModel.IJabatan[];
     single?: JabatanModel.IJabatan;
+    query?: JabatanModel.IJabatanQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupJabatanStateModel {
     name: 'setup_jabatan',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,54 @@ export class SetupJabatanState {
     ) { }
 
     @Selector()
+    static jabatanState(state: SetupJabatanStateModel) {
+        return state;
+    }
+
+    @Selector()
     static jabatanEntities(state: SetupJabatanStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static jabatanTotalRows(state: SetupJabatanStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static jabatanActives(state: SetupJabatanStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupJabatanActions.GetAllJabatan)
-    getAllJabatan(ctx: StateContext<SetupJabatanStateModel>) {
+    getAllJabatan(ctx: StateContext<SetupJabatanStateModel>, actions: any) {
         return this._setupJabatanService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupJabatanActions.GetAllActiveJabatan)
+    getAllActiveJabatan(ctx: StateContext<SetupJabatanStateModel>, actions: any) {
+        return this._setupJabatanService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
                     });
                 })
             )
@@ -82,7 +121,8 @@ export class SetupJabatanState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +152,8 @@ export class SetupJabatanState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +183,8 @@ export class SetupJabatanState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +214,8 @@ export class SetupJabatanState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupJabatanActions.GetAllJabatan(state.query!));
                     } else {
                         return of([]);
                     }
