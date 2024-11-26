@@ -3,6 +3,12 @@ import { KategoriKamarModel } from "src/app/model/pages/setup-data/kategori-kama
 export namespace SetupKategoriKamarActions {
     export class GetAllKategoriKamar {
         static readonly type = '[KATEGORI KAMAR] Get All Kategori Kamar';
+        constructor(public payload: KategoriKamarModel.IKategoriKamarQueryParams) { }
+    }
+
+    export class GetAllActiveKategoriKamar {
+        static readonly type = '[KATEGORI KAMAR] Get All Active Kategori Kamar';
+        constructor(public payload: KategoriKamarModel.IKategoriKamarQueryParams) { }
     }
 
     export class GetByIdKategoriKamar {

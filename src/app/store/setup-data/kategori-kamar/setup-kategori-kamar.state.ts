@@ -7,7 +7,10 @@ import { SetupKategoriKamarActions } from "./setup-kategori-kamar.action";
 
 interface SetupKategoriKamarStateModel {
     entities: KategoriKamarModel.IKategoriKamar[];
+    actives?: KategoriKamarModel.IKategoriKamar[];
     single?: KategoriKamarModel.IKategoriKamar;
+    query?: KategoriKamarModel.IKategoriKamarQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupKategoriKamarStateModel {
     name: 'setup_kategori_kamar',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,54 @@ export class SetupKategoriKamarState {
     ) { }
 
     @Selector()
+    static kategoriKamarState(state: SetupKategoriKamarStateModel) {
+        return state;
+    }
+
+    @Selector()
     static kategoriKamarEntities(state: SetupKategoriKamarStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static kategoriKamarTotalRows(state: SetupKategoriKamarStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static kategoriKamarActives(state: SetupKategoriKamarStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupKategoriKamarActions.GetAllKategoriKamar)
-    getAllKategoriKamar(ctx: StateContext<SetupKategoriKamarStateModel>) {
+    getAllKategoriKamar(ctx: StateContext<SetupKategoriKamarStateModel>, actions: any) {
         return this._setupKategoriKamarService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupKategoriKamarActions.GetAllActiveKategoriKamar)
+    getAllActiveKategoriKamar(ctx: StateContext<SetupKategoriKamarStateModel>, actions: any) {
+        return this._setupKategoriKamarService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
                     });
                 })
             )
@@ -82,7 +121,8 @@ export class SetupKategoriKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +152,8 @@ export class SetupKategoriKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +183,8 @@ export class SetupKategoriKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +214,8 @@ export class SetupKategoriKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar(state.query!));
                     } else {
                         return of([]);
                     }

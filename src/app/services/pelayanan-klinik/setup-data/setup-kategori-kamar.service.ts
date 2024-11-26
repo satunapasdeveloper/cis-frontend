@@ -14,29 +14,39 @@ export class SetupKategoriKamarService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(): Observable<KategoriKamarModel.GetAllKategoriKamar> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/KategoriKamar/GetAll`);
+    getAll(query: KategoriKamarModel.IKategoriKamarQueryParams): Observable<KategoriKamarModel.GetAllKategoriKamar> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-bed-kategori/getAll`, query);
     }
 
-    getById(id_kategori: string): Observable<KategoriKamarModel.GetByIdKategoriKamar> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/KategoriKamar/GetByUuid/${id_kategori}`);
+    getAllActive(query: KategoriKamarModel.IKategoriKamarQueryParams): Observable<KategoriKamarModel.GetAllKategoriKamar> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-role/getForLookUp`, query);
+    }
+
+    getById(id_bed_kategori: string): Observable<KategoriKamarModel.GetByIdKategoriKamar> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-bed-kategori/getById/${id_bed_kategori}`);
     }
 
     create(payload: KategoriKamarModel.CreateKategoriKamar): Observable<HttpBaseResponse> {
-        delete (<any>payload)['id_kategori'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/KategoriKamar/Create`, payload);
+        delete (<any>payload)['id_bed_kategori'];
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-bed-kategori/create`, payload);
     }
 
     update(payload: KategoriKamarModel.UpdateKategoriKamar): Observable<HttpBaseResponse> {
-        const { id_kategori, ...data } = payload;
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/KategoriKamar/Update/${payload.id_kategori}`, data);
+        const { id_bed_kategori, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-bed-kategori/update/${payload.id_bed_kategori}`, data);
     }
 
-    updateStatus(id_kategori: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/KategoriKamar/UpdateStatus/${id_kategori}`, null);
+    updateStatus(payload: KategoriKamarModel.UpdateKategoriKamar): Observable<HttpBaseResponse> {
+        const { id_bed_kategori, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-bed-kategori/update/${id_bed_kategori}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 
-    delete(id_kategori: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/KategoriKamar/Delete/${id_kategori}`);
+    delete(id_bed_kategori: string): Observable<HttpBaseResponse> {
+        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/setup-bed-kategori/delete/${id_bed_kategori}`);
     }
 }

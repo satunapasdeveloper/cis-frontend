@@ -184,7 +184,7 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusJabatan(args.data);
+                    this.updateStatusRole(args.data);
                 }
             });
         }
@@ -230,7 +230,7 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusJabatan(data: any) {
+    private updateStatusRole(data: any) {
         this._store
             .dispatch(new SetupRoleActions.UpdateStatusRole(data))
             .pipe(takeUntil(this.Destroy$))
