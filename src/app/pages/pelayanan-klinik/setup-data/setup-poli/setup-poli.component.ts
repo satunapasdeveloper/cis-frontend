@@ -45,22 +45,50 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'Setup_Poli',
         column: [
-            { field: 'kode_poli', headerName: 'Kode Poli', },
-            { field: 'poli', headerName: 'Nama Poli', },
+            { field: 'kode_poli', headerName: 'Kode Poli', class: 'text-blue-500 font-semibold' },
+            { field: 'nama_poli', headerName: 'Nama Poli', },
             { field: 'nama_unit', headerName: 'Nama Unit', },
             { field: 'kode_poli_bpjs', headerName: 'Kode Poli BPJS', },
-            { field: 'id_poli_satusehat', headerName: 'Id Poli SatuSehat', },
+            { field: 'id_poli_satu_sehat', headerName: 'Poli Satu Sehat', },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'id_unit',
+                placeholder: 'Cari Nama Unit Disini',
+                type: 'dropdown',
+                dropdownProps: {
+                    options: [],
+                    optionName: 'name',
+                    optionValue: 'value',
+                    autoDisplayFirst: false
+                }
+            },
+            {
+                id: 'kode_poli',
+                placeholder: 'Cari Kode Poli Disini',
+                type: 'text'
+            },
+            {
+                id: 'nama_poli',
+                placeholder: 'Cari Nama Poli Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'poli',
-        searchPlaceholder: 'Cari Nama Poli Disini'
+        searchPlaceholder: 'Cari Nama Poli Disini',
+        totalRows: 0
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -90,7 +118,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'poli',
+                    id: 'nama_poli',
                     label: 'Nama Poli',
                     required: true,
                     type: 'text',
@@ -117,7 +145,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'id_poli_satusehat',
+                    id: 'id_poli_satu_sehat',
                     label: 'Id Poli Satu Sehat',
                     required: true,
                     type: 'text',
@@ -143,12 +171,12 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupPoliState.poliEntities)
+            .select(SetupPoliState.poliState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup poli =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -160,12 +188,16 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 if (result) {
                     const index = this.FormProps.fields.findIndex(item => item.id == 'id_unit');
-                    this.FormProps.fields[index].dropdownProps = result.map((item: any) => {
+                    const data = result.map((item: any) => {
                         return {
                             name: item.nama_unit,
                             value: item.id_unit
                         }
-                    })
+                    });
+
+                    this.FormProps.fields[index].dropdownProps.options = data;
+
+                    this.GridProps.customSearchProps![0].dropdownProps!.options = data;
                 }
             });
     }
@@ -209,10 +241,10 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -222,7 +254,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deletePoli(args.data.id_poli);
+                    this.updateStatusPoli(args.data);
                 }
             });
         }
@@ -230,6 +262,16 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupPoliActions.GetAllPoli({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupPoliActions.GetAllPoli({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     savePoli(data: any) {
@@ -258,14 +300,14 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deletePoli(id_poli: string) {
+    private updateStatusPoli(data: any) {
         this._store
-            .dispatch(new SetupPoliActions.DeletePoli(id_poli))
+            .dispatch(new SetupPoliActions.UpdateStatusPoli(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_poli.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })

@@ -2,27 +2,40 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 
 export namespace KamarModel {
     export interface IKamar {
-        id_kamar: string
-        id_kategori: string
-        kategori: string
+        id_bed_kamar: string
+        id_bed_kategori: string
+        nama_kategori: string
         no_kamar: string
         label_kamar: string
         no_lantai: string
         id_poli: string
-        poli: string
+        nama_poli: string
         id_kelas: string
         nama_kelas: string
         gender: string
         keterangan: string
-        isolasi: boolean
-        status_aktif: boolean
+        is_isolasi: boolean
+        is_active: boolean
     }
+
+    export interface IKamarQueryParams {
+        page: number;
+        count: number;
+        no_kamar?: string;
+        label_kamar?: string;
+        no_lantai?: string;
+    }
+
 
     export class GetAllKamar implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IKamar[]
+        data!: {
+            page: string;
+            rows: IKamar[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdKamar implements HttpBaseResponse {
@@ -33,7 +46,7 @@ export namespace KamarModel {
     }
 
     export interface CreateKamar {
-        id_kategori: string
+        id_bed_kategori: string
         no_kamar: string
         label_kamar: string
         no_lantai: string
@@ -41,13 +54,13 @@ export namespace KamarModel {
         id_kelas: string
         gender: string
         keterangan: string
-        isolasi: boolean
-        status_aktif: boolean
+        is_isolasi: boolean
+        is_active: boolean
     }
 
     export interface UpdateKamar {
-        id_kamar: string
-        id_kategori: string
+        id_bed_kamar: string
+        id_bed_kategori: string
         no_kamar: string
         label_kamar: string
         no_lantai: string
@@ -55,7 +68,7 @@ export namespace KamarModel {
         id_kelas: string
         gender: string
         keterangan: string
-        isolasi: boolean
-        status_aktif: boolean
+        is_isolasi: boolean
+        is_active: boolean
     }
 }

@@ -44,18 +44,30 @@ export class SetupJabatanComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupJabatan',
         column: [
-            { field: 'jabatan', headerName: 'Jabatan', },
+            { field: 'nama_jabatan', headerName: 'Jabatan', },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'nama_jabatan',
+                placeholder: 'Cari Nama Jabatan Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'jabatan',
-        searchPlaceholder: 'Cari Jabatan Disini'
+        searchPlaceholder: 'Cari Jabatan Disini',
+        totalRows: 0
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -78,11 +90,19 @@ export class SetupJabatanComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'jabatan',
+                    id: 'nama_jabatan',
                     label: 'Jabatan',
                     required: true,
                     type: 'text',
                     value: '',
+                },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
@@ -103,12 +123,12 @@ export class SetupJabatanComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupJabatanState.jabatanEntities)
+            .select(SetupJabatanState.jabatanState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup jabatan =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -152,10 +172,10 @@ export class SetupJabatanComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -165,7 +185,7 @@ export class SetupJabatanComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deleteJabatan(args.data.id_jabatan);
+                    this.updateStatusJabatan(args.data);
                 }
             });
         }
@@ -173,6 +193,16 @@ export class SetupJabatanComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupJabatanActions.GetAllJabatan({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupJabatanActions.GetAllJabatan({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveJabatan(data: any) {
@@ -201,14 +231,14 @@ export class SetupJabatanComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteJabatan(id_jabatan: string) {
+    private updateStatusJabatan(data: any) {
         this._store
-            .dispatch(new SetupJabatanActions.DeleteJabatan(id_jabatan))
+            .dispatch(new SetupJabatanActions.UpdateStatusJabatan(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_jabatan.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })

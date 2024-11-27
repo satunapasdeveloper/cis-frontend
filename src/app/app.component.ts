@@ -15,6 +15,10 @@ import { SetupStockroomActions } from './store/farmasi/setup-data/setup-stockroo
 import { SetupGolonganActions } from './store/farmasi/setup-data/setup-golongan';
 import { SetupKelasActions } from './store/setup-data/kelas';
 import { SetupUnitActions } from './store/setup-data/unit';
+import { SetupJabatanActions } from './store/setup-data/jabatan';
+import { SetupRoleActions } from './store/setup-data/role';
+import { SetupKategoriKamarActions } from './store/setup-data/kategori-kamar';
+import { SetupKamarActions } from './store/setup-data/kamar';
 
 @Component({
     selector: 'app-root',
@@ -78,6 +82,31 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All Unit
         this._store
             .dispatch(new SetupUnitActions.GetAllUnit({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Poli
+        this._store
+            .dispatch(new SetupPoliActions.GetAllPoli({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Jabatan
+        this._store
+            .dispatch(new SetupJabatanActions.GetAllJabatan({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Role
+        this._store
+            .dispatch(new SetupRoleActions.GetAllRole({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Kategori Kamar
+        this._store
+            .dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Kamar
+        this._store
+            .dispatch(new SetupKamarActions.GetAllKamar({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
     }
 

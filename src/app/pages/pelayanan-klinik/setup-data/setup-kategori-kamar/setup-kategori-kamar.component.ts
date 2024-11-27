@@ -44,19 +44,29 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupKategoriKamar',
         column: [
-            { field: 'kategori', headerName: 'Kategori Kamar', },
-            { field: 'status_aktif', headerName: 'Status', },
+            { field: 'nama_kategori', headerName: 'Kategori Kamar', },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'nama_kategori',
+                placeholder: 'Cari Kategori Kamar Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'nama_kategori_kamar',
-        searchPlaceholder: 'Cari Nama KategoriKamar Disini'
+        searchPlaceholder: 'Cari Nama Kategori Kamar Disini'
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -71,7 +81,7 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
             id: 'form_setup_kategori_kamar',
             fields: [
                 {
-                    id: 'id_kategori',
+                    id: 'id_bed_kategori',
                     label: 'Id',
                     required: true,
                     type: 'text',
@@ -79,11 +89,19 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'kategori',
+                    id: 'nama_kategori',
                     label: 'Kategori Kamar',
                     required: true,
                     type: 'text',
                     value: '',
+                },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
@@ -104,12 +122,12 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupKategoriKamarState.kategoriKamarEntities)
+            .select(SetupKategoriKamarState.kategoriKamarState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup kategori kamar =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -119,6 +137,10 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
             this.PageState = 'form';
             this.ButtonNavigation = [];
         };
+
+        if (data.id == 'back') {
+            this.handleBackToList();
+        }
     }
 
     handleBackToList() {
@@ -144,6 +166,7 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
             setTimeout(() => {
@@ -153,10 +176,10 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -166,7 +189,7 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deleteKategoriKamar(args.data.id_kategori);
+                    this.updateStatusKategoriKamar(args.data);
                 }
             });
         }
@@ -174,6 +197,16 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupKategoriKamarActions.GetAllKategoriKamar({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveKategoriKamar(data: any) {
@@ -202,17 +235,18 @@ export class SetupKategoriKamarComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteKategoriKamar(id_kategori_kamar: string) {
+    private updateStatusKategoriKamar(data: any) {
         this._store
-            .dispatch(new SetupKategoriKamarActions.DeleteKategoriKamar(id_kategori_kamar))
+            .dispatch(new SetupKategoriKamarActions.UpdateStatusKategoriKamar(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.setup_kategori_kamar.success) {
+                if (result.setup_role.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })
     }
+
 
 }

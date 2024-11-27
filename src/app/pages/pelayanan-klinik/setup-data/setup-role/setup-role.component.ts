@@ -44,19 +44,29 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupRole',
         column: [
-            { field: 'role', headerName: 'Role', },
-            { field: 'status_aktif', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'nama_role', headerName: 'Role', },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'nama_role',
+                placeholder: 'Cari Nama Role Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'role',
         searchPlaceholder: 'Cari Role Disini'
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -79,11 +89,19 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'role',
+                    id: 'nama_role',
                     label: 'Role',
                     required: true,
                     type: 'text',
                     value: '',
+                },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
@@ -104,12 +122,12 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupRoleState.roleEntities)
+            .select(SetupRoleState.roleState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup poli =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -144,19 +162,18 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            this.FormComps.FormGroup.patchValue(args);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -166,7 +183,7 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deleteRole(args.data.id_role);
+                    this.updateStatusRole(args.data);
                 }
             });
         }
@@ -174,6 +191,16 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupRoleActions.GetAllRole({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupRoleActions.GetAllRole({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveRole(data: any) {
@@ -202,14 +229,14 @@ export class SetupRoleComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteRole(id_role: string) {
+    private updateStatusRole(data: any) {
         this._store
-            .dispatch(new SetupRoleActions.DeleteRole(id_role))
+            .dispatch(new SetupRoleActions.UpdateStatusRole(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_role.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })

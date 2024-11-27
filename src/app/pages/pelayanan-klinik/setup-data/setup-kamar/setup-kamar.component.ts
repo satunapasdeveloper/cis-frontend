@@ -12,9 +12,9 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { SetupKamarState, SetupKamarActions } from 'src/app/store/setup-data/kamar';
-import { SetupKategoriKamarState } from 'src/app/store/setup-data/kategori-kamar';
-import { SetupKelasState } from 'src/app/store/setup-data/kelas';
-import { SetupPoliState } from 'src/app/store/setup-data/setup-poli';
+import { SetupKategoriKamarActions, SetupKategoriKamarState } from 'src/app/store/setup-data/kategori-kamar';
+import { SetupKelasActions, SetupKelasState } from 'src/app/store/setup-data/kelas';
+import { SetupPoliActions, SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 
 @Component({
     selector: 'app-setup-kamar',
@@ -47,26 +47,46 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupKamar',
         column: [
-            { field: 'kategori', headerName: 'Kategori', },
+            { field: 'nama_kategori', headerName: 'Kategori', },
             { field: 'no_kamar', headerName: 'No. Kamar', class: 'text-blue-500 font-semibold' },
             { field: 'label_kamar', headerName: 'Label Kamar' },
             { field: 'no_lantai', headerName: 'No. Lantai' },
-            { field: 'poli', headerName: 'Poli' },
+            { field: 'nama_poli', headerName: 'Poli' },
             { field: 'nama_kelas', headerName: 'Kelas' },
             { field: 'gender', headerName: 'Gender' },
-            { field: 'isolasi', headerName: 'Isolasi', renderAsCheckbox: true, class: 'text-center' },
-            { field: 'status_aktif', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'is_isolasi', headerName: 'Isolasi', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'no_kamar',
+                placeholder: 'Cari No. Kamar Disini',
+                type: 'text'
+            },
+            {
+                id: 'label_kamar',
+                placeholder: 'Cari Label Kamar Disini',
+                type: 'text'
+            },
+            {
+                id: 'no_lantai',
+                placeholder: 'Cari No. Lantai Disini',
+                type: 'text'
+            },
+        ],
         showSort: false,
         searchKeyword: 'no_kamar',
         searchPlaceholder: 'Cari No. Kamar Disini'
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -81,7 +101,7 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
             id: 'form_setup_kamar',
             fields: [
                 {
-                    id: 'id_kamar',
+                    id: 'id_bed_kamar',
                     label: 'Kode Kamar',
                     required: true,
                     type: 'text',
@@ -89,7 +109,7 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'id_kategori',
+                    id: 'id_bed_kategori',
                     label: 'Kategori',
                     required: true,
                     type: 'select',
@@ -155,8 +175,8 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [
-                            { name: 'Laki - Laki', value: 'laki-laki' },
-                            { name: 'Perempuan', value: 'perempuan' },
+                            { name: 'Laki - Laki', value: 'L' },
+                            { name: 'Perempuan', value: 'P' },
                         ],
                         optionName: 'name',
                         optionValue: 'value',
@@ -172,23 +192,31 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'isolasi',
+                    id: 'is_isolasi',
                     label: 'Isolasi',
                     required: false,
                     type: 'radio',
                     radioButtonProps: [
                         {
-                            name: 'isolasi',
+                            name: 'is_isolasi',
                             label: 'Tidak',
                             value: false,
                         },
                         {
-                            name: 'isolasi',
+                            name: 'is_isolasi',
                             label: 'Iya',
                             value: true,
                         }
                     ],
                     value: false,
+                },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
@@ -212,27 +240,27 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupKamarState.kamarEntities)
+            .select(SetupKamarState.kamarState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup kamar =>", result);
-                    this.GridProps.dataSource = result;
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
 
     private getAllKategori() {
         this._store
-            .select(SetupKategoriKamarState.kategoriKamarEntities)
+            .dispatch(new SetupKategoriKamarActions.GetAllActiveKategoriKamar({ page: 1, count: 100 }))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_kategori');
-                    this.FormProps.fields[index].dropdownProps = result.map((item: any) => {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_bed_kategori');
+                    this.FormProps.fields[index].dropdownProps.options = result.setup_kategori_kamar.actives.map((item: any) => {
                         return {
-                            name: item.kategori,
-                            value: item.id_kategori
+                            name: item.nama_kategori,
+                            value: item.id_bed_kategori
                         }
                     })
                 }
@@ -241,14 +269,14 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
 
     private getAllPoli() {
         this._store
-            .select(SetupPoliState.poliEntities)
+            .dispatch(new SetupPoliActions.GetAllActivePoli({ page: 1, count: 100 }))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
                     const index = this.FormProps.fields.findIndex(item => item.id == 'id_poli');
-                    this.FormProps.fields[index].dropdownProps = result.map((item: any) => {
+                    this.FormProps.fields[index].dropdownProps.options = result.setup_poli.actives.map((item: any) => {
                         return {
-                            name: item.poli,
+                            name: item.nama_poli,
                             value: item.id_poli
                         }
                     })
@@ -258,14 +286,14 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
 
     private getAllKelas() {
         this._store
-            .select(SetupKelasState.kelasEntities)
+            .dispatch(new SetupKelasActions.GetAllActiveKelas({ page: 1, count: 100 }))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
                     const index = this.FormProps.fields.findIndex(item => item.id == 'id_kelas');
-                    this.FormProps.fields[index].dropdownProps = result.map((item: any) => {
+                    this.FormProps.fields[index].dropdownProps.options = result.setup_kelas.actives.map((item: any) => {
                         return {
-                            name: item.kelas,
+                            name: item.nama_kelas,
                             value: item.id_kelas
                         }
                     })
@@ -303,19 +331,18 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            this.FormComps.FormGroup.patchValue(args);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -325,14 +352,25 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deleteKamar(args.data.id_kamar);
+                    this.updateStatusKamar(args.data);
                 }
             });
         }
 
+
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupKamarActions.GetAllKamar({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupKamarActions.GetAllKamar({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveKamar(data: any) {
@@ -361,14 +399,14 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteKamar(id_kamar: string) {
+    private updateStatusKamar(data: any) {
         this._store
-            .dispatch(new SetupKamarActions.DeleteKamar(id_kamar))
+            .dispatch(new SetupKamarActions.UpdateStatusKamar(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_kamar.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })

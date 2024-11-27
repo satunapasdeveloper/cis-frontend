@@ -7,7 +7,10 @@ import { SetupKamarActions } from "./setup-kamar.action";
 
 interface SetupKamarStateModel {
     entities: KamarModel.IKamar[];
+    actives?: KamarModel.IKamar[];
     single?: KamarModel.IKamar;
+    query?: KamarModel.IKamarQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupKamarStateModel {
     name: 'setup_kamar',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,52 @@ export class SetupKamarState {
     ) { }
 
     @Selector()
+    static kamarState(state: SetupKamarStateModel) {
+        return state;
+    }
+
+    @Selector()
     static kamarEntities(state: SetupKamarStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static kamarTotalRows(state: SetupKamarStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static kamarActives(state: SetupKamarStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupKamarActions.GetAllKamar)
-    getAllKamar(ctx: StateContext<SetupKamarStateModel>) {
+    getAllKamar(ctx: StateContext<SetupKamarStateModel>, actions: any) {
         return this._setupKamarService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupKamarActions.GetAllActiveKamar)
+    getAllActiveKamar(ctx: StateContext<SetupKamarStateModel>, actions: any) {
+        return this._setupKamarService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        actives: result.data.rows,
                     });
                 })
             )
@@ -82,7 +119,8 @@ export class SetupKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKamarActions.GetAllKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKamarActions.GetAllKamar(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +150,8 @@ export class SetupKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKamarActions.GetAllKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKamarActions.GetAllKamar(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +181,8 @@ export class SetupKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKamarActions.GetAllKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKamarActions.GetAllKamar(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +212,8 @@ export class SetupKamarState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupKamarActions.GetAllKamar());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupKamarActions.GetAllKamar(state.query!));
                     } else {
                         return of([]);
                     }

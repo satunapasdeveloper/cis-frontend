@@ -3,14 +3,25 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 export namespace JabatanModel {
     export interface IJabatan {
         id_jabatan: string
-        jabatan: string
+        nama_jabatan: string
+        is_active: boolean;
+    }
+
+    export interface IJabatanQueryParams {
+        page: number;
+        count: number;
+        nama_jabatan?: string;
     }
 
     export class GetAllJabatan implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IJabatan[]
+        data!: {
+            page: string;
+            rows: IJabatan[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdJabatan implements HttpBaseResponse {
@@ -21,11 +32,12 @@ export namespace JabatanModel {
     }
 
     export interface CreateJabatan {
-        jabatan: string
+        nama_jabatan: string
     }
 
     export interface UpdateJabatan {
         id_jabatan: string
-        jabatan: string
+        nama_jabatan: string
+        is_active: boolean;
     }
 }

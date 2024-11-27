@@ -3,15 +3,25 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 export namespace RoleModel {
     export interface IRole {
         id_role: string
-        role: string
-        status_aktif: string
+        nama_role: string
+        is_active: boolean;
+    }
+
+    export interface IRoleQueryParams {
+        page: number;
+        count: number;
+        nama_role?: string;
     }
 
     export class GetAllRole implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IRole[]
+        data!: {
+            page: string;
+            rows: IRole[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdRole implements HttpBaseResponse {
@@ -22,11 +32,12 @@ export namespace RoleModel {
     }
 
     export interface CreateRole {
-        role: string
+        nama_role: string
     }
 
     export interface UpdateRole {
         id_role: string
-        role: string
+        nama_role: string
+        is_active: boolean;
     }
 }
