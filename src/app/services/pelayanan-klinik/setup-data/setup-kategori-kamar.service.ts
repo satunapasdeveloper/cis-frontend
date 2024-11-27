@@ -19,7 +19,7 @@ export class SetupKategoriKamarService {
     }
 
     getAllActive(query: KategoriKamarModel.IKategoriKamarQueryParams): Observable<KategoriKamarModel.GetAllKategoriKamar> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-role/getForLookUp`, query);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-bed-kategori/getForLookUp`, query);
     }
 
     getById(id_bed_kategori: string): Observable<KategoriKamarModel.GetByIdKategoriKamar> {

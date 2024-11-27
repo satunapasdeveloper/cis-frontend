@@ -76,9 +76,7 @@ export class SetupKelasState {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data.rows,
-                        totalRows: result.data.totalRows,
-                        query: actions.payload
+                        actives: result.data.rows,
                     });
                 })
             )

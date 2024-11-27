@@ -3,6 +3,12 @@ import { KamarModel } from "src/app/model/pages/setup-data/kamar.model";
 export namespace SetupKamarActions {
     export class GetAllKamar {
         static readonly type = '[KAMAR] Get All Kamar';
+        constructor(public payload: KamarModel.IKamarQueryParams) { }
+    }
+
+    export class GetAllActiveKamar {
+        static readonly type = '[KAMAR] Get All Active Kamar';
+        constructor(public payload: KamarModel.IKamarQueryParams) { }
     }
 
     export class GetByIdKamar {
@@ -22,7 +28,7 @@ export namespace SetupKamarActions {
 
     export class UpdateStatusKamar {
         static readonly type = '[KAMAR] Update Status Kamar';
-        constructor(public payload: string) { }
+        constructor(public payload: KamarModel.UpdateKamar) { }
     }
 
     export class DeleteKamar {

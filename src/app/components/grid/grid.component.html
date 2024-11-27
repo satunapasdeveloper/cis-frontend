@@ -19,7 +19,7 @@
 <div *ngIf="props.showSearch && props.isCustomSearch"
     class="flex items-center justify-between w-full mb-4 pt-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
     <!-- Custom Search -->
-    <div class="grid grid-cols-{{ props.customSearchProps!.length + 1 }} w-9/12 gap-3" [formGroup]="CustomSearchForm">
+    <div class="grid grid-rows-1 grid-cols-3 w-9/12 gap-3" [formGroup]="CustomSearchForm">
         <div *ngFor="let item of props.customSearchProps" class="grid w-full">
             <!-- Inputtext -->
             <input *ngIf="item.type == 'text'" type="text" pInputText class="p-inputtext-sm w-full"

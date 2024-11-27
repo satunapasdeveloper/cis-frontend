@@ -71,6 +71,8 @@ export class GridComponent implements OnInit, OnDestroy {
 
     CustomSearchForm: FormGroup;
 
+    CustomSearchLength$ = new BehaviorSubject<number>(1);
+
     constructor(
         private _formBuilder: FormBuilder,
         // private _documentService: DocumentService,
@@ -141,10 +143,12 @@ export class GridComponent implements OnInit, OnDestroy {
             });
         };
 
+        console.log("custom search length =>", this.props.customSearchProps?.length)
+
         if (this.props.customSearchProps?.length) {
             this.props.customSearchProps.forEach((item) => {
                 this.CustomSearchForm.addControl(item.id, new FormControl(null, []));
-            })
+            });
         }
     }
 
