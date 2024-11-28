@@ -1,0 +1,176 @@
+<app-dashboard>
+    <div class="flex flex-row items-start gap-5">
+        <!-- Role -->
+        <div class="grid w-4/12 gap-0 p-3 rounded-lg bg-white shadow-sm">
+            <p class="text-base text-gray-800 font-semibold">
+                Role
+            </p>
+            <p class="text-sm text-gray-600">
+                Pilih role untuk menampilkan menu
+            </p>
+
+            <div *ngIf="RoleDatasource as role"
+                class="flex flex-col gap-2 pt-3 mt-3 border-t border-b-0 border-x-0 border-dashed border-gray-300">
+                <!-- Loop here -->
+                <div *ngFor="let item of role"
+                    class="flex justify-between items-center p-2 rounded-md bg-gray-100 text-gray-800 hover:text-blue-800 hover:bg-blue-200 cursor-pointer"
+                    (click)="getMenuByRole(item.id_role)">
+                    <p class="text-sm">
+                        {{ item.nama_role }}
+                    </p>
+
+                    <span class="text-sm">
+                        <i class="pi pi-chevron-right" style="font-size: 12px;"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Role Menu List -->
+        <div class="grid w-8/12 gap-0 p-3 rounded-lg bg-white shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <!-- Title -->
+                <div class="flex flex-col">
+                    <p class="text-base text-gray-800 font-semibold">
+                        Daftar Menu
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        Daftar menu untuk role ini
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3">
+                <!-- Parent -->
+                <div *ngFor="let item of RoleMenuDatasource" class="flex flex-col p-2 rounded-md bg-gray-100">
+                    <div class="flex justify-between p-1 rounded-md">
+                        <p class="text-sm text-gray-700 font-semibold">
+                            {{ item.caption }}
+                            <br>
+                            <span *ngIf="item.is_assigned" class="text-xs cursor-pointer font-normal ml-auto">
+                                <i class="pi pi-circle-fill text-emerald-500"
+                                    style="font-size: 10px;"></i>&nbsp;Assigned
+                            </span>
+
+                            <span *ngIf="!item.is_assigned" class="text-xs cursor-pointer font-normal ml-auto">
+                                <i class="pi pi-circle-fill text-red-500" style="font-size: 10px;"></i>&nbsp;Unassigned
+                            </span>
+                        </p>
+
+                        <div class="flex ml-auto gap-3">
+                            <span *ngIf="item.children.length" class="cursor-pointer"
+                                (click)="item.toggle_children = !item.toggle_children">
+                                <i class="pi pi-chevron-{{ item.toggle_children ? 'up' : 'down'}}"
+                                    style="font-size: 12px;"></i>
+                            </span>
+
+                            <span class="cursor-pointer" (click)="op.toggle($event)">
+                                <i class="pi pi-ellipsis-v" style="font-size: 12px;"></i>
+                            </span>
+                        </div>
+
+                        <p-overlayPanel #op>
+                            <div class="flex flex-col gap-0 w-[11rem]">
+                                <div class="flex items-center gap-2 cursor-pointer"
+                                    (click)="handleChangeStatusAssign(item.is_assigned, item.id_menu, item.id_role, item.id_role_menu)">
+                                    <i class="pi pi-send" style="font-size: 11px"></i>
+                                    <p class="text-sm text-gray-700">
+                                        Ubah Status Assign
+                                    </p>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+
+                    <!-- Children -->
+                    <div *ngIf="item.children.length" id="children_{{ item.id_menu }}"
+                        class="{{ item.toggle_children ? 'flex' : 'hidden'}} flex-col gap-3 justify-between mt-2 pt-2 pl-3 border-t border-b-0 border-x-0 border-gray-300 border-dashed">
+
+                        <div *ngFor="let child of item.children"
+                            class="flex flex-col justify-between p-2 rounded-md bg-white">
+                            <div class="flex justify-between">
+                                <p class="text-sm text-gray-700">
+                                    {{ child.caption }}
+                                    <br>
+                                    <span *ngIf="child.is_assigned" class="text-xs cursor-pointer font-normal ml-auto">
+                                        <i class="pi pi-circle-fill text-emerald-500"
+                                            style="font-size: 10px;"></i>&nbsp;Assigned
+                                    </span>
+
+                                    <span *ngIf="!child.is_assigned" class="text-xs cursor-pointer font-normal ml-auto">
+                                        <i class="pi pi-circle-fill text-red-500"
+                                            style="font-size: 10px;"></i>&nbsp;Unassigned
+                                    </span>
+                                </p>
+
+                                <div class="flex ml-auto gap-3">
+                                    <span *ngIf="child.children.length" class="cursor-pointer"
+                                        (click)="child.toggle_children = !child.toggle_children">
+                                        <i class="pi pi-chevron-down" style="font-size: 12px;"></i>
+                                    </span>
+
+                                    <span class="cursor-pointer" (click)="op.toggle($event)">
+                                        <i class="pi pi-ellipsis-v" style="font-size: 12px;"></i>
+                                    </span>
+                                </div>
+
+                                <p-overlayPanel #op>
+                                    <div class="flex flex-col gap-0 w-[11rem]">
+                                        <div class="flex items-center gap-2 cursor-pointer"
+                                            (click)="handleChangeStatusAssign(child.is_assigned, child.id_menu, item.id_role, child.id_role_menu)">
+                                            <i class="pi pi-send" style="font-size: 11px"></i>
+                                            <p class="text-sm text-gray-700">
+                                                Ubah Status Assign
+                                            </p>
+                                        </div>
+                                    </div>
+                                </p-overlayPanel>
+                            </div>
+
+
+                            <!-- Subchildren -->
+                            <div *ngIf="child.children.length" id="sub_children_{{ child.id_menu }}"
+                                class="{{ child.toggle_children ? 'flex' : 'hidden'}} flex-col gap-3 justify-between mt-2 pt-2 pl-3 border-t border-b-0 border-x-0 border-gray-300 border-dashed">
+
+                                <div *ngFor="let subchild of child.children"
+                                    class="flex justify-between items-center p-2 rounded-md bg-gray-100">
+                                    <p class="text-sm text-gray-700">
+                                        {{ subchild.caption }}
+                                        <br>
+                                        <span *ngIf="subchild.is_assigned"
+                                            class="text-xs cursor-pointer font-normal ml-auto">
+                                            <i class="pi pi-circle-fill text-emerald-500"
+                                                style="font-size: 10px;"></i>&nbsp;Assigned
+                                        </span>
+
+                                        <span *ngIf="!subchild.is_assigned"
+                                            class="text-xs cursor-pointer font-normal ml-auto">
+                                            <i class="pi pi-circle-fill text-red-500"
+                                                style="font-size: 10px;"></i>&nbsp;Unassigned
+                                        </span>
+                                    </p>
+
+                                    <span class="cursor-pointer ml-auto" (click)="op.toggle($event)">
+                                        <i class="pi pi-ellipsis-v" style="font-size: 12px;"></i>
+                                    </span>
+
+                                    <p-overlayPanel #op>
+                                        <div class="flex flex-col gap-0 w-[11rem]">
+                                            <div class="flex items-center gap-2 cursor-pointer"
+                                                (click)="handleChangeStatusAssign(subchild.is_assigned, subchild.id_menu, item.id_role, subchild.id_role_menu)">
+                                                <i class="pi pi-send" style="font-size: 11px"></i>
+                                                <p class="text-sm text-gray-700">
+                                                    Ubah Status Assign
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </p-overlayPanel>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-dashboard>
