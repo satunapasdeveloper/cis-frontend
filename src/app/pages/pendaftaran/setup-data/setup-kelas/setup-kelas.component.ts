@@ -198,12 +198,11 @@ export class SetupKelasComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            this.FormComps.FormGroup.patchValue(args);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {

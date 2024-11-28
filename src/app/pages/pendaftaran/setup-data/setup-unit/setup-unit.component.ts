@@ -109,6 +109,14 @@ export class SetupUnitComponent implements OnInit, OnDestroy {
                     type: 'text',
                     value: '',
                 },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
+                },
             ],
             style: 'not_inline',
             class: 'grid-rows-2 grid-cols-1',
@@ -168,12 +176,11 @@ export class SetupUnitComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            this.FormComps.FormGroup.patchValue(args);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {
