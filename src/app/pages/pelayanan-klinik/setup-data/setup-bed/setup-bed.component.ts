@@ -12,7 +12,7 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { SetupBedState, SetupBedActions } from 'src/app/store/setup-data/bed';
-import { SetupKamarState } from 'src/app/store/setup-data/kamar';
+import { SetupKamarActions, SetupKamarState } from 'src/app/store/setup-data/kamar';
 
 @Component({
     selector: 'app-setup-bed',
@@ -45,22 +45,32 @@ export class SetupBedComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupBed',
         column: [
-            { field: 'no_kamar', headerName: 'No. Kamar', },
-            { field: 'nomor_bed', headerName: 'No. Bed', },
-            { field: 'tampilkan_di_antrian', headerName: 'Tampilkan Di Antrian', renderAsCheckbox: true, class: 'text-center' },
-            { field: 'sesuai_sk', headerName: 'Sesuai SK', renderAsCheckbox: true, class: 'text-center' },
-            { field: 'status_aktif', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'no_kamar', headerName: 'No. Kamar', class: 'text-blue-500 font-semibold' },
+            { field: 'no_bed', headerName: 'No. Bed' },
+            { field: 'is_tampilkan_antrian', headerName: 'Tampilkan Di Antrian', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'is_sesuai_sk', headerName: 'Sesuai SK', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'no_bed',
+                placeholder: 'Cari No. Bed Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'nomor_bed',
         searchPlaceholder: 'Cari No. Bed Disini'
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -83,7 +93,7 @@ export class SetupBedComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'id_kamar',
+                    id: 'id_bed_kamar',
                     label: 'Kamar',
                     required: true,
                     type: 'select',
@@ -96,25 +106,25 @@ export class SetupBedComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'nomor_bed',
+                    id: 'no_bed',
                     label: 'No. Bed',
                     required: true,
                     type: 'text',
                     value: '',
                 },
                 {
-                    id: 'tampilkan_di_antrian',
+                    id: 'is_tampilkan_antrian',
                     label: 'Tampilkan Di Antrian',
                     required: false,
                     type: 'radio',
                     radioButtonProps: [
                         {
-                            name: 'tampilkan_di_antrian',
+                            name: 'is_tampilkan_antrian',
                             label: 'Tidak',
                             value: false,
                         },
                         {
-                            name: 'tampilkan_di_antrian',
+                            name: 'is_tampilkan_antrian',
                             label: 'Iya',
                             value: true,
                         }
@@ -122,23 +132,31 @@ export class SetupBedComponent implements OnInit, OnDestroy {
                     value: false,
                 },
                 {
-                    id: 'sesuai_sk',
+                    id: 'is_sesuai_sk',
                     label: 'Sesuai SK',
                     required: false,
                     type: 'radio',
                     radioButtonProps: [
                         {
-                            name: 'sesuai_sk',
+                            name: 'is_sesuai_sk',
                             label: 'Tidak',
                             value: false,
                         },
                         {
-                            name: 'sesuai_sk',
+                            name: 'is_sesuai_sk',
                             label: 'Iya',
                             value: true,
                         }
                     ],
                     value: false,
+                },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
@@ -150,7 +168,7 @@ export class SetupBedComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getAll();
-        this.getAllKamar();
+        this.getKamarActiveState();
     }
 
     ngOnDestroy(): void {
@@ -160,27 +178,47 @@ export class SetupBedComponent implements OnInit, OnDestroy {
 
     private getAll() {
         this._store
-            .select(SetupBedState.bedEntities)
+            .select(SetupBedState.bedState)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get from setup poli =>", result);
-                    this.GridProps.dataSource = result;
+                    console.log(result);
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
 
-    private getAllKamar() {
+    private getKamarActiveState() {
         this._store
-            .select(SetupKamarState.kamarEntities)
+            .select(SetupKamarState.kamarActives)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result?.length) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_bed_kamar');
+                    this.FormProps.fields[index].dropdownProps.options = result.map((item: any) => {
+                        return {
+                            name: item.no_kamar,
+                            value: item.id_bed_kamar
+                        }
+                    })
+                } else {
+                    this.getAllKamarActive();
+                }
+            });
+    }
+
+    private getAllKamarActive() {
+        this._store
+            .dispatch(new SetupKamarActions.GetAllActiveKamar({ page: 1, count: 100 }))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_kamar');
-                    this.FormProps.fields[index].dropdownProps = result.map((item: any) => {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_bed_kamar');
+                    this.FormProps.fields[index].dropdownProps.options = result.setup_kamar.actives.map((item: any) => {
                         return {
                             name: item.no_kamar,
-                            value: item.id_kamar
+                            value: item.id_bed_kamar
                         }
                     })
                 }
@@ -217,19 +255,18 @@ export class SetupBedComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            this.FormComps.FormGroup.patchValue(args);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
+        if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
+                message: 'Data akan diubah statusnya',
                 header: 'Apakah Anda Yakin?',
                 icon: 'pi pi-info-circle',
                 acceptButtonStyleClass: "p-button-danger p-button-sm",
@@ -239,7 +276,8 @@ export class SetupBedComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.deleteBed(args.data.id_bed);
+                    console.log("data =>", args.data);
+                    this.updateStatusBed(args.data);
                 }
             });
         }
@@ -247,6 +285,16 @@ export class SetupBedComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+    }
+
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupBedActions.GetAllBed({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupBedActions.GetAllBed({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveBed(data: any) {
@@ -275,14 +323,14 @@ export class SetupBedComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteBed(id_bed: string) {
+    private updateStatusBed(data: any) {
         this._store
-            .dispatch(new SetupBedActions.DeleteBed(id_bed))
+            .dispatch(new SetupBedActions.UpdateStatusBed(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_bed.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
                 }
             })

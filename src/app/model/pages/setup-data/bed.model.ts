@@ -3,19 +3,30 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 export namespace BedModel {
     export interface IBed {
         id_bed: string
-        id_kamar: string
+        id_bed_kamar: string
         no_kamar: string;
-        nomor_bed: string
-        tampilkan_di_antrian: boolean
-        sesuai_sk: boolean
-        status_aktif: boolean
+        no_lantai: string;
+        no_bed: string;
+        is_tampilkan_antrian: boolean
+        is_sesuai_sk: boolean
+        is_active: boolean;
+    }
+
+    export interface IBedQueryParams {
+        page: number;
+        count: number;
+        no_bed?: string;
     }
 
     export class GetAllBed implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IBed[]
+        data!: {
+            page: string;
+            rows: IBed[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdBed implements HttpBaseResponse {
@@ -26,17 +37,18 @@ export namespace BedModel {
     }
 
     export interface CreateBed {
-        id_kamar: string
-        nomor_bed: string
-        tampilkan_di_antrian: boolean
-        sesuai_sk: boolean
+        id_bed_kamar: string
+        no_bed: string
+        is_tampilkan_antrian: boolean
+        is_sesuai_sk: boolean
     }
 
     export interface UpdateBed {
         id_bed: string
-        id_kamar: string
-        nomor_bed: string
-        tampilkan_di_antrian: boolean
-        sesuai_sk: boolean
+        id_bed_kamar: string
+        no_bed: string
+        is_tampilkan_antrian: boolean
+        is_sesuai_sk: boolean
+        is_active: boolean;
     }
 }

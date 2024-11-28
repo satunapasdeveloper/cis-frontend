@@ -7,7 +7,10 @@ import { SetupBedActions } from "./setup-bed.action";
 
 interface SetupBedStateModel {
     entities: BedModel.IBed[];
+    actives?: BedModel.IBed[];
     single?: BedModel.IBed;
+    query?: BedModel.IBedQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupBedStateModel {
     name: 'setup_bed',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,53 @@ export class SetupBedState {
     ) { }
 
     @Selector()
+    static bedState(state: SetupBedStateModel) {
+        return state;
+    }
+
+    @Selector()
     static bedEntities(state: SetupBedStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static bedTotalRows(state: SetupBedStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static bedActives(state: SetupBedStateModel) {
+        return state.actives;
+    }
+
+
     @Action(SetupBedActions.GetAllBed)
-    getAllBed(ctx: StateContext<SetupBedStateModel>) {
+    getAllBed(ctx: StateContext<SetupBedStateModel>, actions: any) {
         return this._setupBedService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupBedActions.GetAllActiveBed)
+    getAllActiveBed(ctx: StateContext<SetupBedStateModel>, actions: any) {
+        return this._setupBedService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        actives: result.data.rows,
                     });
                 })
             )
@@ -82,7 +120,8 @@ export class SetupBedState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupBedActions.GetAllBed());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupBedActions.GetAllBed(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +151,8 @@ export class SetupBedState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupBedActions.GetAllBed());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupBedActions.GetAllBed(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +182,8 @@ export class SetupBedState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupBedActions.GetAllBed());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupBedActions.GetAllBed(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +213,8 @@ export class SetupBedState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupBedActions.GetAllBed());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupBedActions.GetAllBed(state.query!));
                     } else {
                         return of([]);
                     }
