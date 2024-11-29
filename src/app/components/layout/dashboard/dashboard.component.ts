@@ -117,15 +117,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const sidebarEl = document.getElementById('sidebar') as HTMLElement;
         sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
 
-        let sidebarMenu = this._authenticationService.SidebarMenu$.value.map((item) => {
-            return {
-                ...item,
-                toggle_child: false
-            }
-        });
+        const navbarChild = JSON.parse(localStorage.getItem('_CIS_ACTIVE_MENU_') as any);
 
-        this._authenticationService.SidebarMenu$.next([]);
-        this._authenticationService.SidebarMenu$.next(sidebarMenu);
+        if (navbarChild.children) {
+            let sidebarMenu = navbarChild.children.map((item: any) => {
+                return {
+                    ...item,
+                    toggle_children: false
+                }
+            });
+
+            this.SidebarMenu$.next([]);
+            this.SidebarMenu$.next(sidebarMenu);
+        }
     }
 
     handleClickButtonNavigation(item: LayoutModel.IButtonNavigation) {
@@ -138,15 +142,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const sidebarEl = document.getElementById('sidebar') as HTMLElement;
         sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
 
-        let sidebarMenu = this._authenticationService.SidebarMenu$.value.map((item) => {
-            return {
-                ...item,
-                toggle_child: false
-            }
-        });
+        const navbarChild = JSON.parse(localStorage.getItem('_CIS_ACTIVE_MENU_') as any);
 
-        this._authenticationService.SidebarMenu$.next([]);
-        this._authenticationService.SidebarMenu$.next(sidebarMenu);
+        if (navbarChild.children) {
+            let sidebarMenu = navbarChild.children.map((item: any) => {
+                return {
+                    ...item,
+                    toggle_children: false
+                }
+            });
+
+            this.SidebarMenu$.next([]);
+            this.SidebarMenu$.next(sidebarMenu);
+        }
 
         this._router.navigateByUrl(item.url);
     }
