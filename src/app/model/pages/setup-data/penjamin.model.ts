@@ -3,15 +3,25 @@ import { HttpBaseResponse } from "../../http/http-request.model"
 export namespace PenjaminModel {
     export interface IPenjamin {
         id_penjamin: string
-        penjamin: string
-        status_aktif: boolean
+        nama_penjamin: string
+        is_active: boolean
+    }
+
+    export interface IPenjaminQueryParams {
+        page: number;
+        count: number;
+        nama_penjamin?: string;
     }
 
     export class GetAllPenjamin implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: IPenjamin[]
+        data!: {
+            page: string;
+            rows: IPenjamin[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdPenjamin implements HttpBaseResponse {
@@ -22,11 +32,12 @@ export namespace PenjaminModel {
     }
 
     export interface CreatePenjamin {
-        penjamin: string
+        nama_penjamin: string
     }
 
     export interface UpdatePenjamin {
         id_penjamin: string
-        penjamin: string
+        nama_penjamin: string
+        is_active: boolean
     }
 }

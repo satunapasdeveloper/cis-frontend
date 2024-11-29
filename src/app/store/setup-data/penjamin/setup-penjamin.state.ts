@@ -7,7 +7,10 @@ import { SetupPenjaminActions } from "./setup-penjamin.action";
 
 interface SetupPenjaminStateModel {
     entities: PenjaminModel.IPenjamin[];
+    actives?: PenjaminModel.IPenjamin[];
     single?: PenjaminModel.IPenjamin;
+    query?: PenjaminModel.IPenjaminQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupPenjaminStateModel {
     name: 'setup_penjamin',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,52 @@ export class SetupPenjaminState {
     ) { }
 
     @Selector()
+    static penjaminState(state: SetupPenjaminStateModel) {
+        return state;
+    }
+
+    @Selector()
     static penjaminEntities(state: SetupPenjaminStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static penjaminTotalRows(state: SetupPenjaminStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static penjaminActives(state: SetupPenjaminStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupPenjaminActions.GetAllPenjamin)
-    getAllPenjamin(ctx: StateContext<SetupPenjaminStateModel>) {
+    getAllPenjamin(ctx: StateContext<SetupPenjaminStateModel>, actions: any) {
         return this._setupPenjaminService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupPenjaminActions.GetAllActivePenjamin)
+    getAllActivePenjamin(ctx: StateContext<SetupPenjaminStateModel>, actions: any) {
+        return this._setupPenjaminService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        actives: result.data.rows,
                     });
                 })
             )
@@ -82,7 +119,8 @@ export class SetupPenjaminState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +150,8 @@ export class SetupPenjaminState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +181,8 @@ export class SetupPenjaminState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +212,8 @@ export class SetupPenjaminState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupPenjaminActions.GetAllPenjamin(state.query!));
                     } else {
                         return of([]);
                     }

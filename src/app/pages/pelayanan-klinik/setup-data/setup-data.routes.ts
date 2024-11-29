@@ -76,6 +76,26 @@ export const setupDataRoutes: Route[] = [
         }
     },
     {
+        path: 'setup-menu',
+        loadComponent: async () => (await import('./setup-menu/setup-menu.component')).SetupMenuComponent,
+        data: {
+            title: 'Setup Menu',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Menu"
+            ]
+        }
+    },
+    {
+        path: 'setting-role-menu',
+        loadComponent: async () => (await import('./setting-role-menu/setting-role-menu.component')).SettingRoleMenuComponent,
+        data: {
+            title: 'Setting Role Menu',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setting Role"
+            ]
+        }
+    },
+    {
         path: 'setup-nakes',
         loadComponent: async () => (await import('./setup-nakes/setup-nakes.component')).SetupNakesComponent,
         data: {

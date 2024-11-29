@@ -13,7 +13,7 @@
                 </p>
 
                 <p class="{{ ShowSidebar ? 'text-gray-600' : 'text-transparent' }}  text-sm transition-all">
-                    {{ user.layanan }}
+                    {{ user.nama_jabatan | titlecase }}
                 </p>
             </div>
 
@@ -32,12 +32,12 @@
             <div *ngIf="SidebarMenu$ | async as sidebar_menu" class="flex-col gap-2 overflow-x-auto"
                 style="height: calc(100vh - 10rem);">
                 <div *ngFor="let item of sidebar_menu" class="flex flex-col w-full pr-3"
-                    (click)="item.sidebarChild ? item.toggle_child = !item.toggle_child : handleClickSidebarMenu(item)">
+                    (click)="item.children.length ? item.toggle_children = !item.toggle_children : handleClickSidebarMenu(item)">
 
                     <div
                         class="flex w-full {{ ShowSidebar ? 'items-center' : '' }} p-2 gap-2 cursor-pointer hover:bg-sky-100 text-gray-700 hover:text-sky-700 rounded-md transition-all duration-75 {{ item.sidebarChild && item.toggle_child ? 'mb-0' : 'mb-0' }}">
-                        <div *ngIf="item.sidebarChild && ShowSidebar" class="w-1/12">
-                            <i class="pi pi-chevron-{{ item.toggle_child ? 'down' : 'right' }}"
+                        <div *ngIf="item.children.length && ShowSidebar" class="w-1/12">
+                            <i class="pi pi-chevron-{{ item.toggle_children ? 'down' : 'right' }}"
                                 style="font-size: 10px;">
                             </i>
                         </div>
@@ -55,9 +55,9 @@
                         </div>
                     </div>
 
-                    <div *ngIf="item.sidebarChild && item.toggle_child"
+                    <div *ngIf="item.children.length && item.toggle_children"
                         class="w-full flex flex-col pl-7 py-1 gap-2 cursor-pointer">
-                        <span *ngFor="let child of item.sidebarChild"
+                        <span *ngFor="let child of item.children"
                             class="flex text-gray-700 hover:bg-sky-100 hover:rounded-md p-2 items-center hover:text-sky-700 tracking-normal transition-all"
                             style="font-size: 14px;" (click)="handleClickSidebarMenu(child)">
                             <p *ngIf="ShowSidebar" class="ml-2 p-0 mt-0 mb-0">

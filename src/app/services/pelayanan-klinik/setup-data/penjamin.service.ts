@@ -14,29 +14,39 @@ export class PenjaminService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(): Observable<PenjaminModel.GetAllPenjamin> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Penjamin/GetAll`);
+    getAll(query: PenjaminModel.IPenjaminQueryParams): Observable<PenjaminModel.GetAllPenjamin> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-penjamin/getAll`, query);
+    }
+
+    getAllActive(query: PenjaminModel.IPenjaminQueryParams): Observable<PenjaminModel.GetAllPenjamin> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-penjamin/getForLookUp`, query);
     }
 
     getById(id_penjamin: string): Observable<PenjaminModel.GetByIdPenjamin> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Penjamin/GetByUuid/${id_penjamin}`);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-penjamin/getById/${id_penjamin}`);
     }
 
     create(payload: PenjaminModel.CreatePenjamin): Observable<HttpBaseResponse> {
         delete (<any>payload)['id_penjamin'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Penjamin/Create`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-penjamin/create`, payload);
     }
 
     update(payload: PenjaminModel.UpdatePenjamin): Observable<HttpBaseResponse> {
         const { id_penjamin, ...data } = payload;
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Penjamin/Update/${payload.id_penjamin}`, data);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-penjamin/update/${id_penjamin}`, data);
     }
 
-    updateStatus(id_penjamin: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Penjamin/UpdateStatus/${id_penjamin}`, null);
+    updateStatus(payload: PenjaminModel.UpdatePenjamin): Observable<HttpBaseResponse> {
+        const { id_penjamin, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-penjamin/update/${id_penjamin}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 
     delete(id_penjamin: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/Penjamin/Delete/${id_penjamin}`);
+        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/setup-penjamin/delete/${id_penjamin}`);
     }
 }

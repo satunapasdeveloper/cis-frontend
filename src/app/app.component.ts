@@ -19,6 +19,8 @@ import { SetupJabatanActions } from './store/setup-data/jabatan';
 import { SetupRoleActions } from './store/setup-data/role';
 import { SetupKategoriKamarActions } from './store/setup-data/kategori-kamar';
 import { SetupKamarActions } from './store/setup-data/kamar';
+import { SetupBedActions } from './store/setup-data/bed';
+import { SetupPenjaminActions } from './store/setup-data/penjamin';
 
 @Component({
     selector: 'app-root',
@@ -107,6 +109,16 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All Kamar
         this._store
             .dispatch(new SetupKamarActions.GetAllKamar({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Bed
+        this._store
+            .dispatch(new SetupBedActions.GetAllBed({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Penjamin
+        this._store
+            .dispatch(new SetupPenjaminActions.GetAllPenjamin({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
     }
 

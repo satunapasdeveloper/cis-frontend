@@ -20,7 +20,7 @@ export class AuthenticationService {
         },
         {
             id: '2',
-            caption: 'Pelayanan Klinik',
+            caption: 'Pelayanan',
             icon: 'pi pi-user'
         },
         {
@@ -136,20 +136,6 @@ export class AuthenticationService {
                     toggle_child: false,
                     url: '/pelayanan-klinik/setup-data/setup-jabatan'
                 },
-                {
-                    id: '217',
-                    caption: 'Setup Role',
-                    icon: 'pi pi-star-fill',
-                    toggle_child: false,
-                    url: '/pelayanan-klinik/setup-data/setup-role'
-                },
-                {
-                    id: '218',
-                    caption: 'Setup Nakes',
-                    icon: 'pi pi-users',
-                    toggle_child: false,
-                    url: '/pelayanan-klinik/setup-data/setup-nakes'
-                },
                 // {
                 //     id: '12',
                 //     caption: 'Setup Item',
@@ -195,6 +181,43 @@ export class AuthenticationService {
             icon: 'pi pi-file-edit',
             toggle_child: false,
             url: '/pelayanan-klinik/rekam-medis/data'
+        },
+        {
+            id: '24',
+            navbar_id: '2',
+            caption: 'Management User',
+            icon: 'pi pi-user',
+            toggle_child: false,
+            sidebarChild: [
+                {
+                    id: '241',
+                    caption: 'Setup Role',
+                    icon: 'pi pi-star-fill',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setup-role'
+                },
+                {
+                    id: '242',
+                    caption: 'Setup Menu',
+                    icon: 'pi pi-bars',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setup-menu'
+                },
+                {
+                    id: '243',
+                    caption: 'Setting Role Menu',
+                    icon: 'pi pi-check-square',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setting-role-menu'
+                },
+                {
+                    id: '244',
+                    caption: 'Setup Nakes',
+                    icon: 'pi pi-users',
+                    toggle_child: false,
+                    url: '/pelayanan-klinik/setup-data/setup-nakes'
+                },
+            ]
         },
         // !! Farmasi Sidebar Menu
         {
@@ -378,7 +401,7 @@ export class AuthenticationService {
 
     signIn(payload: AuthenticationModel.ISignIn): Observable<AuthenticationModel.SignIn> {
         return this._httpRequestService
-            .postRequest(`https://apidevklinik.satunapas.com/api/v1/satunapas/auth/login`, payload)
+            .postRequest(`${environment.webApiUrl}/authentication/login`, payload)
             .pipe(
                 tap((result) => {
                     if (result.responseResult) {
@@ -415,7 +438,7 @@ export class AuthenticationService {
         return { ...JSON.parse(user_data as any), ...JSON.parse(layanan_data as any) };
     }
 
-    setSidebarMenu(navbar_id: string) {
+    wsetSidebarMenu(navbar_id: string) {
         const sidebarMenu = this.AllSidebarMenu$.value.filter(item => item.navbar_id == navbar_id);
         localStorage.setItem('_CIS_MENU_SIDEBAR_', JSON.stringify(sidebarMenu));
         this.SidebarMenu$.next(sidebarMenu);

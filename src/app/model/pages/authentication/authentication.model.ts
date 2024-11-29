@@ -4,9 +4,11 @@ export namespace AuthenticationModel {
     export interface IAuthentication {
         nama: string
         username: string
-        layanan: string
-        host: string
-        token: string
+        nama_jabatan: string
+        nama_poli: string
+        id_role: number;
+        nama_role: string
+        access_token: string
     }
 
     export interface INavbarMenu {

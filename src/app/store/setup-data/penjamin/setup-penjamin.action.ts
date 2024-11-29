@@ -3,6 +3,12 @@ import { PenjaminModel } from "src/app/model/pages/setup-data/penjamin.model";
 export namespace SetupPenjaminActions {
     export class GetAllPenjamin {
         static readonly type = '[PENJAMIN] Get All Penjamin';
+        constructor(public payload: PenjaminModel.IPenjaminQueryParams) { }
+    }
+
+    export class GetAllActivePenjamin {
+        static readonly type = '[PENJAMIN] Get All Active Penjamin';
+        constructor(public payload: PenjaminModel.IPenjaminQueryParams) { }
     }
 
     export class GetByIdPenjamin {
@@ -22,7 +28,7 @@ export namespace SetupPenjaminActions {
 
     export class UpdateStatusPenjamin {
         static readonly type = '[PENJAMIN] Update Status Penjamin';
-        constructor(public payload: string) { }
+        constructor(public payload: PenjaminModel.UpdatePenjamin) { }
     }
 
     export class DeletePenjamin {

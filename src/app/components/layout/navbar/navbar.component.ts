@@ -5,11 +5,12 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DividerModule } from 'primeng/divider'
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, of, Subject, takeUntil } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { AuthenticationModel } from 'src/app/model/pages/authentication/authentication.model';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { SettingRoleMenuService } from 'src/app/services/pelayanan-klinik/setup-data/setting-role-menu.service';
 
 @Component({
     selector: 'app-navbar',
@@ -30,9 +31,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     ShowTopMenu = false;
 
-    NavbarMenu$ = this._authenticationService
-        .NavbarMenu$
-        .pipe(takeUntil(this.Destroy$));
+    NavbarMenu$ = new BehaviorSubject<any[]>([]);
 
     SelectedNavbarMenu: any;
 
@@ -47,16 +46,32 @@ export class NavbarComponent implements OnInit, OnDestroy {
         private _messageService: MessageService,
         private _utilityService: UtilityService,
         private _authenticationService: AuthenticationService,
+        private _settingRoleMenuService: SettingRoleMenuService,
     ) { }
 
     ngOnInit(): void {
         this.SelectedNavbarMenu = JSON.parse(localStorage.getItem('_CIS_ACTIVE_MENU_')!);
+        this.getAllNavbar();
+    }
+
+    private getAllNavbar() {
+        const userData = this._authenticationService.UserData$.value;
+
+        if (userData) {
+            this._settingRoleMenuService
+                .getAll(userData.id_role)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result: any) => {
+                    const navbar = result.data.filter((item: any) => item.is_assigned == true);
+                    this.NavbarMenu$.next(navbar);
+                })
+        }
     }
 
     handleClickNavbarMenu(item: AuthenticationModel.INavbarMenu) {
         localStorage.setItem('_CIS_ACTIVE_MENU_', JSON.stringify(item));
         this.SelectedNavbarMenu = item;
-        this._authenticationService.setSidebarMenu(item.id);
+        this._utilityService.ShowSidebar$.next(false);
         this._utilityService.ShowSidebar$.next(true);
     }
 
@@ -71,7 +86,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     getMenu(): any {
-        const menu = this._authenticationService.AllSidebarMenu$.value;
+        const menu = this.NavbarMenu$.value;
 
         let flatArray: any[] = [];
 
@@ -103,7 +118,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     handleNavigateToMenu(menu: AuthenticationModel.ISidebarMenu) {
         const selectedNavbar = this._authenticationService.NavbarMenu$.value.find(item => item.id == menu.navbar_id);
         this.SelectedNavbarMenu = selectedNavbar;
-        this._authenticationService.setSidebarMenu(selectedNavbar!.id);
         localStorage.setItem('_CIS_ACTIVE_MENU_', JSON.stringify(selectedNavbar));
 
         this._router.navigateByUrl(menu.url!);

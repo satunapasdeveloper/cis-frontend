@@ -3,6 +3,12 @@ import { BedModel } from "src/app/model/pages/setup-data/bed.model";
 export namespace SetupBedActions {
     export class GetAllBed {
         static readonly type = '[BED] Get All Bed';
+        constructor(public payload: BedModel.IBedQueryParams) { }
+    }
+
+    export class GetAllActiveBed {
+        static readonly type = '[BED] Get All Active Bed';
+        constructor(public payload: BedModel.IBedQueryParams) { }
     }
 
     export class GetByIdBed {

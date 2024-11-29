@@ -59,7 +59,8 @@
         [(selection)]="SelectedRow" sortMode="multiple" [paginator]="false">
         <ng-template pTemplate="header" let-columns>
             <tr class="bg-gray-100">
-                <th *ngFor="let col of columns" class="text-sm" [pSortableColumn]="col.field">
+                <th *ngFor="let col of columns" class="text-sm {{ col.class == 'text-center' ? 'text-center' : '' }}"
+                    [pSortableColumn]="col.field">
                     {{ col.headerName }} <p-sortIcon [field]="col.field" style="font-size: 12px" />
                 </th>
                 <th *ngIf="props.toolbar" class="text-sm text-center">
@@ -133,7 +134,8 @@
             [tableStyle]="{'min-width': 'auto'}" selectionMode="single" [(selection)]="SelectedRow">
             <ng-template pTemplate="header" let-columns>
                 <tr class="bg-gray-100">
-                    <th *ngFor="let col of columns" class="text-sm">
+                    <th *ngFor="let col of columns"
+                        class="text-sm {{ col.class == 'text-center' ? 'text-center' : '' }}">
                         {{ col.headerName }}
                     </th>
                     <th *ngIf="props.toolbar" class="text-sm text-center">

@@ -44,14 +44,14 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                     label: 'Username',
                     required: true,
                     type: 'text',
-                    value: 'triaCIS0011',
+                    value: 'admin',
                 },
                 {
                     id: 'password',
                     label: 'Password',
                     required: true,
                     type: 'password',
-                    value: 'n5ke0zib',
+                    value: 'his123!',
                 },
             ],
             style: 'not_inline',
@@ -83,7 +83,6 @@ export class AuthenticationComponent implements OnInit, OnDestroy {
                 .pipe(takeUntil(this.Destroy$))
                 .subscribe((result) => {
                     if (result.responseResult) {
-                        this._authenticationService.getProfile();
                         this._authenticationService.setUserData();
                         this._router.navigateByUrl("beranda");
                     }
