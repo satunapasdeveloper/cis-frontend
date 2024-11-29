@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ButtonModule } from 'primeng/button';
-import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, of, Subject, takeUntil, tap } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
@@ -28,9 +28,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     ShowSidebar = false;
 
-    SidebarMenu$ =
-        this._authenticationService.SidebarMenu$
-            .pipe(takeUntil(this.Destroy$));
+    SidebarMenu$ = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('_CIS_ACTIVE_MENU_') as any));
 
     UserData$ =
         this._authenticationService.UserData$
@@ -73,6 +71,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 this.ShowSidebar = result;
 
+                const navbarChild = JSON.parse(localStorage.getItem('_CIS_ACTIVE_MENU_') as any);
+
                 if (result) {
                     const sidebarEl = document.getElementById('sidebar') as HTMLElement;
                     sidebarEl.classList.replace("w-[5rem]", "w-[24rem]");
@@ -80,15 +80,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     const sidebarEl = document.getElementById('sidebar') as HTMLElement;
                     sidebarEl.classList.replace("w-[24rem]", "w-[5rem]");
 
-                    let sidebarMenu = this._authenticationService.SidebarMenu$.value.map((item) => {
-                        return {
-                            ...item,
-                            toggle_child: false
-                        }
-                    });
+                    if (navbarChild.children) {
+                        let sidebarMenu = navbarChild.children.map((item: any) => {
+                            return {
+                                ...item,
+                                toggle_children: false
+                            }
+                        });
 
-                    this._authenticationService.SidebarMenu$.next([]);
-                    this._authenticationService.SidebarMenu$.next(sidebarMenu);
+                        this.SidebarMenu$.next([]);
+                        this.SidebarMenu$.next(sidebarMenu);
+                    }
                 }
             });
     }

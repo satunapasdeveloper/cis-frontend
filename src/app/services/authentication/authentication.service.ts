@@ -401,7 +401,7 @@ export class AuthenticationService {
 
     signIn(payload: AuthenticationModel.ISignIn): Observable<AuthenticationModel.SignIn> {
         return this._httpRequestService
-            .postRequest(`https://apidevklinik.satunapas.com/api/v1/satunapas/auth/login`, payload)
+            .postRequest(`${environment.webApiUrl}/authentication/login`, payload)
             .pipe(
                 tap((result) => {
                     if (result.responseResult) {
@@ -438,7 +438,7 @@ export class AuthenticationService {
         return { ...JSON.parse(user_data as any), ...JSON.parse(layanan_data as any) };
     }
 
-    setSidebarMenu(navbar_id: string) {
+    wsetSidebarMenu(navbar_id: string) {
         const sidebarMenu = this.AllSidebarMenu$.value.filter(item => item.navbar_id == navbar_id);
         localStorage.setItem('_CIS_MENU_SIDEBAR_', JSON.stringify(sidebarMenu));
         this.SidebarMenu$.next(sidebarMenu);
