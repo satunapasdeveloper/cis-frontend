@@ -3,7 +3,7 @@ import { HttpRequestService } from '../../http/http-request.service';
 import { PasienModel } from 'src/app/model/pages/pasien/pasien.model';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { HttpBaseResponse, PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
+import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
 
 @Injectable({
     providedIn: 'root'
@@ -14,25 +14,43 @@ export class PasienService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(parameter?: PostRequestByDynamicFiterModel[]): Observable<PasienModel.GetAllPasien> {
-        const filter = { filter: parameter ? parameter : [] };
+    getAll(query: PasienModel.IPasienQueryParams): Observable<PasienModel.GetAllPasien> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-pasien/getAll`, query);
+    }
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/pasien/GetAllPasienByParams`, filter);
+    getAllActive(query: PasienModel.IPasienQueryParams): Observable<PasienModel.GetAllPasien> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-pasien/getForLookUp`, query);
     }
 
     getById(id_pasien: string): Observable<PasienModel.GetByIdPasien> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/pasien/GetPasienById/${id_pasien}`, null);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-pasien/getById/${id_pasien}`);
     }
 
     create(payload: PasienModel.CreatePasien): Observable<HttpBaseResponse> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/pasien/PendaftaranPasienBaru`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-pasien/create`, payload);
     }
 
     update(payload: PasienModel.UpdatePasien): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/pasien/UpdateDataPasien`, payload);
+        const { id_pasien, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-pasien/update/${id_pasien}`, data);
     }
 
-    updateStatus(id_pasien: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/pasien/UpdateActivePasien`, { id_pasien: id_pasien });
+    updateStatus(payload: PasienModel.UpdatePasien): Observable<HttpBaseResponse> {
+        const { id_pasien, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-pasien/update/${id_pasien}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
+    }
+
+    createPenjamin(payload: PasienModel.CreatePenjamin): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-pasien/createDetailPenjamin`, payload);
+    }
+
+    updatePenjamin(payload: PasienModel.UpdatePenjamin): Observable<HttpBaseResponse> {
+        const { id_pasien_penjamin, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-pasien/updatePasienPenjamin/${id_pasien_penjamin}`, data);
     }
 }

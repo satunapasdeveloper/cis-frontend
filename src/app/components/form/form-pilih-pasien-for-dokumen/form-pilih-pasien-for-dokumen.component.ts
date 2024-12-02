@@ -96,12 +96,12 @@ export class FormPilihPasienForDokumenComponent implements OnInit, OnDestroy {
             });
         }
 
-        this._pasienService
-            .getAll(payload)
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                this.PasienDatasource = result.data;
-            })
+        // this._pasienService
+        //     .getAll(payload)
+        //     .pipe(takeUntil(this.Destroy$))
+        //     .subscribe((result) => {
+        //         this.PasienDatasource = result.data;
+        //     })
     }
 
     handleListenFormChanges() {

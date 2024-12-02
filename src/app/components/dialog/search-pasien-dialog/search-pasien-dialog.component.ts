@@ -52,10 +52,10 @@ export class SearchPasienDialogComponent {
 
     private onSearchPasien(parameter?: any[]) {
         this._pasienService
-            .getAll(parameter)
+            .getAll({ page: 1, count: 10 })
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.DataPasien = result.data;
+                    this.DataPasien = result.data.rows;
                 }
             })
     }
