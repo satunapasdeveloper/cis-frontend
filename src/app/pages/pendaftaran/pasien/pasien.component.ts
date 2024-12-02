@@ -18,20 +18,30 @@ import { LokasiService } from 'src/app/services/pelayanan-klinik/setup-data/loka
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PasienModel } from 'src/app/model/pages/pasien/pasien.model';
+import { MinioService } from 'src/app/services/minio/minio.service';
+import { UtilityService } from 'src/app/services/utility/utility.service';
+import { SetupPenjaminActions } from 'src/app/store/setup-data/penjamin';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-pasien',
     standalone: true,
     imports: [
         CommonModule,
+        FormsModule,
         DashboardComponent,
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
         FormsModule,
+        InputTextModule,
         InputSwitchModule,
         InputTextareaModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        DropdownModule,
+        CalendarModule,
     ],
     templateUrl: './pasien.component.html',
     styleUrl: './pasien.component.scss'
@@ -104,6 +114,9 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
     FormLainLainProps!: FormModel.IForm;
     @ViewChild('FormLainLainComps') FormLainLainComps!: DynamicFormComponent;
 
+    FormFoto: FormModel.IForm;
+    @ViewChild('FormFotoComps') FormFotoComps!: DynamicFormComponent;
+
     IsBayiLahir: boolean = false;
 
     Alamat: string = "";
@@ -112,13 +125,19 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
 
     IsAlamatDomisiliSame: boolean = false;
 
+    PenjaminDatasource: any[] = [];
+
+    PenjaminPasien: any[] = [];
+
     constructor(
         private _store: Store,
         private _router: Router,
+        private _minioService: MinioService,
         private _pasienService: PasienService,
         private _lokasiService: LokasiService,
         private _titleCasePipe: TitleCasePipe,
         private _activatedRoute: ActivatedRoute,
+        private _utilityService: UtilityService,
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
     ) {
@@ -135,11 +154,29 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'identitas_lain',
+                    id: 'id_pasien_satu_sehat',
+                    label: 'Id Satu Sehat',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
+                    id: 'wna',
+                    label: 'WNA',
+                    required: false,
+                    type: 'text',
+                    value: false,
+                    hidden: true,
+                },
+                {
+                    id: 'no_identitas_lain',
                     label: 'No. Identitas Lain (Khusus WNA)',
                     required: false,
                     type: 'text',
                     value: '',
+                    onChange: (args: any) => {
+                        this.FormIdentitasComps.FormGroup.get('wna')?.setValue(args ? true : false)
+                    }
                 },
                 {
                     id: 'nama_pasien',
@@ -185,9 +222,27 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     },
                     value: '',
                 },
+                {
+                    id: 'golongan_darah',
+                    label: 'Golongan Darah',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [
+                            { name: 'A', value: 'A' },
+                            { name: 'B', value: 'B' },
+                            { name: 'AB', value: 'AB' },
+                            { name: 'O', value: 'O' },
+                        ],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
             ],
             style: 'not_inline',
-            class: 'grid-rows-4 grid-cols-2',
+            class: 'grid-rows-5 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -234,6 +289,24 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                         options: [
                             { name: 'Laki - Laki', value: 'L' },
                             { name: 'Perempuan', value: 'P' },
+                        ],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
+                    id: 'golongan_darah',
+                    label: 'Golongan Darah',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [
+                            { name: 'A', value: 'A' },
+                            { name: 'B', value: 'B' },
+                            { name: 'AB', value: 'AB' },
+                            { name: 'O', value: 'O' },
                         ],
                         optionName: 'name',
                         optionValue: 'value',
@@ -569,11 +642,66 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             state: 'write',
             defaultValue: null,
         };
+
+        this.FormFoto = {
+            id: 'form_foto_nakes',
+            fields: [
+                {
+                    id: 'file_foto',
+                    label: 'Foto',
+                    required: false,
+                    type: 'fileinput',
+                    file_accept: 'image/*',
+                    value: '',
+                    onChange: (files: File) => {
+                        if (files) {
+                            const type = files.name.split("."),
+                                fileName =
+                                    this.FormState == 'insert' ?
+                                        `pasien_${new Date().getTime()}.${type[1]}` :
+                                        (this.FormFotoComps.FormGroup.get('file_foto_name')?.value ?
+                                            this.FormFotoComps.FormGroup.get('file_foto_name')?.value :
+                                            `pasien_${new Date().getTime()}.${type[1]}`);
+
+                            this._minioService
+                                .generatePresignedUrl('iptv', fileName)
+                                .pipe(takeUntil(this.Destroy$))
+                                .subscribe((result) => {
+                                    if (result.data) {
+                                        this.handleUploadFile(result.data, files, fileName);
+                                    }
+                                })
+                        }
+                    }
+                },
+                {
+                    id: 'file_foto_url',
+                    label: 'Image URL',
+                    required: false,
+                    hidden: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
+                    id: 'file_foto_name',
+                    label: 'Image Name',
+                    required: false,
+                    hidden: true,
+                    type: 'text',
+                    value: '',
+                },
+            ],
+            style: 'not_inline',
+            class: 'grid-rows-1 grid-cols-1',
+            state: 'write',
+            defaultValue: null,
+        };
     }
 
     ngOnInit(): void {
         this.getAll({ page: 1, count: 5 });
         this.getProvinsi();
+        this.getAllActivePenjamin();
     }
 
     ngAfterViewInit(): void {
@@ -696,6 +824,17 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             })
     }
 
+    private getAllActivePenjamin() {
+        this._store
+            .dispatch(new SetupPenjaminActions.GetAllActivePenjamin({ page: 1, count: 100 }))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_penjamin.actives) {
+                    this.PenjaminDatasource = result.setup_penjamin.actives;
+                }
+            })
+    }
+
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
             this.PageState = 'form';
@@ -783,6 +922,9 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             }, 1000);
 
             this.FormLainLainComps.FormGroup.patchValue(args);
+
+            this.FormFotoComps.FormGroup.patchValue(args);
+            this.FormFotoComps.ImagePreviews['file_foto'] = args.file_foto_url;
         }, 100);
     }
 
@@ -826,6 +968,50 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams })
     }
 
+    private handleUploadFile(url: string, file: File, fileName: string) {
+        this._utilityService.ShowLoading$.next(true);
+
+        this._minioService
+            .uploadFile(url, file)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                console.log("uploading file...");
+                console.log("trying get url...");
+                this.getUrlFileUploaded(fileName);
+            })
+    }
+
+    private getUrlFileUploaded(fileName: string) {
+        this._minioService
+            .getUrlFile('iptv', fileName)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.data) {
+                    this.FormFotoComps.FormGroup.get('file_foto_url')?.setValue(result.data);
+                    this.FormFotoComps.FormGroup.get('file_foto_name')?.setValue(fileName);
+                    this._utilityService.ShowLoading$.next(false);
+                }
+            })
+    }
+
+    handleAddNewPenjamin() {
+        this.PenjaminPasien.push({
+            id_penjamin: 0,
+            nama_penjamin: "",
+            nomor_penjamin: '',
+            tanggal_berlaku: '',
+            tanggal_expired: '',
+            is_default: this.PenjaminPasien.length < 1 ? true : false,
+            is_active: true,
+        });
+    }
+
+    handleDeletePenjamin(index: number) {
+        if (this.PenjaminPasien.length > 1) {
+            this.PenjaminPasien.splice(index, 1);
+        }
+    }
+
     savePasien() {
         let alamat_form = this.FormAlamatComps.FormGroup.value,
             alamat_domisili_form = this.FormAlamatDomisiliComps ? this.FormAlamatDomisiliComps.FormGroup.value : null,
@@ -857,7 +1043,9 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             },
             identitas = {
                 nik: !this.IsBayiLahir ? identitas_form.nik : identitas_bayi_form.nik_ibu_kandung,
-                identitas_lain: !this.IsBayiLahir ? identitas_form.identitas_lain : null,
+                id_pasien_satu_sehat: !this.IsBayiLahir ? identitas_form.id_pasien_satu_sehat : "",
+                wna: !this.IsBayiLahir ? (identitas_form.wna ? identitas_form.wna : false) : false,
+                identitas_lain: !this.IsBayiLahir ? identitas_form.identitas_lain : "",
                 nama_pasien: !this.IsBayiLahir ? identitas_form.nama_pasien : identitas_bayi_form.nama_pasien,
                 nik_ibu_kandung: !this.IsBayiLahir ? identitas_form.nama_ibu_kandung : identitas_bayi_form.nik_ibu_kandung,
                 nama_ibu_kandung: !this.IsBayiLahir ? identitas_form.nama_ibu_kandung : identitas_bayi_form.nama_ibu_kandung,
@@ -874,20 +1062,22 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             ...alamat_form,
             ...alamat_domisili,
             ...this.FormLainLainComps.FormGroup.value,
+            ...this.FormFotoComps.FormGroup.value,
+            detail_penjamin: this.PenjaminPasien
         };
 
-        console.log("payload =>", payload);
+        console.log("payload insert =>", payload);
 
-        // this._pasienService
-        //     .create(payload)
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result.responseResult) {
-        //             this._messageService.clear();
-        //             this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Disimpan' });
-        //             this.handleBackToList();
-        //         }
-        //     })
+        this._pasienService
+            .create(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Disimpan' });
+                    this.handleBackToList();
+                }
+            })
     }
 
     updatePasien() {
