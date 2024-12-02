@@ -7,7 +7,10 @@ import { SetupNakesActions } from "./setup-nakes.action";
 
 interface SetupNakesStateModel {
     entities: NakesModel.INakes[];
+    actives?: NakesModel.INakes[];
     single?: NakesModel.INakes;
+    query?: NakesModel.INakesQueryParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupNakesStateModel {
     name: 'setup_nakes',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -26,20 +31,52 @@ export class SetupNakesState {
     ) { }
 
     @Selector()
+    static nakesState(state: SetupNakesStateModel) {
+        return state;
+    }
+
+    @Selector()
     static nakesEntities(state: SetupNakesStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static nakesTotalRows(state: SetupNakesStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static nakesActives(state: SetupNakesStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupNakesActions.GetAllNakes)
-    getAllNakes(ctx: StateContext<SetupNakesStateModel>) {
+    getAllNakes(ctx: StateContext<SetupNakesStateModel>, actions: any) {
         return this._setupNakesService
-            .getAll()
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupNakesActions.GetAllActiveNakes)
+    getAllActiveNakes(ctx: StateContext<SetupNakesStateModel>, actions: any) {
+        return this._setupNakesService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        actives: result.data.rows,
                     });
                 })
             )
@@ -82,7 +119,8 @@ export class SetupNakesState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupNakesActions.GetAllNakes());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupNakesActions.GetAllNakes(state.query!));
                     } else {
                         return of([]);
                     }
@@ -112,7 +150,8 @@ export class SetupNakesState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupNakesActions.GetAllNakes());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupNakesActions.GetAllNakes(state.query!));
                     } else {
                         return of([]);
                     }
@@ -142,7 +181,8 @@ export class SetupNakesState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupNakesActions.GetAllNakes());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupNakesActions.GetAllNakes(state.query!));
                     } else {
                         return of([]);
                     }
@@ -172,7 +212,8 @@ export class SetupNakesState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupNakesActions.GetAllNakes());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupNakesActions.GetAllNakes(state.query!));
                     } else {
                         return of([]);
                     }

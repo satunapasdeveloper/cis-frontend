@@ -26,7 +26,6 @@ export namespace KamarModel {
         no_lantai?: string;
     }
 
-
     export class GetAllKamar implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number

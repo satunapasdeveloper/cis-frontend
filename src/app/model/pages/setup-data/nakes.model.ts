@@ -5,26 +5,39 @@ export namespace NakesModel {
         id_nakes: string
         nik: string
         nama: string
-        foto: string
+        file_foto_name: string
+        file_foto_url: string
         id_jabatan: string
-        jabatan: string
+        nama_jabatan: string
         id_poli: string;
-        poli: string;
+        nama_poli: string;
         id_role: string;
-        role: string;
+        nama_role: string;
         username: string;
         password: string;
         kode_dpjp: string;
         id_satu_sehat: string;
         hfis: string;
-        status_aktif: string;
+        is_active: string;
+    }
+
+    export interface INakesQueryParams {
+        page: number;
+        count: number;
+        nama?: string;
+        nik?: string;
+        username?: string;
     }
 
     export class GetAllNakes implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: INakes[]
+        data!: {
+            page: string;
+            rows: INakes[];
+            totalRows: number;
+        }
     }
 
     export class GetByIdNakes implements HttpBaseResponse {
@@ -37,7 +50,8 @@ export namespace NakesModel {
     export interface CreateNakes {
         nik: string
         nama: string
-        foto: string
+        file_foto_name: string
+        file_foto_url: string
         id_jabatan: string
         id_poli: string;
         id_role: string;
@@ -46,14 +60,14 @@ export namespace NakesModel {
         kode_dpjp: string;
         id_satu_sehat: string;
         hfis: string;
-        status_aktif: string;
     }
 
     export interface UpdateNakes {
         id_nakes: string
         nik: string
         nama: string
-        foto: string
+        file_foto_name: string
+        file_foto_url: string
         id_jabatan: string
         id_poli: string;
         id_role: string;
@@ -62,6 +76,6 @@ export namespace NakesModel {
         kode_dpjp: string;
         id_satu_sehat: string;
         hfis: string;
-        status_aktif: string;
+        is_active: boolean;
     }
 }
