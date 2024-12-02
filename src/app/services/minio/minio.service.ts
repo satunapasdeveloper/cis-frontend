@@ -14,7 +14,7 @@ export class MinioService {
     ) { }
 
     generatePresignedUrl(bucketName: string, fileName: string) {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/apk/apk_version/presignedUrl/${bucketName}/${fileName}`);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/minio/presignedUrl/${bucketName}/${fileName}`);
     };
 
     uploadFile(url: string, files: File) {
@@ -26,6 +26,6 @@ export class MinioService {
     };
 
     getUrlFile(bucketName: string, fileName: string) {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/apk/apk_version/presignedUrlGet/${bucketName}/${fileName}`);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/minio/presignedUrlGet/${bucketName}/${fileName}`);
     };
 }

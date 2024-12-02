@@ -3,6 +3,12 @@ import { NakesModel } from "src/app/model/pages/setup-data/nakes.model";
 export namespace SetupNakesActions {
     export class GetAllNakes {
         static readonly type = '[NAKES] Get All Nakes';
+        constructor(public payload: NakesModel.INakesQueryParams) { }
+    }
+
+    export class GetAllActiveNakes {
+        static readonly type = '[NAKES] Get All Nakes';
+        constructor(public payload: NakesModel.INakesQueryParams) { }
     }
 
     export class GetByIdNakes {

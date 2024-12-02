@@ -21,6 +21,7 @@ import { SetupKategoriKamarActions } from './store/setup-data/kategori-kamar';
 import { SetupKamarActions } from './store/setup-data/kamar';
 import { SetupBedActions } from './store/setup-data/bed';
 import { SetupPenjaminActions } from './store/setup-data/penjamin';
+import { SetupNakesActions } from './store/setup-data/nakes';
 
 @Component({
     selector: 'app-root',
@@ -119,6 +120,11 @@ export class AppComponent implements OnInit, OnDestroy {
         // ** Get All Penjamin
         this._store
             .dispatch(new SetupPenjaminActions.GetAllPenjamin({ page: 1, count: 5 }))
+            .pipe(takeUntil(this.Destroy$));
+
+        // ** Get All Nakes
+        this._store
+            .dispatch(new SetupNakesActions.GetAllNakes({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
     }
 

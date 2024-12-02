@@ -12,9 +12,9 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { SetupKamarState, SetupKamarActions } from 'src/app/store/setup-data/kamar';
-import { SetupKategoriKamarActions, SetupKategoriKamarState } from 'src/app/store/setup-data/kategori-kamar';
-import { SetupKelasActions, SetupKelasState } from 'src/app/store/setup-data/kelas';
-import { SetupPoliActions, SetupPoliState } from 'src/app/store/setup-data/setup-poli';
+import { SetupKategoriKamarActions } from 'src/app/store/setup-data/kategori-kamar';
+import { SetupKelasActions } from 'src/app/store/setup-data/kelas';
+import { SetupPoliActions } from 'src/app/store/setup-data/setup-poli';
 
 @Component({
     selector: 'app-setup-kamar',
@@ -356,7 +356,6 @@ export class SetupKamarComponent implements OnInit, OnDestroy {
                 }
             });
         }
-
 
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
