@@ -8,7 +8,7 @@
     </div>
 
     <!-- Form -->
-    <div *ngIf="PageState == 'form'" class="flex flex-col w-10/12">
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full lg:w-10/12">
         <div class="flex flex-col p-3 bg-white rounded-lg shadow-sm mb-3">
             <!-- Switch Bayi Lahir -->
             <div
@@ -43,7 +43,6 @@
                 <app-dynamic-form #FormIdentitasBayiComps [props]="FormIdentitasBayiProps"></app-dynamic-form>
             </div>
         </div>
-
 
         <!-- Form Alamat -->
         <div class="grid w-full mb-3 p-3 bg-white rounded-lg shadow-sm">
@@ -150,8 +149,26 @@
                         </p-calendar>
                     </div>
                     <div class="w-2/12 flex gap-1 justify-center">
-                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [severity]="'danger'"
-                            (onClick)="handleDeletePenjamin(i)" />
+                        <p-button *ngIf="FormState == 'insert'" icon="pi pi-trash" [rounded]="true" [text]="true"
+                            [severity]="'danger'" (onClick)="handleDeletePenjamin(i)" pTooltip="Batal" showDelay="500"
+                            hideDelay="500" tooltipPosition="bottom" />
+
+                        <p-button *ngIf="FormState == 'update' && !item.id_pasien_penjamin" icon="pi pi-save"
+                            [rounded]="true" [text]="true" [severity]="'info'" (onClick)="handleSavePenjamin(i)"
+                            pTooltip="Simpan" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
+
+                        <p-button *ngIf="FormState == 'update' && !item.id_pasien_penjamin" icon="pi pi-times"
+                            [rounded]="true" [text]="true" [severity]="'danger'" (onClick)="handleDeletePenjamin(i)"
+                            pTooltip="Batal" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
+
+                        <p-button *ngIf="FormState == 'update' && item.id_pasien_penjamin" icon="pi pi-save"
+                            [rounded]="true" [text]="true" [severity]="'warning'" (onClick)="handleUpdatePenjamin(i)"
+                            pTooltip="Update" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
+
+
+                        <p-button *ngIf="FormState == 'update' && item.id_pasien_penjamin" icon="pi pi-trash"
+                            [rounded]="true" [text]="true" [severity]="'danger'" (onClick)="handleDeletePenjamin(i)"
+                            pTooltip="Hapus" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
                     </div>
                 </div>
 
