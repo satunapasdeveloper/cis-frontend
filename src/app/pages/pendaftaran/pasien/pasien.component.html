@@ -2,49 +2,50 @@
     <!-- Grid -->
     <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
-            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)">
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (pageChanged)="onPageChanged($event)" (customSearchClicked)="onSearchGrid($event)">
         </app-grid>
     </div>
 
     <!-- Form -->
-    <div *ngIf="PageState == 'form'" class="flex flex-col w-10/12 p-3 bg-white rounded-lg shadow-sm">
-        <!-- Switch Bayi Lahir -->
-        <div
-            class="flex w-full items-center gap-2 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-            <p-inputSwitch [(ngModel)]="IsBayiLahir" />
-            <p class="text-gray-700 text-sm">
-                Pasien adalah bayi baru lahir
-            </p>
-        </div>
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full lg:w-10/12">
+        <div class="flex flex-col p-3 bg-white rounded-lg shadow-sm mb-3">
+            <!-- Switch Bayi Lahir -->
+            <div
+                class="flex w-full items-center gap-2 mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p-inputSwitch [(ngModel)]="IsBayiLahir" />
+                <p class="text-gray-700 text-sm">
+                    Pasien adalah bayi baru lahir
+                </p>
+            </div>
 
-        <!-- Form Identitas Non Bayi -->
-        <div *ngIf="!IsBayiLahir"
-            class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-            <p class="text-gray-700 text-xl font-semibold">
-                Identitas
-            </p>
-            <p class="text-gray-700 text-sm mb-4">
-                Mohon isi dengan lengkap data identitas pasien
-            </p>
+            <!-- Form Identitas Non Bayi -->
+            <div *ngIf="!IsBayiLahir" class="grid w-full ">
+                <p class="text-gray-700 text-xl font-semibold">
+                    Identitas
+                </p>
+                <p class="text-gray-700 text-sm mb-4">
+                    Mohon isi dengan lengkap data identitas pasien
+                </p>
 
-            <app-dynamic-form #FormIdentitasComps [props]="FormIdentitasProps"></app-dynamic-form>
-        </div>
+                <app-dynamic-form #FormIdentitasComps [props]="FormIdentitasProps"></app-dynamic-form>
+            </div>
 
-        <!-- Form Identitas Bayi -->
-        <div *ngIf="IsBayiLahir"
-            class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-            <p class="text-gray-700 text-xl font-semibold">
-                Identitas
-            </p>
-            <p class="text-gray-700 text-sm mb-4">
-                Mohon isi dengan lengkap data identitas pasien bayi
-            </p>
+            <!-- Form Identitas Bayi -->
+            <div *ngIf="IsBayiLahir" class="grid w-full">
+                <p class="text-gray-700 text-xl font-semibold">
+                    Identitas
+                </p>
+                <p class="text-gray-700 text-sm mb-4">
+                    Mohon isi dengan lengkap data identitas pasien bayi
+                </p>
 
-            <app-dynamic-form #FormIdentitasBayiComps [props]="FormIdentitasBayiProps"></app-dynamic-form>
+                <app-dynamic-form #FormIdentitasBayiComps [props]="FormIdentitasBayiProps"></app-dynamic-form>
+            </div>
         </div>
 
         <!-- Form Alamat -->
-        <div class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+        <div class="grid w-full mb-3 p-3 bg-white rounded-lg shadow-sm">
             <p class="text-gray-700 text-xl font-semibold">
                 Alamat
             </p>
@@ -83,20 +84,107 @@
             </app-dynamic-form>
         </div>
 
-        <!-- Form Kontak -->
-        <div class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-            <p class="text-gray-700 text-xl font-semibold">
-                Kontak
-            </p>
-            <p class="text-gray-700 text-sm mb-4">
-                Mohon isi data Kontak pasien
-            </p>
+        <!-- Penjamin -->
+        <div class="grid w-full mb-2 p-3 bg-white rounded-lg shadow-sm">
+            <div class="flex flex-col mb-3">
+                <p class="text-lg text-gray-700 font-medium">
+                    Penjamin
+                </p>
+                <p class="text-xs text-gray-600">
+                    Mohon isi data penjamin pasien
+                </p>
+            </div>
 
-            <app-dynamic-form #FormKontakComps [props]="FormKontakProps"></app-dynamic-form>
+            <div class="flex flex-col w-full">
+                <!-- Header -->
+                <div
+                    class="flex w-full items-center mb-2 gap-2 pb-2 border-b border-t-0 border-x-0 border-solid border-gray-200">
+                    <div class="w-4/12">
+                        <p class="text-sm font-medium">
+                            Penjamin
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p class="text-sm font-medium">
+                            No. Penjamin
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p class="text-sm font-medium">
+                            Tgl. Berlaku
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p class="text-sm font-medium">
+                            Tgl. Expired
+                        </p>
+                    </div>
+                    <div class="w-2/12 flex items-center justify-center">
+                        <p class="text-sm font-medium">
+                            Aksi
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div *ngFor="let item of PenjaminPasien; let i = index; let last = last"
+                    class="flex w-full items-center gap-2 mb-2 {{ last ? '' : 'pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300' }}">
+                    <div class="w-4/12">
+                        <p-dropdown styleClass="w-full p-inputtext-sm" [options]="PenjaminDatasource"
+                            optionLabel="nama_penjamin" optionValue="id_penjamin" autoDisplayFirst="false"
+                            appendTo="body" [(ngModel)]="item.id_penjamin">
+                        </p-dropdown>
+                    </div>
+                    <div class="w-2/12">
+                        <input type="text" pInputText class="p-inputtext-sm w-full" [(ngModel)]="item.nomor_penjamin">
+                    </div>
+                    <div class="w-2/12">
+                        <p-calendar styleClass="w-full p-inputtext-sm" dateFormat="dd-mm-yy"
+                            [(ngModel)]="item.tanggal_berlaku">
+                        </p-calendar>
+                    </div>
+                    <div class="w-2/12">
+                        <p-calendar styleClass="w-full p-inputtext-sm" dateFormat="dd-mm-yy"
+                            [(ngModel)]="item.tanggal_expired">
+                        </p-calendar>
+                    </div>
+                    <div class="w-2/12 flex gap-1 justify-center">
+                        <p-button *ngIf="FormState == 'insert'" icon="pi pi-trash" [rounded]="true" [text]="true"
+                            [severity]="'danger'" (onClick)="handleDeletePenjamin(i)" pTooltip="Batal" showDelay="500"
+                            hideDelay="500" tooltipPosition="bottom" />
+
+                        <p-button *ngIf="FormState == 'update' && !item.id_pasien_penjamin" icon="pi pi-save"
+                            [rounded]="true" [text]="true" [severity]="'info'" (onClick)="handleSavePenjamin(i)"
+                            pTooltip="Simpan" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
+
+                        <p-button *ngIf="FormState == 'update' && !item.id_pasien_penjamin" icon="pi pi-times"
+                            [rounded]="true" [text]="true" [severity]="'danger'" (onClick)="handleDeletePenjamin(i)"
+                            pTooltip="Batal" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
+
+                        <p-button *ngIf="FormState == 'update' && item.id_pasien_penjamin" icon="pi pi-save"
+                            [rounded]="true" [text]="true" [severity]="'warning'" (onClick)="handleUpdatePenjamin(i)"
+                            pTooltip="Update" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
+
+
+                        <p-button *ngIf="FormState == 'update' && item.id_pasien_penjamin" icon="pi pi-trash"
+                            [rounded]="true" [text]="true" [severity]="'danger'" (onClick)="handleDeletePenjamin(i)"
+                            pTooltip="Hapus" showDelay="500" hideDelay="500" tooltipPosition="bottom" />
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="flex items-center justify-center gap-1 py-2 mt-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                    (click)="handleAddNewPenjamin()">
+                    <i class="pi pi-plus" style="font-size: 13px"></i>
+                    <p class="text-sm text-gray-800 font-medium text-center">
+                        Tambah Penjamin Baru
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- Form Lain Lain -->
-        <div class="grid w-full mb-3">
+        <div class="grid w-full mb-3 p-3 bg-white rounded-lg shadow-sm">
             <p class="text-gray-700 text-xl font-semibold">
                 Lain - Lain
             </p>
@@ -105,6 +193,19 @@
             </p>
 
             <app-dynamic-form #FormLainLainComps [props]="FormLainLainProps"></app-dynamic-form>
+        </div>
+
+        <!-- Form Foto -->
+        <div class="grid w-full mb-3 p-3 bg-white rounded-lg shadow-sm">
+            <div class="flex flex-col mb-3">
+                <p class="text-lg text-gray-700 font-medium">
+                    Foto Pasien
+                </p>
+                <p class="text-xs text-gray-600">
+                    Mohon isi foto pasien apabila ada
+                </p>
+            </div>
+            <app-dynamic-form #FormFotoComps [props]="FormFoto"></app-dynamic-form>
         </div>
 
         <div class="flex w-full justify-end mt-4 gap-4">
