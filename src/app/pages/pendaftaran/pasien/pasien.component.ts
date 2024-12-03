@@ -324,6 +324,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
         this.FormAlamatProps = {
             id: 'form_alamat',
             fields: [
+                // 0
                 {
                     id: 'alamat_lengkap_ktp',
                     label: 'Alamat Lengkap',
@@ -333,6 +334,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                     hidden: true,
                 },
+                // 1
                 {
                     id: 'kode_provinsi_ktp',
                     label: 'Provinsi',
@@ -346,17 +348,28 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKota(args.id);
+                            this.getKota(false, args.id);
+                            this.FormAlamatComps.FormGroup.get('nama_provinsi_ktp')?.setValue(args.name);
                         } else {
+                            this.FormAlamatComps.FormGroup.get('nama_provinsi_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kabupaten_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kecamatan_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kelurahan_ktp')?.setValue(null);
 
-                            this.FormAlamatProps.fields[2].dropdownProps.options = [];
                             this.FormAlamatProps.fields[3].dropdownProps.options = [];
-                            this.FormAlamatProps.fields[4].dropdownProps.options = [];
+                            this.FormAlamatProps.fields[5].dropdownProps.options = [];
+                            this.FormAlamatProps.fields[7].dropdownProps.options = [];
                         }
                     },
+                },
+                // 2
+                {
+                    id: 'nama_provinsi_ktp',
+                    label: 'Nama Provinsi',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_kabupaten_ktp',
@@ -371,14 +384,24 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKecamatan(args.id);
+                            this.getKecamatan(false, args.id);
+                            this.FormAlamatComps.FormGroup.get('nama_kabupaten_ktp')?.setValue(args.name);
                         } else {
+                            this.FormAlamatComps.FormGroup.get('nama_kabupaten_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kecamatan_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kelurahan_ktp')?.setValue(null);
-                            this.FormAlamatProps.fields[3].dropdownProps.options = [];
-                            this.FormAlamatProps.fields[4].dropdownProps.options = [];
+                            this.FormAlamatProps.fields[5].dropdownProps.options = [];
+                            this.FormAlamatProps.fields[7].dropdownProps.options = [];
                         }
                     },
+                },
+                {
+                    id: 'nama_kabupaten_ktp',
+                    label: 'Nama Kabupaten',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_kecamatan_ktp',
@@ -393,12 +416,22 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKelurahan(args.id);
+                            this.getKelurahan(false, args.id);
+                            this.FormAlamatComps.FormGroup.get('nama_kecamatan_ktp')?.setValue(args.name);
                         } else {
+                            this.FormAlamatComps.FormGroup.get('nama_kecamatan_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kelurahan_ktp')?.setValue(null);
-                            this.FormAlamatProps.fields[4].dropdownProps.options = [];
+                            this.FormAlamatProps.fields[7].dropdownProps.options = [];
                         }
                     },
+                },
+                {
+                    id: 'nama_kecamatan_ktp',
+                    label: 'Nama Kecamatan',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_kelurahan_ktp',
@@ -411,6 +444,21 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                         optionValue: 'id'
                     },
                     value: '',
+                    onChange: (args: any) => {
+                        if (args) {
+                            this.FormAlamatComps.FormGroup.get('nama_kelurahan_ktp')?.setValue(args.name);
+                        } else {
+                            this.FormAlamatComps.FormGroup.get('nama_kelurahan_ktp')?.setValue(null);
+                        }
+                    },
+                },
+                {
+                    id: 'nama_kelurahan_ktp',
+                    label: 'Nama Kelurahan',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_pos_ktp',
@@ -478,17 +526,27 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKota(args.id);
+                            this.getKota(true, args.id);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_provinsi_domisili')?.setValue(args.name);
                         } else {
-                            this.FormAlamatComps.FormGroup.get('kode_kabupatan_domisili')?.setValue(null);
-                            this.FormAlamatComps.FormGroup.get('kode_kecamatan_domisili')?.setValue(null);
-                            this.FormAlamatComps.FormGroup.get('kode_kelurahan_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_provinsi_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliComps.FormGroup.get('kode_kabupatan_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliComps.FormGroup.get('kode_kecamatan_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliComps.FormGroup.get('kode_kelurahan_domisili')?.setValue(null);
 
-                            this.FormAlamatProps.fields[2].dropdownProps.options = [];
-                            this.FormAlamatProps.fields[3].dropdownProps.options = [];
-                            this.FormAlamatProps.fields[4].dropdownProps.options = [];
+                            this.FormAlamatDomisiliProps.fields[3].dropdownProps.options = [];
+                            this.FormAlamatDomisiliProps.fields[5].dropdownProps.options = [];
+                            this.FormAlamatDomisiliProps.fields[7].dropdownProps.options = [];
                         }
                     },
+                },
+                {
+                    id: 'nama_provinsi_domisili',
+                    label: 'Nama Provinsi',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_kabupatan_domisili',
@@ -503,14 +561,24 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKecamatan(args.id);
+                            this.getKecamatan(true, args.id);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kabupaten_domisili')?.setValue(args.name);
                         } else {
-                            this.FormAlamatComps.FormGroup.get('kode_kecamatan_domisili')?.setValue(null);
-                            this.FormAlamatComps.FormGroup.get('kode_kelurahan_domisili')?.setValue(null);
-                            this.FormAlamatProps.fields[3].dropdownProps.options = [];
-                            this.FormAlamatProps.fields[4].dropdownProps.options = [];
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kabupaten_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliComps.FormGroup.get('kode_kecamatan_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliComps.FormGroup.get('kode_kelurahan_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliProps.fields[5].dropdownProps.options = [];
+                            this.FormAlamatDomisiliProps.fields[7].dropdownProps.options = [];
                         }
                     },
+                },
+                {
+                    id: 'nama_kabupaten_domisili',
+                    label: 'Nama Kabupaten',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_kecamatan_domisili',
@@ -525,12 +593,22 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKelurahan(args.id);
+                            this.getKelurahan(true, args.id);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kecamatan_domisili')?.setValue(args.name);
                         } else {
-                            this.FormAlamatComps.FormGroup.get('kode_kelurahan_domisili')?.setValue(null);
-                            this.FormAlamatProps.fields[4].dropdownProps.options = [];
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kecamatan_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliComps.FormGroup.get('kode_kelurahan_domisili')?.setValue(null);
+                            this.FormAlamatDomisiliProps.fields[7].dropdownProps.options = [];
                         }
                     },
+                },
+                {
+                    id: 'nama_kecamatan_domisili',
+                    label: 'Nama Kecamatan',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_kelurahan_domisili',
@@ -543,6 +621,21 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                         optionValue: 'id'
                     },
                     value: '',
+                    onChange: (args: any) => {
+                        if (args) {
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kelurahan_domisili')?.setValue(args.name);
+                        } else {
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kelurahan_domisili')?.setValue(null);
+                        }
+                    },
+                },
+                {
+                    id: 'nama_kelurahan_domisili',
+                    label: 'Nama Kelurahan',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
                 {
                     id: 'kode_pos_domisili',
@@ -767,13 +860,16 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             })
     }
 
-    private getKota(id_provinsi: string, setValue?: boolean, id_kota?: string) {
+    private getKota(is_domisili: boolean, id_provinsi: string, setValue?: boolean, id_kota?: string) {
         this._lokasiService
             .getKota(id_provinsi)
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.FormAlamatProps.fields[2].dropdownProps.options = result.data;
-                    this.FormAlamatDomisiliProps.fields[2].dropdownProps.options = result.data;
+                    if (!is_domisili) {
+                        this.FormAlamatProps.fields[3].dropdownProps.options = result.data;
+                    } else {
+                        this.FormAlamatDomisiliProps.fields[3].dropdownProps.options = result.data;
+                    }
 
                     if (setValue) {
                         this.FormAlamatComps.FormGroup.get('kode_kabupaten_ktp')?.setValue(id_kota);
@@ -786,13 +882,16 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             })
     }
 
-    private getKecamatan(id_kota: string, setValue?: boolean, id_kecamatan?: string) {
+    private getKecamatan(is_domisili: boolean, id_kota: string, setValue?: boolean, id_kecamatan?: string) {
         this._lokasiService
             .getKecamatan(id_kota)
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.FormAlamatProps.fields[3].dropdownProps.options = result.data;
-                    this.FormAlamatDomisiliProps.fields[3].dropdownProps.options = result.data;
+                    if (!is_domisili) {
+                        this.FormAlamatProps.fields[5].dropdownProps.options = result.data;
+                    } else {
+                        this.FormAlamatDomisiliProps.fields[5].dropdownProps.options = result.data;
+                    }
 
                     if (setValue) {
                         this.FormAlamatComps.FormGroup.get('kode_kecamatan_ktp')?.setValue(id_kecamatan);
@@ -805,13 +904,16 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             })
     }
 
-    private getKelurahan(id_kecamatan: string, setValue?: boolean, id_kelurahan?: string) {
+    private getKelurahan(is_domisili: boolean, id_kecamatan: string, setValue?: boolean, id_kelurahan?: string) {
         this._lokasiService
             .getKelurahan(id_kecamatan)
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.FormAlamatProps.fields[4].dropdownProps.options = result.data;
-                    this.FormAlamatDomisiliProps.fields[4].dropdownProps.options = result.data;
+                    if (!is_domisili) {
+                        this.FormAlamatProps.fields[7].dropdownProps.options = result.data;
+                    } else {
+                        this.FormAlamatDomisiliProps.fields[7].dropdownProps.options = result.data;
+                    }
 
                     if (setValue) {
                         this.FormAlamatComps.FormGroup.get('kode_kelurahan_ktp')?.setValue(id_kelurahan);
@@ -929,9 +1031,9 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private setDropdownAlamats(data: any) {
-        this.getKota(data.id_provinsi, true, data.id_kota);
-        this.getKecamatan(data.id_kabupaten, true, data.id_kecamatan);
-        this.getKelurahan(data.id_kecamatan, true, data.id_kelurahan);
+        // this.getKota(data.id_provinsi, true, data.id_kota);
+        // this.getKecamatan(data.id_kabupaten, true, data.id_kecamatan);
+        // this.getKelurahan(data.id_kecamatan, true, data.id_kelurahan);
     }
 
     onToolbarClicked(args: any): void {
@@ -1024,7 +1126,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (identitas_bayi_form) {
             const tanggal_lahir = formatDate(identitas_bayi_form.tanggal_lahir, 'yyyy-MM-dd', 'EN');
-            const jam_lahir = formatDate(identitas_bayi_form.jam_lahir, 'HH:mm:ss', 'EN');
+            const jam_lahir = formatDate(identitas_bayi_form.tanggal_lahir, 'HH:mm:ss', 'EN');
             const waktu_lahir = `${tanggal_lahir}T${jam_lahir}.000Z`;
 
             identitas_bayi_form.tanggal_lahir = waktu_lahir;
@@ -1034,10 +1136,14 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             alamat_domisili = {
                 alamat_lengkap_domisili: this.IsAlamatDomisiliSame ? alamat_form.alamat_lengkap_ktp : this.AlamatDomisili,
                 kode_provinsi_domisili: this.IsAlamatDomisiliSame ? alamat_form.kode_provinsi_ktp : alamat_domisili_form.kode_provinsi_domisili,
+                nama_provinsi_domisili: this.IsAlamatDomisiliSame ? alamat_form.nama_provinsi_ktp : alamat_domisili_form.nama_provinsi_domisili,
                 kode_kabupatan_domisili: this.IsAlamatDomisiliSame ? alamat_form.kode_kabupaten_ktp : alamat_domisili_form.kode_kabupatan_domisili,
+                nama_kabupaten_domisili: this.IsAlamatDomisiliSame ? alamat_form.nama_kabupaten_ktp : alamat_domisili_form.nama_kabupaten_domisili,
                 kode_kecamatan_domisili: this.IsAlamatDomisiliSame ? alamat_form.kode_kecamatan_ktp : alamat_domisili_form.kode_kecamatan_domisili,
+                nama_kecamatan_domisili: this.IsAlamatDomisiliSame ? alamat_form.nama_kecamatan_ktp : alamat_domisili_form.nama_kecamatan_domisili,
                 kode_kelurahan_domisili: this.IsAlamatDomisiliSame ? alamat_form.kode_kelurahan_ktp : alamat_domisili_form.kode_kelurahan_domisili,
-                kode_pos: this.IsAlamatDomisiliSame ? alamat_form.kode_pos_ktp : alamat_domisili_form.kode_pos,
+                nama_kelurahan_domisili: this.IsAlamatDomisiliSame ? alamat_form.nama_kelurahan_ktp : alamat_domisili_form.nama_kelurahan_domisili,
+                kode_pos_domisili: this.IsAlamatDomisiliSame ? alamat_form.kode_pos_ktp : alamat_domisili_form.kode_pos_domisili,
                 rt_domisili: this.IsAlamatDomisiliSame ? alamat_form.rt_ktp : alamat_domisili_form.rt_domisili,
                 rw_domisili: this.IsAlamatDomisiliSame ? alamat_form.rw_ktp : alamat_domisili_form.rw_domisili,
             },
@@ -1052,6 +1158,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                 tempat_lahir: !this.IsBayiLahir ? identitas_form.tempat_lahir : "",
                 tanggal_lahir: !this.IsBayiLahir ? identitas_form.tanggal_lahir : identitas_bayi_form.tanggal_lahir,
                 gender: !this.IsBayiLahir ? identitas_form.gender : identitas_bayi_form.gender,
+                golongan_darah: !this.IsBayiLahir ? identitas_form.golongan_darah : identitas_bayi_form.golongan_darah,
             };
 
         delete alamat_form['rt/rw'];
@@ -1066,7 +1173,7 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
             detail_penjamin: this.PenjaminPasien
         };
 
-        console.log("payload insert =>", payload);
+        console.log("payload insert =>", JSON.stringify(payload));
 
         this._pasienService
             .create(payload)
