@@ -60,6 +60,8 @@ export namespace PasienModel {
         nik?: string;
         nama_pasien?: string;
         no_rekam_medis?: string;
+        no_kartu?: string;
+        tanggal_lahir?: string;
     }
 
     export class GetAllPasien implements HttpBaseResponse {
