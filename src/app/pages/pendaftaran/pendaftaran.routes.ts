@@ -44,24 +44,18 @@ export const pendaftaranRoutes: Routes = [
     {
         path: 'antrian',
         canActivate: [AuthGuard],
-        loadComponent: async () => (await import('./antrian/antrian.component')).AntrianComponent,
-        data: {
-            title: 'Antrian',
-            breadcrumbs: [
-                "Beranda", "Pendaftaran", "Antrian"
-            ]
-        },
+        loadChildren: async () => (await import('./antrian/antrian.routes')).antrianPendaftaranRoutes
     },
-    {
-        path: 'antrian/tambah',
-        loadComponent: async () => (await import('./antrian/tambah-antrian/tambah-antrian.component')).TambahAntrianComponent,
-        data: {
-            title: 'Buat Antrian Baru',
-            breadcrumbs: [
-                "Beranda", "Pendaftaran", "Antrian", "Buat Antrian Baru"
-            ]
-        },
-    },
+    // {
+    //     path: 'antrian/tambah',
+    //     loadComponent: async () => (await import('./antrian/tambah-antrian/tambah-antrian.component')).TambahAntrianComponent,
+    //     data: {
+    //         title: 'Buat Antrian Baru',
+    //         breadcrumbs: [
+    //             "Beranda", "Pendaftaran", "Antrian", "Buat Antrian Baru"
+    //         ]
+    //     },
+    // },
     {
         path: 'antrian/assesment-awal',
         loadComponent: async () => (await import('./assesment-awal/assesment-awal.component')).AssesmentAwalComponent,
