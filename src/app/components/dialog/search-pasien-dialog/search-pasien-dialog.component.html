@@ -1,5 +1,5 @@
 <p-dialog header="Edit Profile" [modal]="true" [(visible)]="ShowDialog" [style]="{ width: '40rem' }" [draggable]="false"
-    [showHeader]="false" [resizable]="false">
+    [showHeader]="false" [resizable]="false" [maximizable]="true">
     <div class="flex flex-col w-full">
         <p class="text-2xl font-bold text-gray-800">
             Cari Data Pasien
@@ -46,7 +46,7 @@
         <!-- Tanggal Lahir -->
         <div *ngIf="Filter == 'nama_pasien'" class="grid w-full mb-3">
             <p-calendar styleClass="w-full" dateFormat="dd MM yy" placeholder="Masukkan tanggal lahir pasien disini"
-                [(ngModel)]="TanggalLahir">
+                [(ngModel)]="TanggalLahir" appendTo="body" [showClear]="true">
             </p-calendar>
         </div>
 
@@ -60,18 +60,19 @@
             <img src="../../../../assets/icon/search.svg" alt="search" class="h-[12rem] drop-shadow-lg">
         </div>
 
-        <div *ngIf="DataPasien.length" class="flex flex-col w-full gap-3 h-[20rem] max-h-[20rem] overflow-y-auto">
+        <div *ngIf="DataPasien.length" class="flex flex-col w-full gap-3 overflow-y-auto"
+            [style]="Filter == 'nama_pasien' ? 'height: calc(100vh - 25rem)' : 'height: calc(100vh - 24rem)'">
             <div *ngFor="let item of DataPasien"
                 class="flex flex-col rounded-lg shadow bg-gray-50 hover:bg-gray-200 transition-all p-3 cursor-pointer"
                 (click)="handleSelectPasien(item)">
                 <p class="text-base font-medium text-gray-700">
-                    {{ item.nama_lengkap }}
+                    {{ item.nama_pasien }}
                 </p>
                 <p class="text-sm text-sky-500">
                     {{ item.nik }}
                 </p>
                 <p class="text-sm text-gray-700">
-                    {{ item.alamat_lengkap }}
+                    {{ item.alamat_lengkap_ktp }}
                 </p>
             </div>
         </div>
