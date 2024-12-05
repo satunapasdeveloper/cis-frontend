@@ -1,15 +1,58 @@
-<p-dialog header="Edit Profile" [modal]="true" [(visible)]="ShowDialog" [style]="{ width: '30rem' }" [draggable]="false"
-    [showHeader]="false" [resizable]="false">
+<p-dialog header="Edit Profile" [modal]="true" [(visible)]="ShowDialog" [style]="{ width: '40rem' }" [draggable]="false"
+    [showHeader]="false" [resizable]="false" [maximizable]="true">
     <div class="flex flex-col w-full">
         <p class="text-2xl font-bold text-gray-800">
             Cari Data Pasien
         </p>
         <p class="text-sm text-gray-700 mb-3">
-            Cari data pasien berdasarkan nama pasien dan pilih data pasien untuk melanjutkan.
+            Cari data pasien dan pilih data pasien untuk melanjutkan.
         </p>
 
+        <div class="flex w-full gap-3 mb-5">
+            <!-- Nama Pasien -->
+            <div class="flex items-center">
+                <p-radioButton name="filter" value="nama_pasien" [(ngModel)]="Filter" inputId="filter_nama_pasien" />
+                <label for="filter_nama_pasien" class="text-sm text-gray-700 ml-2">
+                    Nama Pasien
+                </label>
+            </div>
+
+            <!-- NIK -->
+            <div class="flex items-center">
+                <p-radioButton name="filter" value="nik" [(ngModel)]="Filter" inputId="filter_nik" />
+                <label for="filter_nik" class="text-sm text-gray-700 ml-2">
+                    NIK
+                </label>
+            </div>
+
+            <!-- No. RM -->
+            <div class="flex items-center">
+                <p-radioButton name="filter" value="no_rekam_medis" [(ngModel)]="Filter"
+                    inputId="filter_no_rekam_medis" />
+                <label for="filter_no_rekam_medis" class="text-sm text-gray-700 ml-2">
+                    No. RM
+                </label>
+            </div>
+
+            <!-- No. Kartu -->
+            <div class="flex items-center">
+                <p-radioButton name="filter" value="no_kartu" [(ngModel)]="Filter" inputId="filter_no_kartu" />
+                <label for="filter_no_kartu" class="text-sm text-gray-700 ml-2">
+                    No. Kartu BPJS
+                </label>
+            </div>
+        </div>
+
+        <!-- Tanggal Lahir -->
+        <div *ngIf="Filter == 'nama_pasien'" class="grid w-full mb-3">
+            <p-calendar styleClass="w-full" dateFormat="dd MM yy" placeholder="Masukkan tanggal lahir pasien disini"
+                [(ngModel)]="TanggalLahir" appendTo="body" [showClear]="true">
+            </p-calendar>
+        </div>
+
+        <!-- Keyword Search -->
         <div class="flex w-full mb-5">
-            <input #Search type="text" pInputText class="w-full" placeholder="Cari berdasarkan nama pasien"
+            <input #Search type="text" pInputText class="w-full" placeholder="Masukkan kata kunci disini"
                 (keyup.enter)="handleSearch(Search.value)">
         </div>
 
@@ -17,18 +60,19 @@
             <img src="../../../../assets/icon/search.svg" alt="search" class="h-[12rem] drop-shadow-lg">
         </div>
 
-        <div *ngIf="DataPasien.length" class="flex flex-col w-full gap-3 h-[20rem] max-h-[20rem] overflow-y-auto">
+        <div *ngIf="DataPasien.length" class="flex flex-col w-full gap-3 overflow-y-auto"
+            [style]="Filter == 'nama_pasien' ? 'height: calc(100vh - 25rem)' : 'height: calc(100vh - 24rem)'">
             <div *ngFor="let item of DataPasien"
                 class="flex flex-col rounded-lg shadow bg-gray-50 hover:bg-gray-200 transition-all p-3 cursor-pointer"
                 (click)="handleSelectPasien(item)">
                 <p class="text-base font-medium text-gray-700">
-                    {{ item.nama_lengkap }}
+                    {{ item.nama_pasien }}
                 </p>
                 <p class="text-sm text-sky-500">
                     {{ item.nik }}
                 </p>
                 <p class="text-sm text-gray-700">
-                    {{ item.alamat_lengkap }}
+                    {{ item.alamat_lengkap_ktp }}
                 </p>
             </div>
         </div>
