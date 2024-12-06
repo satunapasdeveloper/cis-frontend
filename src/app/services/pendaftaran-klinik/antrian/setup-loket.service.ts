@@ -34,7 +34,8 @@ export class SetupLoketService {
             .getRequest(`${environment.webApiUrl}/setup-loket/getForLookUp`, query)
             .pipe(
                 map((result) => {
-                    return this.onMappingResult(result);
+                    result.data.rows = this.onMappingResult(result.data.rows);
+                    return result;
                 })
             )
     }

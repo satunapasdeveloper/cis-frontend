@@ -1,7 +1,12 @@
-<app-dashboard>
-    <div class="flex flex-row w-full gap-5">
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="flex flex-row w-full h-full gap-5">
         <!-- Panel -->
-        <div class="w-8/12 flex flex-col items-center p-5 gap-0 rounded-lg bg-white shadow-sm">
+        <div class="w-8/12 flex flex-col h-full jusity items-center p-5 gap-0 rounded-lg bg-white shadow-sm">
+            <!-- Title -->
+            <p *ngIf="SelectedLoket" class="text-4xl font-semibold text-gray-700 mb-3">
+                {{ SelectedLoket.nama_loket }}
+            </p>
+
             <!-- Title -->
             <p class="text-3xl font-semibold text-gray-700 mb-3">
                 Nomor Antrian Selanjutnya
@@ -11,10 +16,10 @@
             <div
                 class="flex flex-col w-6/12 py-6 px-3 bg-sky-100 gap-1 rounded-lg shadow-sm items-center justify-center mb-3">
                 <p class="text-center text-gray-600 text-2xl font-medium">
-                    {{ AntrianDipanggil.jenis_antrian }}
+                    {{ AntrianDipanggil ? AntrianDipanggil.jenis_antrian : '----' }}
                 </p>
-                <p class="text-center text-sky-700 text-7xl font-semibold">
-                    {{ AntrianDipanggil.no_antrian }}
+                <p class="text-center text-sky-700 text-5xl font-semibold">
+                    {{ AntrianDipanggil ? AntrianDipanggil.no_antrian : '----' }}
                 </p>
             </div>
 
@@ -34,18 +39,20 @@
             <!-- Button -->
             <div
                 class="flex w-full items-center justify-center gap-3 mt-5 mb-2 pt-5 border-b-0 border-t border-x-0 border-dashed border-gray-400">
-                <p-button severity="info" label="Selanjutnya" icon="pi pi-chevron-right" styleClass="p-button-sm">
+                <p-button severity="info" label="Selanjutnya" icon="pi pi-chevron-right" styleClass="p-button-sm"
+                    (onClick)="handlePanggilAntrian()">
                 </p-button>
 
-                <p-button severity="success" label="Panggil" icon="pi pi-microphone" styleClass="p-button-sm">
+                <p-button severity="success" label="Panggil" icon="pi pi-microphone" styleClass="p-button-sm"
+                    [disabled]="!AntrianDipanggil" (onClick)="handlePanggilUlang()">
                 </p-button>
 
                 <p-button severity="warning" label="Mulai Admisi" icon="pi pi-play" styleClass="p-button-sm"
-                    (onClick)="onStartTimer()">
+                    [disabled]="!AntrianDipanggil" (onClick)="handleStartAdmisi()">
                 </p-button>
 
                 <p-button severity="danger" label="Selesai Admisi" icon="pi pi-stop" styleClass="p-button-sm"
-                    (onClick)="onStopTimer()">
+                    [disabled]="!AntrianDipanggil" (onClick)="handleStopAdmisi()">
                 </p-button>
             </div>
         </div>
@@ -63,20 +70,37 @@
             </div>
 
             <!-- List -->
-            <div class="flex flex-col gap-3">
-                <div *ngFor="let item of AntrianTerlewati; let last = last"
-                    class="flex flex-col p-2 transition-all hover:bg-sky-100 bg-gray-100 cursor-pointer rounded-md shadow-sm {{ last ? '' : 'pb-3 border-b border-t-0 border-x-0 border-gray-300 border-dashed'}}">
-                    <p class="text-lg text-gray-700 font-medium">
+            <div class="grid grid-cols-3 gap-3">
+                <div *ngFor="let item of AntrianTerlewati" (click)="handleClickAntrianTerlewati(item)"
+                    class="flex flex-col w-full p-2 transition-all hover:bg-sky-100 bg-gray-100 cursor-pointer rounded-md shadow-sm justify-center items-center">
+                    <p class="text-lg text-gray-700 font-semibold">
                         {{ item.no_antrian }}
                     </p>
                     <p class="text-sm text-gray-600">
-                        {{ item.id_antrian_jenis }}
+                        {{ item.id_antrian_jenis == 1 ? 'UMUM' : 'BPJS' }}
                     </p>
-                    <p class="text-xs text-gray-600">
+                    <p class="text-xs text-gray-500">
                         {{ item.created_at | date: 'dd-MM-yyyy HH:mm' }}
                     </p>
                 </div>
             </div>
         </div>
     </div>
+
+    <p-dialog header="Pilih Loket" [modal]="true" [draggable]="false" [resizable]="false" [closable]="false"
+        [(visible)]="ShowDialogPilihLoket" [style]="{ width: '25rem' }">
+        <div class="grid w-full gap-5">
+            <div class="grid w-full">
+                <p-dropdown [options]="LoketDatasource" [(ngModel)]="SelectedLoket" optionLabel="nama_loket"
+                    styleClass="p-inputtext-sm w-full" [filter]="true" appendTo="body">
+                </p-dropdown>
+            </div>
+
+            <div class="grid w-full gap-2">
+                <p-button label="Simpan" severity="info" styleClass="p-button-sm w-full"
+                    (onClick)="handlePilihLoket(SelectedLoket)">
+                </p-button>
+            </div>
+        </div>
+    </p-dialog>
 </app-dashboard>
