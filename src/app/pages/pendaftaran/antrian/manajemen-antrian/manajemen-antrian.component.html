@@ -1,0 +1,82 @@
+<app-dashboard>
+    <div class="flex flex-row w-full gap-5">
+        <!-- Panel -->
+        <div class="w-8/12 flex flex-col items-center p-5 gap-0 rounded-lg bg-white shadow-sm">
+            <!-- Title -->
+            <p class="text-3xl font-semibold text-gray-700 mb-3">
+                Nomor Antrian Selanjutnya
+            </p>
+
+            <!-- No Antrian Dipanggil -->
+            <div
+                class="flex flex-col w-6/12 py-6 px-3 bg-sky-100 gap-1 rounded-lg shadow-sm items-center justify-center mb-3">
+                <p class="text-center text-gray-600 text-2xl font-medium">
+                    {{ AntrianDipanggil.jenis_antrian }}
+                </p>
+                <p class="text-center text-sky-700 text-7xl font-semibold">
+                    {{ AntrianDipanggil.no_antrian }}
+                </p>
+            </div>
+
+            <!-- Waktu Pelayanan -->
+            <div
+                class="flex flex-col w-full items-center justify-center gap-1 mt-3 pt-4 border-b-0 border-t border-x-0 border-dashed border-gray-400">
+                <p class="text-base text-gray-700">
+                    Waktu Pelayanan
+                </p>
+
+                <p class="text-2xl font-medium text-sky-700">
+                    <!-- 00:00:00 -->
+                    {{ formatTime(timeElapsed) }}
+                </p>
+            </div>
+
+            <!-- Button -->
+            <div
+                class="flex w-full items-center justify-center gap-3 mt-5 mb-2 pt-5 border-b-0 border-t border-x-0 border-dashed border-gray-400">
+                <p-button severity="info" label="Selanjutnya" icon="pi pi-chevron-right" styleClass="p-button-sm">
+                </p-button>
+
+                <p-button severity="success" label="Panggil" icon="pi pi-microphone" styleClass="p-button-sm">
+                </p-button>
+
+                <p-button severity="warning" label="Mulai Admisi" icon="pi pi-play" styleClass="p-button-sm"
+                    (onClick)="onStartTimer()">
+                </p-button>
+
+                <p-button severity="danger" label="Selesai Admisi" icon="pi pi-stop" styleClass="p-button-sm"
+                    (onClick)="onStopTimer()">
+                </p-button>
+            </div>
+        </div>
+
+        <!-- List antrian terlewati -->
+        <div class="w-4/12 flex flex-col p-5 gap-4 rounded-lg bg-white shadow-sm">
+            <!-- Header -->
+            <div class="flex flex-col mb-2 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-400">
+                <p class="text-3xl font-medium text-gray-700 text-center ">
+                    Antrian Terlewati
+                </p>
+                <p class="text-sm text-gray-600 text-center ">
+                    Daftar nomor antrian terlewati
+                </p>
+            </div>
+
+            <!-- List -->
+            <div class="flex flex-col gap-3">
+                <div *ngFor="let item of AntrianTerlewati; let last = last"
+                    class="flex flex-col p-2 transition-all hover:bg-sky-100 bg-gray-100 cursor-pointer rounded-md shadow-sm {{ last ? '' : 'pb-3 border-b border-t-0 border-x-0 border-gray-300 border-dashed'}}">
+                    <p class="text-lg text-gray-700 font-medium">
+                        {{ item.no_antrian }}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        {{ item.id_antrian_jenis }}
+                    </p>
+                    <p class="text-xs text-gray-600">
+                        {{ item.created_at | date: 'dd-MM-yyyy HH:mm' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-dashboard>
