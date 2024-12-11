@@ -203,7 +203,6 @@ export class AntrianComponent implements OnInit, OnDestroy {
                 break;
         }
 
-
         return classColor;
     }
 

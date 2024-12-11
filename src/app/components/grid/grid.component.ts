@@ -131,6 +131,18 @@ export class GridComponent implements OnInit, OnDestroy {
                     case 'Mulai Periksa':
                         icon = 'pi pi-play';
                         break;
+                    case 'Cetak Tiket Antrian Poli':
+                        icon = 'pi pi-print';
+                        break;
+                    case 'Cetak SEP':
+                        icon = 'pi pi-print';
+                        break;
+                    case 'Verifikasi Penjamin':
+                        icon = 'pi pi-check';
+                        break;
+                    case 'Batal Pendaftaran':
+                        icon = 'pi pi-times';
+                        break;
                     default:
                         break;
                 }

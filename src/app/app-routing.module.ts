@@ -27,7 +27,7 @@ const routes: Routes = [
     {
         path: 'pelayanan-klinik',
         canActivate: [AuthGuard],
-        loadChildren: async () => (await import('./pages/pelayanan-klinik/pelayanan-klinik.routes')).pelayananKlinikRoutes
+        loadChildren: async () => (await import('./pages/pelayanan-klinik/pelayanan-klinik.routes')).pelayananRoutes
     },
     {
         path: 'farmasi',
