@@ -1,11 +1,16 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/middleware/auth.guard';
 
-export const pelayananKlinikRoutes: Routes = [
+export const pelayananRoutes: Routes = [
     {
         path: 'setup-data',
         canActivate: [AuthGuard],
         loadChildren: async () => (await import('./setup-data/setup-data.routes')).setupDataRoutes
+    },
+    {
+        path: 'rawat-jalan',
+        canActivate: [AuthGuard],
+        loadChildren: async () => (await import('./rawat-jalan/rawat-jalan.routes')).rawatJalanRoutes
     },
     {
         path: 'dokter',
@@ -14,7 +19,7 @@ export const pelayananKlinikRoutes: Routes = [
         data: {
             title: 'Dokter',
             breadcrumbs: [
-                "Beranda", "Pelayanan Klinik", "Dokter"
+                "Beranda", "Pelayanan", "Dokter"
             ]
         }
     },
@@ -27,7 +32,7 @@ export const pelayananKlinikRoutes: Routes = [
                 data: {
                     title: 'Data Rekam Medis',
                     breadcrumbs: [
-                        "Beranda", "Pelayanan Klinik", "Rekam Medis", "Data Rekam Medis"
+                        "Beranda", "Pelayanan", "Rekam Medis", "Data Rekam Medis"
                     ]
                 },
             },
@@ -37,7 +42,7 @@ export const pelayananKlinikRoutes: Routes = [
                 data: {
                     title: 'Buat Rekam Medis',
                     breadcrumbs: [
-                        "Beranda", "Pelayanan Klinik", "Rekam Medis", "Buat Rekam Medis"
+                        "Beranda", "Pelayanan", "Rekam Medis", "Buat Rekam Medis"
                     ]
                 },
             }
