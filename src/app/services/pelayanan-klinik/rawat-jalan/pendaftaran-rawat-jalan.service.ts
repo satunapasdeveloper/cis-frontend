@@ -4,6 +4,7 @@ import { PendaftaranModel } from 'src/app/model/pages/pendaftaran/pendaftaran.mo
 import { PendaftaranRawatJalanModel } from 'src/app/model/pages/pelayanan/rawat-jalan/pendaftara-rawat-jalan.model';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
 
 @Injectable({
     providedIn: 'root'
@@ -44,4 +45,7 @@ export class PendaftaranRawatJalanService {
             )
     }
 
+    createUmum(payload: PendaftaranRawatJalanModel.ICreateUmum): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-pendaftaran/createIrjaUmum`, payload);
+    }
 }

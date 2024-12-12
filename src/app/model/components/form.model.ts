@@ -71,6 +71,7 @@ export namespace FormModel {
         placeholder?: string;
         file_accept?: string;
         onChange?: (args: any) => any;
+        onClick?: (args: any) => any;
         onFilter?: (args: any) => any;
     }
 }

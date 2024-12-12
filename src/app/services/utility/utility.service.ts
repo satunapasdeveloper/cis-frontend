@@ -21,7 +21,7 @@ export class UtilityService {
     constructor() { }
 
     getVersion(): string {
-        return "0.22.0";
+        return "0.23.0";
     }
 
     exportToPdf1(divId: string, fileTitle: string) {
