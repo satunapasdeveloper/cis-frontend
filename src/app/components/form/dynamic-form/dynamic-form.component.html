@@ -15,7 +15,8 @@
             <input *ngIf="item.type == 'text' && !item.mask" type="text" pInputText
                 class="p-inputtext-sm w-full {{ props.state == 'read' || item.readonly ? 'readonlyState' : '' }}"
                 formControlName="{{ item.id }}" [readonly]="props.state == 'read' || item.readonly "
-                (change)="handleChangeInputText($event, item)" [value]="item.value"
+                (change)="handleChangeInputText($event, item)" [value]="item.value" (click)="item.onClick?.($event)"
+                (keyup.enter)="item.onChange?.(FormGroup.get(item.id)?.value)"
                 placeholder="{{ item.placeholder ? item.placeholder : '' }}" />
 
             <!-- Text and Mask -->

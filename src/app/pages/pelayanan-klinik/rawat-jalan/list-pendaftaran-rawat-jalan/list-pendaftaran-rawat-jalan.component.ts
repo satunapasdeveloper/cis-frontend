@@ -117,6 +117,7 @@ export class ListPendaftaranRawatJalanComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        this.handleSearchPendaftaran({ page: 1, count: 5 });
         this.getAllPoli();
         this.getAllDokter();
     }

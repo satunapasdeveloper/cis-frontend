@@ -1,1 +1,37 @@
-<p>pendaftaran-rawat-jalan works!</p>
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Form Pilih Pasien -->
+    <div class="flex flex-col w-8/12 p-3 bg-white rounded-lg shadow-sm mb-2">
+        <div class="grid w-full">
+            <div class="flex flex-col gap-0 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-lg font-medium text-gray-700">
+                    Data Pasien
+                </p>
+                <p class="text-sm text-gray-500">
+                    Input data nomor antrian dan pasien disini
+                </p>
+            </div>
+
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+    </div>
+
+    <!-- Form Pilih Pasien -->
+    <div *ngIf="ShowFormResult" class="flex flex-col w-8/12 p-3 bg-white rounded-lg shadow-sm">
+        <div class="grid w-full">
+            <div class="flex flex-col gap-0 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-lg font-medium text-gray-700">
+                    Detail Pendaftaran
+                </p>
+                <p class="text-sm text-gray-500">
+                    Detail data pendaftaran rawat jalan
+                </p>
+            </div>
+
+            <app-dynamic-form #FormResultComps [props]="FormResultProps"></app-dynamic-form>
+        </div>
+    </div>
+
+    <!-- Dialog Search Pasien -->
+    <app-search-pasien-dialog #DialogSearchPasienComps (onSelect)="handleSelectLookupPasien($event)">
+    </app-search-pasien-dialog>
+</app-dashboard>

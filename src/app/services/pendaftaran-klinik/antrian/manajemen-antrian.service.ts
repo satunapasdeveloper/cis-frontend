@@ -113,4 +113,22 @@ export class ManajemenAntrianService {
     stopAdmisi(id_antrian: number) {
         return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-antrian/endAdmisi/${id_antrian}`, null)
     }
+
+    getDetailAntrian(no_antrian: string, tanggal: string) {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/setup-antrian/getAntrianByNomorAndDate/${no_antrian}/${tanggal}`)
+            .pipe(
+                map((result) => {
+                    if (result.responseResult && result.data) {
+                        result.data = {
+                            id_antrian: result.data.id_antrian,
+                            no_antrian: result.data.no_antrian,
+                            id_antrian_jenis: result.data.id_antrian_jenis,
+                            jenis_antrian: result.data.antrian_jenis.jenis_antrian,
+                        }
+                    }
+                    return result;
+                })
+            )
+    }
 }

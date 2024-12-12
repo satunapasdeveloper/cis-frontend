@@ -66,14 +66,47 @@
                 class="flex flex-col rounded-lg shadow bg-gray-50 hover:bg-gray-200 transition-all p-3 cursor-pointer"
                 (click)="handleSelectPasien(item)">
                 <p class="text-base font-medium text-gray-700">
-                    {{ item.nama_pasien }}
+                    {{ item.gender == 'L' ? 'Bapak' : 'Ibu' }} {{ item.nama_pasien | titlecase }}
                 </p>
-                <p class="text-sm text-sky-500">
+                <p class="text-sm text-sky-500 pb-2 mb-2 border-dashed border-t-0 border-b border-x-0 border-gray-300">
                     {{ item.nik }}
                 </p>
-                <p class="text-sm text-gray-700">
-                    {{ item.alamat_lengkap_ktp }}
-                </p>
+                <div class="flex gap-1">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            No. Rekam Medis
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            : {{ item.no_rekam_medis }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex gap-1">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Tanggal Lahir
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            : {{ item.tanggal_lahir }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex gap-1">
+                    <div class="w-3/12">
+                        <p class="text-sm text-gray-700">
+                            Alamat Domisili
+                        </p>
+                    </div>
+                    <div class="w-9/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            : {{ item.alamat_lengkap_domisili }}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 

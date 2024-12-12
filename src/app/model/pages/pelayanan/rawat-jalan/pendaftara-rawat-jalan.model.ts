@@ -206,4 +206,15 @@ export namespace PendaftaranRawatJalanModel {
             totalRows: number;
         }
     }
+
+    export interface ICreateUmum {
+        no_antrian: string
+        id_pasien: string
+        tanggal_admisi: string
+        id_poli: string
+        id_jadwal_dokter: string
+        id_dokter: string
+        id_penjamin: string
+        id_kelas_rawat: string
+    }
 }
