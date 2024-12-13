@@ -48,4 +48,10 @@ export class PendaftaranRawatJalanService {
     createUmum(payload: PendaftaranRawatJalanModel.ICreateUmum): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-pendaftaran/createIrjaUmum`, payload);
     }
+
+    cekPasienBpjs(id_pasien: string, no_rujukan?: string): Observable<PendaftaranRawatJalanModel.CekPasienBpjs> {
+        let query = no_rujukan ? { id_pasien: id_pasien, no_rujukan: no_rujukan } : { id_pasien: id_pasien };
+
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-pendaftaran/cekPasienBpjs`, query);
+    }
 }
