@@ -126,6 +126,46 @@ export const setupDataRoutes: Route[] = [
         }
     },
     {
+        path: 'setup-asal-rujukan',
+        loadComponent: async () => (await import('./setup-asal-rujukan/setup-asal-rujukan.component')).SetupAsalRujukanComponent,
+        data: {
+            title: 'Setup Asal Rujukan',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Asal Rujukan"
+            ]
+        }
+    },
+    {
+        path: 'setup-kondisi-pulang',
+        loadComponent: async () => (await import('./setup-kondisi-pulang/setup-kondisi-pulang.component')).SetupKondisiPulangComponent,
+        data: {
+            title: 'Setup Kondisi Pulang',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Kondisi Pulang"
+            ]
+        }
+    },
+    {
+        path: 'setup-cara-pulang',
+        loadComponent: async () => (await import('./setup-cara-pulang/setup-cara-pulang.component')).SetupCaraPulangComponent,
+        data: {
+            title: 'Setup Cara Pulang',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Cara Pulang"
+            ]
+        }
+    },
+    {
+        path: 'setup-diagnosa',
+        loadComponent: async () => (await import('./setup-diagnosa/setup-diagnosa.component')).SetupDiagnosaComponent,
+        data: {
+            title: 'Setup Cara Pulang',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Diagnosa"
+            ]
+        }
+    },
+    {
         path: 'manajemen-user',
         loadComponent: async () => (await import('./manajemen-user/manajemen-user.component')).ManajemenUserComponent,
         data: {

@@ -217,4 +217,23 @@ export namespace PendaftaranRawatJalanModel {
         id_penjamin: string
         id_kelas_rawat: string
     }
+
+    export class CekPasienBpjs implements HttpBaseResponse {
+        responseResult!: boolean
+        statusCode!: number
+        message!: string
+        data!: {
+            nama_pasien: string;
+            nik: string;
+            no_kartu_bpjs: string;
+            no_rujukan?: string;
+            log_cek: {
+                title: string
+                message: string
+                status: number
+                no_rujukan?: string
+            }[]
+            status_all: number
+        }
+    }
 }

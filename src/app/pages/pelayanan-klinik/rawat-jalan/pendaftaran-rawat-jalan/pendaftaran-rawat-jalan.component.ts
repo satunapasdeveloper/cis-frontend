@@ -11,6 +11,7 @@ import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynam
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { PendaftaranRawatJalanModel } from 'src/app/model/pages/pelayanan/rawat-jalan/pendaftara-rawat-jalan.model';
 import { PendaftaranRawatJalanService } from 'src/app/services/pelayanan-klinik/rawat-jalan/pendaftaran-rawat-jalan.service';
 import { NakesJadwalService } from 'src/app/services/pelayanan-klinik/setup-data/nakes-jadwal.service';
 import { ManajemenAntrianService } from 'src/app/services/pendaftaran-klinik/antrian/manajemen-antrian.service';
@@ -51,6 +52,8 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
         }
     ];
 
+    IsPendaftaranBpjs = false;
+
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
@@ -60,6 +63,11 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
     ShowFormResult = false;
     FormResultProps: FormModel.IForm;
     @ViewChild('FormResultComps') FormResultComps!: DynamicFormComponent;
+
+    ShowDialogCekPasienBpjs = false;
+    ResultCekPasienBpjs!: PendaftaranRawatJalanModel.CekPasienBpjs['data'];
+
+    IsPendfataranBpjsWithSep = false;
 
     constructor(
         private _store: Store,
@@ -223,6 +231,10 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
         this.getAllPoli();
         this.getAllJadwalDokter();
         this.getAllKelas();
+
+        setTimeout(() => {
+            this.onCheckPasienBpjs("8");
+        }, 1000);
     }
 
     ngOnDestroy(): void {
@@ -250,6 +262,7 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
 
                     // !! Check jenis antrian = BPJS or UMUM
                     if (result.data.jenis_antrian == 'BPJS') {
+                        this.IsPendaftaranBpjs = true;
                         this.FormProps.fields[2].hidden = false;
                         this.FormProps.fields[3].hidden = false;
                         this.FormProps.class = "grid-rows-2 grid-cols-2";
@@ -269,6 +282,7 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
 
                     // !! Check jenis antrian = BPJS or UMUM
                     if (result.data.jenis_antrian == 'UMUM') {
+                        this.IsPendaftaranBpjs = false;
                         this.FormProps.fields[2].hidden = true;
                         this.FormProps.fields[3].hidden = true;
                         this.FormProps.class = "grid-rows-1 grid-cols-2";
@@ -295,10 +309,16 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
 
     handleSelectLookupPasien(args: any) {
         console.log("pasien from lookup =>", args);
+
         this.FormComps.FormGroup.get('id_pasien')?.setValue(args.id_pasien);
         this.FormComps.FormGroup.get('no_rekam_medis')?.setValue(args.no_rekam_medis);
         this.FormResultComps.FormGroup.get('nama_pasien')?.setValue(args.nama_pasien);
+
         const id_pasien = args.id_pasien;
+
+        if (this.IsPendaftaranBpjs) {
+            this.onCheckPasienBpjs(id_pasien);
+        }
     }
 
     private getAllPenjamin() {
@@ -456,5 +476,31 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
                     }, 500);
                 }
             })
+    }
+
+    // ** BPJS METHOD WILL BE HERE **
+    private onCheckPasienBpjs(id_pasien: string, no_rujukan?: string) {
+        this._pendaftaranRawatJalanService
+            .cekPasienBpjs(id_pasien, no_rujukan)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    result.data.no_rujukan = result.data.log_cek.find((item: any) => item.status == 1 && item.title == "Cek rujukan pasien")?.no_rujukan || '';
+                    this.ResultCekPasienBpjs = result.data;
+                    this.ShowDialogCekPasienBpjs = true;
+                }
+            })
+    }
+
+    handleCloseDialogCekPasienBpjs(with_sep: boolean) {
+        this.IsPendfataranBpjsWithSep = with_sep;
+
+        if (with_sep) {
+            this.FormComps.FormGroup.get('no_rujukan')?.setValue(this.ResultCekPasienBpjs.no_rujukan);
+        } else {
+            this.FormComps.FormGroup.get('no_rujukan')?.setValue('');
+        }
+
+        this.ShowDialogCekPasienBpjs = false;
     }
 }
