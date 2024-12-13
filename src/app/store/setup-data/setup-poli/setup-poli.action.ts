@@ -22,7 +22,7 @@ export namespace SetupPoliActions {
     }
 
     export class UpdateStatusPoli {
-        static readonly type = '[POLI] Update Poli';
+        static readonly type = '[POLI] Update Status Poli';
         constructor(public payload: PoliModel.UpdatePoli) { }
     }
 
