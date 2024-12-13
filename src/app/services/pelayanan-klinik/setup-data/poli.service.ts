@@ -33,11 +33,31 @@ export class PoliService {
             )
     }
 
+    getAllPoliJkn(): Observable<PoliModel.GetAllPoliJkn> {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/jkn-referensi/getAllPoli`)
+            .pipe(
+                map((result) => {
+                    if (result.data.length) {
+                        result.data = result.data.map((item: any) => {
+                            return {
+                                ...item,
+                                description: `${item.kdsubspesialis} - ${item.kdpoli} - ${item.nmsubspesialis}`
+                            }
+                        });
+                    }
+
+                    return result;
+                })
+            )
+    }
+
     getAllActive(query: PoliModel.IPoliQueryParams): Observable<PoliModel.GetAllPoli> {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-poli/getForLookUp`, query);
     }
 
     create(payload: PoliModel.CreatePoli): Observable<HttpBaseResponse> {
+        delete (<any>payload)['id_poli'];
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-poli/create`, payload);
     }
 

@@ -31,6 +31,21 @@ export namespace PoliModel {
         }
     }
 
+    export interface IPoliJkn {
+        nmpoli: string
+        nmsubspesialis: string
+        kdsubspesialis: string
+        kdpoli: string
+        description: string;
+    }
+
+    export class GetAllPoliJkn implements HttpBaseResponse {
+        responseResult!: boolean
+        statusCode!: number
+        message!: string
+        data!: IPoliJkn[]
+    }
+
     export class GetByIdPoli implements HttpBaseResponse {
         responseResult!: boolean
         statusCode!: number

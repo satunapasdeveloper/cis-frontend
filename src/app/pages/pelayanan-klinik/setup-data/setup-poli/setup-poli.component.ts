@@ -11,6 +11,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { PoliService } from 'src/app/services/pelayanan-klinik/setup-data/poli.service';
 import { SetupPoliActions, SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 import { SetupUnitState } from 'src/app/store/setup-data/unit';
 
@@ -96,6 +97,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
 
     constructor(
         private _store: Store,
+        private _poliService: PoliService,
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
     ) {
@@ -141,8 +143,30 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                     id: 'kode_poli_bpjs',
                     label: 'Kode Poli BPJS',
                     required: true,
-                    type: 'text',
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'nmpoli',
+                        optionValue: 'kdpoli',
+                        autoDisplayFirst: false,
+                        customField: {
+                            title: 'nmpoli',
+                            subtitle: 'nmsubspesialis',
+                            description: 'description',
+                        }
+                    },
                     value: '',
+                    onChange: (args: any) => {
+                        if (args) {
+                            this.FormComps.FormGroup.get('nama_poli_bpjs')?.setValue(args.nmpoli);
+                            this.FormComps.FormGroup.get('kode_sub_spesialis_bpjs')?.setValue(args.kdsubspesialis);
+                            this.FormComps.FormGroup.get('nama_sub_spesialis_bpjs')?.setValue(args.nmsubspesialis);
+                        } else {
+                            this.FormComps.FormGroup.get('nama_poli_bpjs')?.setValue('');
+                            this.FormComps.FormGroup.get('kode_sub_spesialis_bpjs')?.setValue('');
+                            this.FormComps.FormGroup.get('nama_sub_spesialis_bpjs')?.setValue('');
+                        }
+                    }
                 },
                 {
                     id: 'id_poli_satu_sehat',
@@ -150,6 +174,38 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
                     required: true,
                     type: 'text',
                     value: '',
+                },
+                {
+                    id: 'nama_poli_bpjs',
+                    label: 'nama_poli_bpjs',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
+                },
+                {
+                    id: 'kode_sub_spesialis_bpjs',
+                    label: 'kode_sub_spesialis_bpjs',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
+                },
+                {
+                    id: 'nama_sub_spesialis_bpjs',
+                    label: 'nama_sub_spesialis_bpjs',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
+                },
+                {
+                    id: 'is_active',
+                    label: 'is_active',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
@@ -162,6 +218,7 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getAll();
         this.getAllUnit();
+        this.getAllPoliJkn();
     }
 
     ngOnDestroy(): void {
@@ -202,6 +259,19 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
             });
     }
 
+    private getAllPoliJkn() {
+        this._poliService
+            .getAllPoliJkn()
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'kode_poli_bpjs');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
+                }
+            });
+    }
+
+
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
             this.PageState = 'form';
@@ -234,10 +304,8 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
         this.FormState = 'update';
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            this.FormComps.FormGroup.patchValue(args);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {
@@ -275,6 +343,8 @@ export class SetupPoliComponent implements OnInit, OnDestroy {
     }
 
     savePoli(data: any) {
+        delete data.is_active;
+
         this._store
             .dispatch(new SetupPoliActions.CreatePoli(data))
             .pipe(takeUntil(this.Destroy$))
