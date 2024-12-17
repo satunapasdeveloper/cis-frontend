@@ -54,4 +54,12 @@ export class PendaftaranRawatJalanService {
 
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-pendaftaran/cekPasienBpjs`, query);
     }
+
+    createBpjsTanpaSep(payload: PendaftaranRawatJalanModel.ICreateBpjsTanpaSep): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-pendaftaran/createIrjaBpjsTanpaSEP`, payload);
+    }
+
+    createBpjsDenganSep(payload: PendaftaranRawatJalanModel.ICreateBpjsTanpaSep): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-pendaftaran/createIrjaBpjsWithSEP`, payload);
+    }
 }

@@ -13,6 +13,7 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { PendaftaranRawatJalanModel } from 'src/app/model/pages/pelayanan/rawat-jalan/pendaftara-rawat-jalan.model';
 import { PendaftaranRawatJalanService } from 'src/app/services/pelayanan-klinik/rawat-jalan/pendaftaran-rawat-jalan.service';
+import { AsalRujukanService } from 'src/app/services/pelayanan-klinik/setup-data/asal-rujukan.service';
 import { NakesJadwalService } from 'src/app/services/pelayanan-klinik/setup-data/nakes-jadwal.service';
 import { ManajemenAntrianService } from 'src/app/services/pendaftaran-klinik/antrian/manajemen-antrian.service';
 import { SetupKelasActions, SetupKelasState } from 'src/app/store/setup-data/kelas';
@@ -74,6 +75,7 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
         private _router: Router,
         private _messageService: MessageService,
         private _nakesJadwalService: NakesJadwalService,
+        private _asalRujukanService: AsalRujukanService,
         private _manajemenAntrianService: ManajemenAntrianService,
         private _pendaftaranRawatJalanService: PendaftaranRawatJalanService,
     ) {
@@ -176,12 +178,25 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
                         options: []
                     },
                     value: '',
+                    onChange: (args) => {
+                        const index = this.FormResultProps.fields.findIndex((field) => field.id === 'id_dokter');
+
+                        if (args) {
+                            this.FormResultProps.fields[index].type = 'select';
+                            this.FormResultProps.fields[index].readonly = false;
+                            this.getAllJadwalDokter(args.id_poli);
+                        } else {
+                            this.FormResultProps.fields[index].type = 'text';
+                            this.FormResultProps.fields[index].readonly = true;
+                        }
+                    }
                 },
                 {
                     id: 'id_dokter',
                     label: 'Dokter',
                     required: true,
-                    type: 'select',
+                    type: 'text',
+                    readonly: true,
                     dropdownProps: {
                         optionName: 'nama',
                         optionValue: 'id_nakes',
@@ -195,6 +210,7 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
                     onChange: (args) => {
                         if (args) {
                             this.FormResultComps.FormGroup.get('id_jadwal_dokter')?.setValue(args.id_nakes_jadwal);
+                            this.FormResultComps.FormGroup.get('kode_dpjp')?.setValue(args.kode_dpjp);
                         }
                     }
                 },
@@ -207,20 +223,45 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'id_kelas_rawat',
-                    label: 'Kelas',
+                    id: 'kode_dpjp',
+                    label: 'Kode DPJP',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    hidden: true
+                },
+                {
+                    id: 'id_asal_rujukan',
+                    label: 'Asal Rujukan',
                     required: true,
                     type: 'select',
                     dropdownProps: {
-                        optionName: 'nama_kelas',
-                        optionValue: 'id_kelas',
+                        optionName: 'asal_rujukan',
+                        optionValue: 'id_asal_rujukan',
                         options: []
                     },
                     value: '',
+                    hidden: true,
+                },
+                {
+                    id: 'is_katarak',
+                    label: 'Apakah Katarak',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        optionName: 'name',
+                        optionValue: 'value',
+                        options: [
+                            { name: 'Tidak', value: false },
+                            { name: 'Iya', value: true },
+                        ]
+                    },
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-3 grid-cols-2',
+            class: 'grid-rows-4 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -229,12 +270,8 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getAllPenjamin();
         this.getAllPoli();
-        this.getAllJadwalDokter();
         this.getAllKelas();
-
-        setTimeout(() => {
-            this.onCheckPasienBpjs("8");
-        }, 1000);
+        this.getAllAsalRujukan();
     }
 
     ngOnDestroy(): void {
@@ -245,6 +282,14 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'save_umum') {
             this.onSaveUmum();
+        };
+
+        if (data.id == 'save_with_sep') {
+            this.onSaveWithSep();
+        };
+
+        if (data.id == 'save_without_sep') {
+            this.onSaveWithoutSep();
         };
 
         if (data.id == 'back') {
@@ -258,34 +303,25 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.data) {
-                    console.log(result.data);
+                    const indexAsalRujukan = this.FormResultProps.fields.findIndex((field) => field.id === 'id_asal_rujukan');
 
                     // !! Check jenis antrian = BPJS or UMUM
                     if (result.data.jenis_antrian == 'BPJS') {
+                        this.FormResultProps.fields[indexAsalRujukan].hidden = false;
                         this.IsPendaftaranBpjs = true;
-                        this.FormProps.fields[2].hidden = false;
-                        this.FormProps.fields[3].hidden = false;
-                        this.FormProps.class = "grid-rows-2 grid-cols-2";
                         this.ButtonNavigation = [
                             {
                                 id: 'back',
                                 title: 'Back',
                                 icon: 'pi pi-chevron-left'
-                            },
-                            {
-                                id: 'save_bpjs',
-                                title: 'Simpan',
-                                icon: 'pi pi-save'
                             }
                         ];
                     };
 
                     // !! Check jenis antrian = BPJS or UMUM
                     if (result.data.jenis_antrian == 'UMUM') {
+                        this.FormResultProps.fields[indexAsalRujukan].hidden = true;
                         this.IsPendaftaranBpjs = false;
-                        this.FormProps.fields[2].hidden = true;
-                        this.FormProps.fields[3].hidden = true;
-                        this.FormProps.class = "grid-rows-1 grid-cols-2";
                         this.ButtonNavigation = [
                             {
                                 id: 'back',
@@ -393,22 +429,21 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
 
     }
 
-    private getAllJadwalDokter() {
+    private getAllJadwalDokter(id_poli: string) {
         this._nakesJadwalService
-            .getAll({ page: 1, count: 100, id_hari: new Date().getDay() })
+            .getByPoliAndHari(id_poli, new Date().getDay().toString())
             .pipe(
                 takeUntil(this.Destroy$),
                 map((result: any) => {
-                    result.data.rows = result.data.rows.map((item: any) => {
+                    return result.data ? result.data.map((item: any) => {
                         return {
                             id_nakes: item.id_nakes,
                             id_nakes_jadwal: item.id_nakes_jadwal,
                             nama: item.nakes.nama,
                             jadwal: `${item.jam_mulai} s/d ${item.jam_selesai}`,
+                            kode_dpjp: item.nakes.kode_dpjp
                         }
-                    });
-
-                    return result.data.rows;
+                    }) : [];
                 })
             )
             .subscribe((result) => {
@@ -460,8 +495,13 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
             tanggal_admisi: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
         };
 
+        delete payload.nama_pasien;
+        delete payload.no_penjamin;
+        delete payload.no_rekam_medis;
         delete payload.no_rujukan;
         delete payload.no_surat_kontrol;
+        delete payload.kode_dpjp;
+        delete payload.is_katarak;
 
         this._pendaftaranRawatJalanService
             .createUmum(payload)
@@ -479,6 +519,16 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
     }
 
     // ** BPJS METHOD WILL BE HERE **
+    private getAllAsalRujukan() {
+        this._asalRujukanService
+            .getAllActive({ page: 1, count: 1000 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                const index = this.FormResultProps.fields.findIndex((field) => field.id === 'id_asal_rujukan');
+                this.FormResultProps.fields[index].dropdownProps.options = result.data.rows;
+            })
+    }
+
     private onCheckPasienBpjs(id_pasien: string, no_rujukan?: string) {
         this._pendaftaranRawatJalanService
             .cekPasienBpjs(id_pasien, no_rujukan)
@@ -495,12 +545,117 @@ export class PendaftaranRawatJalanComponent implements OnInit, OnDestroy {
     handleCloseDialogCekPasienBpjs(with_sep: boolean) {
         this.IsPendfataranBpjsWithSep = with_sep;
 
+        const dataPenjamin = this.FormResultProps.fields.find((field) => field.id === 'id_penjamin')?.dropdownProps.options;
+        const id_penjamin_bpjs = dataPenjamin.find((item: any) => item.nama_penjamin.toLowerCase() == 'bpjs')?.id_penjamin;
+        this.FormResultComps.FormGroup.get('id_penjamin')?.setValue(id_penjamin_bpjs);
+        this.FormResultComps.FormGroup.get('no_penjamin')?.setValue(this.ResultCekPasienBpjs.no_kartu_bpjs);
+
+        const indexIsKatarak = this.FormResultProps.fields.findIndex((field) => field.id === 'is_katarak');
+
         if (with_sep) {
+            this.ButtonNavigation = [
+                {
+                    id: 'back',
+                    title: 'Back',
+                    icon: 'pi pi-chevron-left'
+                },
+                {
+                    id: 'save_with_sep',
+                    title: 'Buat SEP & Simpan Pendaftaran',
+                    icon: 'pi pi-save'
+                }
+            ];
+
+            this.FormProps.fields[2].hidden = false;
+            this.FormProps.fields[3].hidden = false;
+            this.FormProps.class = "grid-rows-2 grid-cols-2";
             this.FormComps.FormGroup.get('no_rujukan')?.setValue(this.ResultCekPasienBpjs.no_rujukan);
-        } else {
+
+            this.FormResultProps.fields[indexIsKatarak].hidden = false;
+            this.FormResultProps.class = "grid-rows-4 grid-cols-2";
+        }
+
+        if (!with_sep) {
+            this.ButtonNavigation = [
+                {
+                    id: 'back',
+                    title: 'Back',
+                    icon: 'pi pi-chevron-left'
+                },
+                {
+                    id: 'save_without_sep',
+                    title: 'Simpan Pendaftaran Tanpa SEP',
+                    icon: 'pi pi-save'
+                }
+            ];
+
+            this.FormProps.fields[2].hidden = true;
+            this.FormProps.fields[3].hidden = true;
+            this.FormProps.class = "grid-rows-1 grid-cols-2";
             this.FormComps.FormGroup.get('no_rujukan')?.setValue('');
+
+            this.FormResultProps.fields[indexIsKatarak].hidden = true;
+            this.FormResultProps.class = "grid-rows-3 grid-cols-2";
         }
 
         this.ShowDialogCekPasienBpjs = false;
+    }
+
+    private onSaveWithoutSep() {
+        let payload = {
+            ...this.FormComps.FormGroup.value,
+            ...this.FormResultComps.FormGroup.value,
+            tanggal_admisi: new Date(),
+            log_cek_bpjs: this.ResultCekPasienBpjs.log_cek
+        };
+
+        delete payload.nama_pasien;
+        delete payload.no_penjamin;
+        delete payload.no_rekam_medis;
+        delete payload.no_rujukan;
+        delete payload.no_surat_kontrol;
+        delete payload.kode_dpjp;
+        delete payload.is_katarak;
+
+        this._pendaftaranRawatJalanService
+            .createBpjsTanpaSep(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil disimpan' });
+
+                    setTimeout(() => {
+                        this.handleClickButtonNavigation({ id: 'back', icon: 'back', title: 'back' })
+                    }, 500);
+                }
+            })
+    }
+
+    private onSaveWithSep() {
+        let payload = {
+            ...this.FormComps.FormGroup.value,
+            ...this.FormResultComps.FormGroup.value,
+            tanggal_admisi: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
+            log_cek_bpjs: this.ResultCekPasienBpjs.log_cek
+        };
+
+        delete payload.nama_pasien;
+        delete payload.no_penjamin;
+        delete payload.no_rekam_medis;
+
+        this._pendaftaranRawatJalanService
+            .createBpjsDenganSep(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil disimpan' });
+
+                    setTimeout(() => {
+                        this.handleClickButtonNavigation({ id: 'back', icon: 'back', title: 'back' })
+                    }, 500);
+                }
+            })
     }
 }
