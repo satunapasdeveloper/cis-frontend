@@ -1,132 +1,228 @@
-<div class="flex flex-col w-full">
-    <!-- Assesment -->
-    <div class="grid w-full mb-5 pb-5 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-        <p class="text-gray-700 text-xl font-semibold">
-            Assesment Pasien
-        </p>
-        <p class="text-gray-700 text-sm mb-4">
-            Mohon isi data assesment pasien dengan lengkap
-        </p>
+<app-dashboard>
+    <div class="flex flex-col w-10/12 gap-3">
+        <!-- Assesment -->
+        <div class="grid w-full bg-white p-5 rounded-lg shadow-sm">
+            <p class="text-gray-700 text-xl font-semibold">
+                Assesment Pasien
+            </p>
+            <p class="text-gray-700 text-sm mb-2 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                Mohon isi data assesment pasien dengan lengkap
+            </p>
 
-        <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
-    </div>
-
-    <!-- Keadaan Umum -->
-    <div class="grid w-full mb-5 pb-5 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-        <p class="text-gray-700 text-xl font-semibold">
-            Keadaaan Umum
-        </p>
-        <p class="text-gray-700 text-sm mb-4">
-            Mohon isi data keadaan umum pasien dengan lengkap
-        </p>
-
-        <app-dynamic-form #FormKeadaanUmumComps [props]="FormKeadaanUmumProps"></app-dynamic-form>
-    </div>
-
-    <!-- Vital Sign -->
-    <div class="grid w-full mb-5 pb-5 border-b border-t-0 border-x-0 border-dashed border-gray-300">
-        <p class="text-gray-700 text-xl font-semibold">
-            Vital Sign
-        </p>
-        <p class="text-gray-700 text-sm mb-4">
-            Mohon isi data vital sign pasien dengan lengkap
-        </p>
-
-        <app-dynamic-form #FormVitalSignComps [props]="FormVitalSignProps"></app-dynamic-form>
-    </div>
-
-    <!-- Catatan Kondisi Tubuh -->
-    <div class="grid w-full">
-        <p class="text-gray-700 text-xl font-semibold">
-            Catatan Kondisi Tubuh
-        </p>
-        <p class="text-gray-700 text-sm mb-4">
-            Isi catatan kondisi tubuh pasien
-        </p>
-
-        <div class="flex flex-col w-full gap-1">
-            <!-- Heading -->
-            <div class="flex flex-row gap-2 items-center mb-2">
-                <div class="w-2/12">
-                    <p class="text-gray-700 text-sm font-medium">
-                        #
-                    </p>
-                </div>
-                <div class="w-4/12">
-                    <p class="text-gray-700 text-sm font-medium">
-                        Anggota Tubuh
-                    </p>
-                </div>
-                <div class="w-4/12">
-                    <p class="text-gray-700 text-sm font-medium">
-                        Catatan
-                    </p>
-                </div>
-                <div class="w-2/12">
-                    <p class="text-gray-700 text-sm font-medium">
-
-                    </p>
-                </div>
+            <div class="grid w-full pb-3 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
             </div>
 
-            <!-- Content -->
-            @for(item of CatatanKondisiTubuh$ | async; let i = $index; track item) {
-            <!-- Add or edit -->
-            <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
-                <div class="w-2/12">
-                    <p class="text-gray-700 text-sm">
-                        Catatan {{ i + 1 }}
-                    </p>
-                </div>
-                <div class="w-4/12">
-                    <p-dropdown [options]="BodyParts" optionLabel="label" optionValue="id" [filter]="true"
-                        styleClass="p-inputtext-sm" [(ngModel)]="item.anggota_tubuh">
-                    </p-dropdown>
-                </div>
-                <div class="w-4/12">
-                    <input type="text" pInputText class="w-full p-inputtext-sm" [(ngModel)]="item.catatan_kondisi">
-                </div>
-                <div class="w-2/12">
-                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
-                        styleClass="p-button-sm" (onClick)="handleDeleteCatatanTubuh(i)" />
-                </div>
-            </div>
-
-            <!-- Just view -->
-            <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
-                <div class="w-2/12">
-                    <p class="text-gray-700 text-sm">
-                        Catatan {{ i + 1 }}
-                    </p>
-                </div>
-                <div class="w-4/12">
-                    <p class="text-gray-700 text-sm">
-                        {{ item.anggota_tubuh | titlecase }}
-                    </p>
-                </div>
-                <div class="w-4/12">
-                    <p class="text-gray-700 text-sm">
-                        {{ item.catatan_kondisi }}
-                    </p>
-                </div>
-                <div class="w-2/12">
-                    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
-                        styleClass="p-button-sm" (onClick)="handleEditCatatanTubuh(i)" />
-
-                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
-                        styleClass="p-button-sm" (onClick)="handleDeleteCatatanTubuh(i)" />
-                </div>
-            </div>
-            }
-
-            <!-- Footer -->
-            <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
-                (click)="handleAddCatatanTubuh()">
-                <i class="pi pi-plus" style="font-size: 13px"></i>
-                <p class="text-sm text-gray-800 font-medium text-center">
-                    Tambah Catatan Kondisi Tubuh
+            <div class="grid w-full pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-gray-700 text-base font-medium mb-3">
+                    Riwayat Penyakit Pasien
                 </p>
+
+                <div class="flex flex-col w-full gap-1">
+                    <!-- Heading -->
+                    <div class="flex flex-row gap-2 items-center mb-2">
+                        <div class="w-2/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                #
+                            </p>
+                        </div>
+                        <div class="w-4/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Nama Penyakit
+                            </p>
+                        </div>
+                        <div class="w-4/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Catatan
+                            </p>
+                        </div>
+                        <div class="w-2/12">
+                            <p class="text-gray-700 text-sm font-medium">
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    @for(item of RiwayatPenyakitPasien$ | async; let i = $index; track item) {
+                    <!-- Add or edit -->
+                    <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-2/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-4/12">
+                            <p-dropdown [options]="RiwayatPenyakitDatasource" optionLabel="display" [filter]="true"
+                                styleClass="p-inputtext-sm" (onFilter)="handleChangeFilter('penyakit_pribadi', $event)"
+                                (onChange)="handleChangeRiwayatPenyakit($event, i)">
+                            </p-dropdown>
+                        </div>
+                        <div class="w-4/12">
+                            <input type="text" pInputText class="w-full p-inputtext-sm" [(ngModel)]="item.keterangan">
+                        </div>
+                        <div class="w-2/12">
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatPenyakit(i)" />
+                        </div>
+                    </div>
+
+                    <!-- Just view -->
+                    <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-2/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-4/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.display | titlecase }}
+                            </p>
+                        </div>
+                        <div class="w-4/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.keterangan }}
+                            </p>
+                        </div>
+                        <div class="w-2/12">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                                styleClass="p-button-sm" (onClick)="handleEditRiwayatPenyakit(i)" />
+
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatPenyakit(i)" />
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Footer -->
+                    <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                        (click)="handleAddRiwayatPenyakit()">
+                        <i class="pi pi-plus" style="font-size: 13px"></i>
+                        <p class="text-sm text-gray-800 font-medium text-center">
+                            Tambah Riwayat Penyakit
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keadaan Umum -->
+        <div class="grid w-full bg-white p-5 rounded-lg shadow-sm">
+            <p class="text-gray-700 text-xl font-semibold">
+                Keadaaan Umum
+            </p>
+            <p class="text-gray-700 text-sm mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                Mohon isi data keadaan umum pasien dengan lengkap
+            </p>
+
+            <app-dynamic-form #FormKeadaanUmumComps [props]="FormKeadaanUmumProps"></app-dynamic-form>
+        </div>
+
+        <!-- Pemeriksaan Fisik -->
+        <div class="grid w-full bg-white p-5 rounded-lg shadow-sm">
+            <p class="text-gray-700 text-xl font-semibold">
+                Pemeriksaan Fisik
+            </p>
+            <p class="text-gray-700 text-sm mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                Mohon isi data pemeriksaan fisik pasien dengan lengkap
+            </p>
+
+            <app-dynamic-form #FormVitalSignComps [props]="FormVitalSignProps"></app-dynamic-form>
+        </div>
+
+        <!-- Catatan Kondisi Tubuh -->
+        <div class="hidden w-full">
+            <p class="text-gray-700 text-xl font-semibold">
+                Catatan Kondisi Tubuh
+            </p>
+            <p class="text-gray-700 text-sm mb-4">
+                Isi catatan kondisi tubuh pasien
+            </p>
+
+            <div class="flex flex-col w-full gap-1">
+                <!-- Heading -->
+                <div class="flex flex-row gap-2 items-center mb-2">
+                    <div class="w-2/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            #
+                        </p>
+                    </div>
+                    <div class="w-4/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Anggota Tubuh
+                        </p>
+                    </div>
+                    <div class="w-4/12">
+                        <p class="text-gray-700 text-sm font-medium">
+                            Catatan
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p class="text-gray-700 text-sm font-medium">
+
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                @for(item of CatatanKondisiTubuh$ | async; let i = $index; track item) {
+                <!-- Add or edit -->
+                <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
+                    <div class="w-2/12">
+                        <p class="text-gray-700 text-sm">
+                            Catatan {{ i + 1 }}
+                        </p>
+                    </div>
+                    <div class="w-4/12">
+                        <p-dropdown [options]="BodyParts" optionLabel="label" optionValue="id" [filter]="true"
+                            styleClass="p-inputtext-sm" [(ngModel)]="item.anggota_tubuh">
+                        </p-dropdown>
+                    </div>
+                    <div class="w-4/12">
+                        <input type="text" pInputText class="w-full p-inputtext-sm" [(ngModel)]="item.catatan_kondisi">
+                    </div>
+                    <div class="w-2/12">
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteCatatanTubuh(i)" />
+                    </div>
+                </div>
+
+                <!-- Just view -->
+                <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
+                    <div class="w-2/12">
+                        <p class="text-gray-700 text-sm">
+                            Catatan {{ i + 1 }}
+                        </p>
+                    </div>
+                    <div class="w-4/12">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.anggota_tubuh | titlecase }}
+                        </p>
+                    </div>
+                    <div class="w-4/12">
+                        <p class="text-gray-700 text-sm">
+                            {{ item.catatan_kondisi }}
+                        </p>
+                    </div>
+                    <div class="w-2/12">
+                        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                            styleClass="p-button-sm" (onClick)="handleEditCatatanTubuh(i)" />
+
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                            styleClass="p-button-sm" (onClick)="handleDeleteCatatanTubuh(i)" />
+                    </div>
+                </div>
+                }
+
+                <!-- Footer -->
+                <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                    (click)="handleAddCatatanTubuh()">
+                    <i class="pi pi-plus" style="font-size: 13px"></i>
+                    <p class="text-sm text-gray-800 font-medium text-center">
+                        Tambah Catatan Kondisi Tubuh
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</app-dashboard>
