@@ -204,7 +204,7 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
     handleGoToAssesmentAwal(args: any) {
         localStorage.setItem('_SPSH_', JSON.stringify(args));
-        this._router.navigateByUrl(`/antrian/assesment-awal?id=${args.id_pendaftaran}`)
+        this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/assesment-awal?id_register=${args.id_register}`)
     }
 
     handleGoToInputRekamMedis(args: any): void {

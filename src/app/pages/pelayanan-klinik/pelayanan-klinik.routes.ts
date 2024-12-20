@@ -27,22 +27,12 @@ export const pelayananRoutes: Routes = [
         path: 'rekam-medis',
         children: [
             {
-                path: 'data',
-                loadComponent: async () => (await import('./rekam-medis/history-rekam-medis/history-rekam-medis.component')).HistoryRekamMedisComponent,
+                path: 'assesment-awal',
+                loadComponent: async () => (await import('./rekam-medis/input-rekam-medis/pemeriksaan-fisik/pemeriksaan-fisik.component')).PemeriksaanFisikComponent,
                 data: {
-                    title: 'Data Rekam Medis',
+                    title: 'Assesment Awal',
                     breadcrumbs: [
-                        "Beranda", "Pelayanan", "Rekam Medis", "Data Rekam Medis"
-                    ]
-                },
-            },
-            {
-                path: 'baru',
-                loadComponent: async () => (await import('./rekam-medis/input-rekam-medis/input-rekam-medis.component')).InputRekamMedisComponent,
-                data: {
-                    title: 'Buat Rekam Medis',
-                    breadcrumbs: [
-                        "Beranda", "Pelayanan", "Rekam Medis", "Buat Rekam Medis"
+                        "Beranda", "Pelayanan", "Rekam Medis", "Assesment Awal"
                     ]
                 },
             }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { HttpRequestService } from '../../http/http-request.service';
 import { HttpBaseResponse, PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
@@ -76,6 +76,66 @@ export class RekamMedisService {
     constructor(
         private _httpRequestService: HttpRequestService
     ) { }
+
+    getRiwayatPenyakitPribadi(display: string) {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatPenyakitPribadi`, { page: 1, count: 100, display: display })
+            .pipe(
+                map((result) => {
+                    return result.responseResult ? result.data.rows : [];
+                })
+            );
+    }
+
+    getRiwayatPenyakitKeluarga(display: string) {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatPenyakitKeluarga`, { page: 1, count: 100, display: display })
+            .pipe(
+                map((result) => {
+                    return result.responseResult ? result.data.rows : [];
+                })
+            );
+    }
+
+    getRiwayatAlergiMakanan(display: string) {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatAlergiMakanan`, { page: 1, count: 100, display: display })
+            .pipe(
+                map((result) => {
+                    return result.responseResult ? result.data.rows : [];
+                })
+            );
+    }
+
+    getRiwayatTingkatKesadaran(display: string) {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatTingkatKesadaran`, { page: 1, count: 100, display: display })
+            .pipe(
+                map((result) => {
+                    return result.responseResult ? result.data.rows : [];
+                })
+            );
+    }
+
+    getRiwayatTubuh(display: string) {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatTubuh`, { page: 1, count: 100, display: display })
+            .pipe(
+                map((result) => {
+                    return result.responseResult ? result.data.rows : [];
+                })
+            );
+    }
+
+    getRiwayatStatusPsikologis(display: string) {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatStatusPsikologis`, { page: 1, count: 100, display: display })
+            .pipe(
+                map((result) => {
+                    return result.responseResult ? result.data.rows : [];
+                })
+            );
+    }
 
     getRekamMedisPasien() {
         const tindakan: any = localStorage.getItem('tindakan');
