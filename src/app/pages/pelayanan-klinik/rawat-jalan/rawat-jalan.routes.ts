@@ -21,4 +21,14 @@ export const rawatJalanRoutes: Routes = [
             ]
         }
     },
+    {
+        path: 'antrian-poliklinik',
+        loadComponent: async () => (await import('../../pendaftaran/antrian/antrian.component')).AntrianComponent,
+        data: {
+            title: 'Antrian Poliklinik Rawat Jalan',
+            breadcrumbs: [
+                "Beranda", "Pelayanan", "Rawat Jalan", "Antrian Poliklinik"
+            ]
+        }
+    },
 ]
