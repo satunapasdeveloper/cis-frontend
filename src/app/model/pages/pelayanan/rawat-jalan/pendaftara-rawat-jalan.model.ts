@@ -236,4 +236,32 @@ export namespace PendaftaranRawatJalanModel {
             status_all: number
         }
     }
+
+    export interface ICreateBpjsTanpaSep {
+        no_antrian: string
+        id_pasien: string
+        tanggal_admisi: string
+        id_poli: string
+        id_jadwal_dokter: string
+        id_dokter: string
+        id_penjamin: string
+        id_asal_rujukan: string
+        log_cek_bpjs: CekPasienBpjs['data']['log_cek']
+    }
+
+    export interface ICreateBpjsDenganSep {
+        no_antrian: string
+        id_pasien: string
+        no_rujukan: string
+        no_surat_kontrol: string
+        tanggal_admisi: string
+        id_poli: string
+        id_jadwal_dokter: string
+        id_dokter: string
+        kode_dpjp: string
+        id_penjamin: string
+        id_asal_rujukan: string
+        is_katarak: boolean
+        log_cek_bpjs: CekPasienBpjs['data']['log_cek']
+    }
 }

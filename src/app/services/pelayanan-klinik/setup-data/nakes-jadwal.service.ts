@@ -18,6 +18,10 @@ export class NakesJadwalService {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-nakes-jadwal/getAll`, query);
     }
 
+    getByPoliAndHari(id_poli: string, id_hari: string): Observable<NakesJadwalModel.GetAllJadwalNakes> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-nakes-jadwal/getJadwalByPoliAndHari/${id_poli}/${id_hari}`);
+    }
+
     create(payload: NakesJadwalModel.CreateJadwalNakes): Observable<HttpBaseResponse> {
         delete (<any>payload)['id_nakes_jadwal'];
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-nakes-jadwal/create`, payload);
