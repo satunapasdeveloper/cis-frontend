@@ -7,6 +7,7 @@ export namespace AntrianPoliklinikRawatJalanModel {
         no_register: string
         id_pasien: string
         nama_pasien: string
+        no_rekam_medis: string
         gender: string
         tanggal_lahir: string
         tanggal_admisi: string

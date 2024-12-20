@@ -8,7 +8,7 @@
                     <p class="text-xs font-medium text-gray-700">
                         Tanggal Visit <span class="text-red-500">*</span>
                     </p>
-                    <p-calendar styleClass="p-inputtext-xs w-full" placeholder="Pilih Tanggal Visit" appendTo="body"
+                    <p-calendar styleClass="p-inputtext-sm w-full" placeholder="Pilih Tanggal Visit" appendTo="body"
                         [(ngModel)]="TanggalAdmisiFilterSearch" dateFormat="dd-mm-yy">
                     </p-calendar>
                 </div>
@@ -18,8 +18,9 @@
                     <p class="text-xs font-medium text-gray-700">
                         Pilih Poli
                     </p>
-                    <p-dropdown styleClass="p-inputtext-xs w-full" placeholder="Pilih Poli" [options]="PoliDatasource"
-                        optionLabel="poli" optionValue="kode_poli" appendTo="body" [(ngModel)]="PoliFilterSearch">
+                    <p-dropdown styleClass="p-inputtext-sm w-full" placeholder="Pilih Poli" [options]="PoliDatasource"
+                        optionLabel="nama_poli" optionValue="id_poli" appendTo="body" [(ngModel)]="PoliFilterSearch"
+                        [showClear]="true">
                     </p-dropdown>
                 </div>
 
@@ -28,9 +29,9 @@
                     <p class="text-xs font-medium text-gray-700">
                         Pilih Dokter
                     </p>
-                    <p-dropdown styleClass="p-inputtext-xs w-full" placeholder="Pilih Dokter"
-                        [options]="DokterDatasource" optionLabel="poli" optionValue="kode_poli" appendTo="body"
-                        [(ngModel)]="DokterFilterSearch">
+                    <p-dropdown styleClass="p-inputtext-sm w-full" placeholder="Pilih Dokter"
+                        [options]="DokterDatasource" optionLabel="nama" optionValue="id_nakes" appendTo="body"
+                        [(ngModel)]="DokterFilterSearch" [showClear]="true">
                     </p-dropdown>
                 </div>
 
@@ -39,13 +40,14 @@
                     <p class="text-xs font-medium text-gray-700">
                         Nama Pasien
                     </p>
-                    <input pInputText styleClass="p-inputtext-xs w-full" placeholder="Nama Pasien"
+                    <input pInputText styleClass="p-inputtext-sm w-full" placeholder="Nama Pasien"
                         [(ngModel)]="PasienFilterSearch">
                 </div>
 
                 <!-- Button -->
                 <div class="flex w-full justify-end">
                     <p-button severity="info" label="Cari" styleClass="p-button-sm"
+                        [disabled]="!TanggalAdmisiFilterSearch"
                         (onClick)="handleSearchAntrian(TanggalAdmisiFilterSearch, PoliFilterSearch, DokterFilterSearch, PasienFilterSearch)">
                     </p-button>
                 </div>
@@ -53,7 +55,7 @@
         </div>
 
         <p-table [value]="AntrianDatasource" [tableStyle]="{'min-width': '50rem'}" rowGroupMode="subheader"
-            groupRowsBy="id_dokter">
+            groupRowsBy="id_jadwal_dokter">
             <ng-template pTemplate="header">
                 <tr>
                     <th class="text-xs">No. Antrian</th>
@@ -72,10 +74,21 @@
             <ng-template pTemplate="groupheader" let-antrian>
                 <tr pRowGroupHeader>
                     <td colspan="11" class="bg-sky-50 p-2">
-                        <span class="font-normal text-sm text-sky-800">
-                            Antrian Kunjungan :
-                            <span class="font-bold">
-                                {{ antrian.nama_dokter }}
+                        <span class="flex items-center font-normal text-sm text-sky-800">
+                            <span class="font-semibold">
+                                Poli {{ antrian.nama_poli | titlecase }}
+                            </span>
+                            <i class="pi pi-circle-fill mx-2" style="font-size: 5px"></i>
+                            <span class="font-semibold">
+                                {{ antrian.nama_dokter | titlecase }}
+                            </span>
+                            <i class="pi pi-circle-fill mx-2" style="font-size: 5px"></i>
+                            <span class="font-semibold">
+                                {{ antrian.jam_mulai }} - {{ antrian.jam_selesai }}
+                            </span>
+                            <i class="pi pi-circle-fill mx-2" style="font-size: 5px"></i>
+                            <span class="font-semibold">
+                                {{ antrian.jumlah_pasien }} Pasien
                             </span>
                         </span>
                     </td>
@@ -114,28 +127,57 @@
                                 <span
                                     class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
                                     (click)="handleGoToAssesmentAwal(antrian)">
-                                    <i class="pi pi-file-o" style="font-size: 12px"></i>
+                                    <i class="pi pi-file-o" style="font-size: 10px"></i>&nbsp;
                                     Mulai Assesment
                                 </span>
 
                                 <span
                                     class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
                                     (click)="handleOpenDialogPanggil(antrian)">
-                                    <i class="pi pi-megaphone" style="font-size: 12px"></i>
+                                    <i class="pi pi-megaphone" style="font-size: 10px"></i>&nbsp;
                                     Panggil
                                 </span>
 
                                 <span
-                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
-                                    (click)="handleGoToInputRekamMedis(antrian)">
-                                    <i class="pi pi-play" style="font-size: 12px"></i>
-                                    Mulai Periksa
+                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                    <i class="pi pi-plus" style="font-size: 10px"></i>&nbsp;
+                                    Tindakan
                                 </span>
 
-                                <span class="text-xs text-gray-700 cursor-pointer"
-                                    (click)="handleCancelAntrian(antrian)">
-                                    <i class="pi pi-trash" style="font-size: 12px"></i>
-                                    Hapus
+                                <span
+                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                    <i class="pi pi-plus" style="font-size: 10px"></i>&nbsp;
+                                    Resep
+                                </span>
+
+                                <span
+                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                    <i class="pi pi-plus" style="font-size: 10px"></i>&nbsp;
+                                    BMHP
+                                </span>
+
+                                <span
+                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                    <i class="pi pi-file" style="font-size: 10px"></i>&nbsp;
+                                    Surat Kontrol
+                                </span>
+
+                                <span
+                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                    <i class="pi pi-file" style="font-size: 10px"></i>&nbsp;
+                                    Rujukan
+                                </span>
+
+                                <span
+                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                    <i class="pi pi-plus" style="font-size: 10px"></i>&nbsp;
+                                    Laboratorium
+                                </span>
+
+                                <span
+                                    class="text-xs text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                    <i class="pi pi-plus" style="font-size: 10px"></i>&nbsp;
+                                    Radiologi
                                 </span>
                             </div>
                         </p-overlayPanel>
@@ -160,7 +202,7 @@
             </p>
 
             <p class="text-base text-gray-700 font-medium mb-1">
-                {{ SelectedPasien?.nama_lengkap }}
+                {{ SelectedPasien?.nama_pasien }}
             </p>
 
             <p class="text-xs text-gray-700 mb-5">
@@ -172,20 +214,16 @@
                     (click)="ShowModalPanggilPasien = false" />
 
                 <p-button label="Tidak Hadir" severity="danger" styleClass="p-button-sm"
-                    (click)="handleTidakHadirAntrian(SelectedPasien.id_pendaftaran)" />
+                    (click)="handleTidakHadirAntrian(SelectedPasien.id_register)" />
 
                 <p-button label="Mulai Periksa" severity="info" styleClass="p-button-sm"
-                    (click)="handleGoToInputRekamMedis(SelectedPasien)" />
+                    (click)="handleMulaiPeriksaAntrian(SelectedPasien.id_register)" />
 
-                <p-button label=" Panggil Ulang" severity="success" styleClass="p-button-sm"
-                    (click)="onCallAntrian(SelectedPasien)" />
+                <p-button label=" Panggil" severity="success" styleClass="p-button-sm"
+                    (click)="handlePanggilAntrian(SelectedPasien.id_register)" />
             </div>
         </div>
     </p-dialog>
-
-    <!-- Dialog Search Pasien -->
-    <app-search-pasien-dialog #SearchPasienDialogComps (onSelect)="handleSelectLookupPasien($event)">
-    </app-search-pasien-dialog>
 
     <p-confirmDialog />
 </app-dashboard>
