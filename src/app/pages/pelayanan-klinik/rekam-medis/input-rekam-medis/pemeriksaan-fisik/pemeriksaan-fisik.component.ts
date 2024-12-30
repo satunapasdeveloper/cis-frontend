@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -9,8 +10,10 @@ import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, takeUntil
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
+import { LayoutModel } from 'src/app/model/components/layout.model';
 import { RekamMedisService } from 'src/app/services/pelayanan-klinik/rekam-medis/rekam-medis.service';
-import { RekamMedisState } from 'src/app/store/rekam-medis';
+import { MessageService } from 'primeng/api';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-pemeriksaan-fisik',
@@ -32,6 +35,19 @@ import { RekamMedisState } from 'src/app/store/rekam-medis';
 export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestroy {
 
     Destroy$ = new Subject();
+
+    ButtonNavigation: LayoutModel.IButtonNavigation[] = [
+        {
+            id: 'back',
+            title: 'Kembali',
+            icon: 'pi pi-chevron-left'
+        },
+        {
+            id: 'save',
+            title: 'Simpan',
+            icon: 'pi pi-save'
+        }
+    ];
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -63,8 +79,9 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
     CatatanKondisiTubuh$ = new BehaviorSubject<any[]>([]);
 
     constructor(
-        private _store: Store,
-        private _cdr: ChangeDetectorRef,
+        private _router: Router,
+        private _activatedRoute: ActivatedRoute,
+        private _messageService: MessageService,
         private _rekamMedisService: RekamMedisService
     ) {
         this.FormProps = {
@@ -102,6 +119,9 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     required: true,
                     type: 'number',
                     value: 0,
+                    onChange: (args: any) => {
+                        this.onCountIndeksMasaTubuh(args, this.FormKeadaanUmumComps.FormGroup.get('berat_badan_kg')?.value);
+                    }
                 },
                 {
                     id: 'berat_badan_kg',
@@ -109,6 +129,9 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     required: true,
                     type: 'number',
                     value: 0,
+                    onChange: (args: any) => {
+                        this.onCountIndeksMasaTubuh(this.FormKeadaanUmumComps.FormGroup.get('tinggi_badan_cm')?.value, args);
+                    }
                 },
                 {
                     id: 'imt',
@@ -116,6 +139,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     required: true,
                     type: 'number',
                     value: 0,
+                    readonly: true,
                 },
                 {
                     id: 'kategori_imt',
@@ -131,6 +155,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     required: true,
                     type: 'number',
                     value: 0,
+                    readonly: true,
                 },
             ],
             style: 'not_inline',
@@ -150,7 +175,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     value: 0,
                 },
                 {
-                    id: 'distole',
+                    id: 'diastole',
                     label: 'Diastole (mm/Hg)',
                     required: true,
                     type: 'number',
@@ -163,13 +188,13 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: "tingkat_kesadaran",
-                        optionValue: "id_tingkat_kesadaran"
+                        optionName: "keterangan",
+                        optionValue: "id"
                     },
                     value: "",
                 },
                 {
-                    id: 'spO2',
+                    id: 'spo2',
                     label: 'SpO2 (%)',
                     required: false,
                     type: 'number',
@@ -253,13 +278,15 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     ngOnInit(): void {
-        this.handleAddCatatanTubuh();
+        // this.handleAddCatatanTubuh();
+        this.getVariable('tingkat_kesadaran', '');
     }
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this.getPemeriksaanFisik();
-        }, 100);
+            this.FormComps.FormGroup.get('id_register')?.setValue(this._activatedRoute.snapshot.queryParams['id_register']);
+            this.handleCheckIsAssesmentAwalExist(this._activatedRoute.snapshot.queryParams['id_register']);
+        }, 1000);
     }
 
     ngOnDestroy(): void {
@@ -267,38 +294,26 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
         this.Destroy$.complete();
     }
 
-    private getPemeriksaanFisik() {
-        this._store
-            .select(RekamMedisState.rekamMedisDetail)
+    private handleCheckIsAssesmentAwalExist(id_register: number) {
+        this._rekamMedisService
+            .getAssesment(id_register)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result?.pemeriksaan_fisik) {
-                    this.FormComps.FormGroup.patchValue({
-                        id_pendaftaran: result.assesment!.id_pendaftaran,
-                        tingkat_kesadaran: result.assesment!.kesadaran,
-                        pernafasan: result.assesment!.pernafasan,
-                        resiko_jatuh: result.assesment!.resiko_jatuh,
-                        skala_nyeri: result.assesment!.nyeri,
-                        batuk: result.assesment!.batuk,
-                    });
-                    this.FormKeadaanUmumComps.FormGroup.patchValue(result.pemeriksaan_fisik);
-                    this.FormVitalSignComps.FormGroup.patchValue(result.pemeriksaan_fisik);
-
-                    let pemeriksaan_fisik = result.pemeriksaan_fisik.kondisi_tubuh.map((item) => {
-                        return {
-                            ...item,
-                            is_new: false,
-                            is_edit: false
-                        }
-                    });
-
-                    this.CatatanKondisiTubuh$.next(pemeriksaan_fisik);
-                    this._cdr.detectChanges();
-                }
+                console.log(result)
             })
     }
 
-    private getVariable(type: 'penyakit_pribadi' | 'penyakit_keluarga' | 'alergi_makanan' | 'alergi_obat', keyword: string) {
+    handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
+        if (data.id == 'back') {
+            this._router.navigateByUrl("/pelayanan-klinik/rawat-jalan/antrian-poliklinik");
+        };
+
+        if (data.id == 'save') {
+            this.handleSave();
+        };
+    }
+
+    private getVariable(type: 'penyakit_pribadi' | 'penyakit_keluarga' | 'alergi_makanan' | 'alergi_obat' | 'tingkat_kesadaran', keyword: string) {
         if (type == 'penyakit_pribadi') {
             this._rekamMedisService
                 .getRiwayatPenyakitPribadi(keyword)
@@ -328,10 +343,20 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
 
         if (type == 'alergi_obat') {
             this._rekamMedisService
-                .getRiwayatAlergiMakanan(keyword)
+                .getRiwayatAlergiObat(keyword)
                 .pipe(takeUntil(this.Destroy$))
                 .subscribe((result) => {
                     this.RiwayatAlergiObatDatasource = result;
+                });
+        };
+
+        if (type == 'tingkat_kesadaran') {
+            this._rekamMedisService
+                .getRiwayatTingkatKesadaran()
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    const index = this.FormVitalSignProps.fields.findIndex(item => item.id == 'id_tingkat_kesadaran');
+                    this.FormVitalSignProps.fields[index].dropdownProps!.options = result;
                 });
         };
     }
@@ -385,8 +410,6 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             is_edit: false
         });
 
-        console.log("riwayat penyakit =>", riwayatPenyakit);
-
         this.RiwayatPenyakitPasien$.next([]);
         this.RiwayatPenyakitPasien$.next(riwayatPenyakit);
     }
@@ -410,6 +433,16 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             value.splice(index, 1);
             this.RiwayatPenyakitPasien$.next([]);
             this.RiwayatPenyakitPasien$.next(value);
+        }
+    }
+
+    // ** Riwayat Penyakit Keluarga
+    handleChangeRiwayatPenyakitKeluarga(args: any, index: number) {
+        if (args.value) {
+            let riwayatPenyakit = [...this.RiwayatPenyakitKeluarga$.value];
+            riwayatPenyakit[index] = { ...args.value };
+            this.RiwayatPenyakitKeluarga$.next([]);
+            this.RiwayatPenyakitKeluarga$.next(riwayatPenyakit);
         }
     }
 
@@ -453,6 +486,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
         }
     }
 
+    // ** Riwayat Alergi Makanan
     handleAddRiwayatAlergiMakanan() {
         let riwayatPenyakit = [...this.RiwayatAlergiMakanan$.value];
 
@@ -469,6 +503,15 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
 
         this.RiwayatAlergiMakanan$.next([]);
         this.RiwayatAlergiMakanan$.next(riwayatPenyakit);
+    }
+
+    handleChangeRiwayatAlergiMakanan(args: any, index: number) {
+        if (args.value) {
+            let riwayatPenyakit = [...this.RiwayatAlergiMakanan$.value];
+            riwayatPenyakit[index] = { ...args.value };
+            this.RiwayatAlergiMakanan$.next([]);
+            this.RiwayatAlergiMakanan$.next(riwayatPenyakit);
+        }
     }
 
     handleEditRiwayatAlergiMakanan(index: number) {
@@ -493,16 +536,26 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
         }
     }
 
+    // ** Riwayat Alergi Obat
+    handleChangeRiwayatAlergiObat(args: any, index: number) {
+        if (args.value) {
+            let riwayatPenyakit = [...this.RiwayatAlergiObat$.value];
+            riwayatPenyakit[index] = { ...args.value };
+            this.RiwayatAlergiObat$.next([]);
+            this.RiwayatAlergiObat$.next(riwayatPenyakit);
+        }
+    }
+
     handleAddRiwayatAlergiObat() {
         let riwayatPenyakit = [...this.RiwayatAlergiObat$.value];
 
         riwayatPenyakit.push({
             id: '',
-            url: '',
-            code: '',
-            display: '',
-            keterangan: '',
-            jenis_data: '',
+            kategori: '',
+            kode_kfa: '',
+            nama_item: '',
+            satuan: '',
+            type: '',
             is_new: true,
             is_edit: false
         });
@@ -569,5 +622,54 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             this.CatatanKondisiTubuh$.next([]);
             this.CatatanKondisiTubuh$.next(value);
         }
+    }
+
+    private onCountIndeksMasaTubuh(tinggi_badan_cm: number, berat_badan_kg: number) {
+        let tinggi_badan = (tinggi_badan_cm / 100) * (tinggi_badan_cm / 100);
+        const imt = parseFloat((berat_badan_kg / tinggi_badan).toFixed(2));
+        const bsa = parseFloat(Math.sqrt((berat_badan_kg * tinggi_badan) / 3600).toFixed(2));
+
+        if (imt >= 18.5 && imt <= 25) {
+            this.FormKeadaanUmumComps.FormGroup.get('kategori_imt')?.setValue('Normal');
+        }
+
+        if (imt > 25 && imt <= 27) {
+            this.FormKeadaanUmumComps.FormGroup.get('kategori_imt')?.setValue('Gemuk');
+        }
+
+        if (imt > 27) {
+            this.FormKeadaanUmumComps.FormGroup.get('kategori_imt')?.setValue('Obesitas');
+        }
+
+        this.FormKeadaanUmumComps.FormGroup.get('imt')?.setValue(imt);
+
+        this.FormKeadaanUmumComps.FormGroup.get('luas_permukaan_tubuh_cm')?.setValue(bsa * 10000);
+    }
+
+    private handleSave() {
+        const payload = {
+            ...this.FormComps.FormGroup.value,
+            ...this.FormKeadaanUmumComps.FormGroup.value,
+            ...this.FormVitalSignComps.FormGroup.value,
+            riwayat_penyakit_pribadi: this.RiwayatPenyakitPasien$.value,
+            riwayat_penyakit_keluarga: this.RiwayatPenyakitKeluarga$.value,
+            alergi_makanan: this.RiwayatAlergiMakanan$.value,
+            kfa_alergi_obat: this.RiwayatAlergiObat$.value,
+        };
+
+        !environment.production && console.log("save payload =>", payload);
+
+        this._rekamMedisService
+            .createAssesment(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Assesment Awal Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        this.handleClickButtonNavigation({ id: 'back', icon: '', title: '' });
+                    }, 1000);
+                }
+            })
     }
 }   

@@ -1,5 +1,5 @@
-<app-dashboard>
-    <div class="flex flex-col w-10/12 gap-3">
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="flex flex-col w-full gap-3">
         <!-- Assesment -->
         <div class="grid w-full bg-white p-5 rounded-lg shadow-sm">
             <p class="text-gray-700 text-xl font-semibold">
@@ -13,32 +13,34 @@
                 <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
             </div>
 
-            <div class="grid w-full pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <!-- Riwayat Penyakit Pasien -->
+            <div class="grid w-full pb-3 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
                 <p class="text-gray-700 text-base font-medium mb-3">
                     Riwayat Penyakit Pasien
                 </p>
 
                 <div class="flex flex-col w-full gap-1">
                     <!-- Heading -->
-                    <div class="flex flex-row gap-2 items-center mb-2">
-                        <div class="w-2/12">
+                    <div
+                        class="flex flex-row gap-2 items-center mb-2 pb-2 border-b border-t-0 border-x-0 border-solid border-gray-300">
+                        <div class="w-1/12">
                             <p class="text-gray-700 text-sm font-medium">
                                 #
                             </p>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-5/12">
                             <p class="text-gray-700 text-sm font-medium">
                                 Nama Penyakit
                             </p>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-5/12">
                             <p class="text-gray-700 text-sm font-medium">
                                 Catatan
                             </p>
                         </div>
-                        <div class="w-2/12">
+                        <div class="w-1/12">
                             <p class="text-gray-700 text-sm font-medium">
-
+                                Aksi
                             </p>
                         </div>
                     </div>
@@ -47,21 +49,21 @@
                     @for(item of RiwayatPenyakitPasien$ | async; let i = $index; track item) {
                     <!-- Add or edit -->
                     <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
-                        <div class="w-2/12">
+                        <div class="w-1/12">
                             <p class="text-gray-700 text-sm">
                                 Riwayat {{ i + 1 }}
                             </p>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-5/12">
                             <p-dropdown [options]="RiwayatPenyakitDatasource" optionLabel="display" [filter]="true"
                                 styleClass="p-inputtext-sm" (onFilter)="handleChangeFilter('penyakit_pribadi', $event)"
                                 (onChange)="handleChangeRiwayatPenyakit($event, i)">
                             </p-dropdown>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-5/12">
                             <input type="text" pInputText class="w-full p-inputtext-sm" [(ngModel)]="item.keterangan">
                         </div>
-                        <div class="w-2/12">
+                        <div class="w-1/12">
                             <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
                                 styleClass="p-button-sm" (onClick)="handleDeleteRiwayatPenyakit(i)" />
                         </div>
@@ -69,22 +71,22 @@
 
                     <!-- Just view -->
                     <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
-                        <div class="w-2/12">
+                        <div class="w-1/12">
                             <p class="text-gray-700 text-sm">
                                 Riwayat {{ i + 1 }}
                             </p>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-5/12">
                             <p class="text-gray-700 text-sm">
                                 {{ item.display | titlecase }}
                             </p>
                         </div>
-                        <div class="w-4/12">
+                        <div class="w-5/12">
                             <p class="text-gray-700 text-sm">
                                 {{ item.keterangan }}
                             </p>
                         </div>
-                        <div class="w-2/12">
+                        <div class="w-1/12">
                             <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
                                 styleClass="p-button-sm" (onClick)="handleEditRiwayatPenyakit(i)" />
 
@@ -100,6 +102,289 @@
                         <i class="pi pi-plus" style="font-size: 13px"></i>
                         <p class="text-sm text-gray-800 font-medium text-center">
                             Tambah Riwayat Penyakit
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Riwayat Penyakit Keluarga -->
+            <div class="grid w-full pb-3 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-gray-700 text-base font-medium mb-3">
+                    Riwayat Penyakit Keluarga Pasien
+                </p>
+
+                <div class="flex flex-col w-full gap-1">
+                    <!-- Heading -->
+                    <div
+                        class="flex flex-row gap-2 items-center mb-2 pb-2 border-b border-t-0 border-x-0 border-solid border-gray-300">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                #
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Nama Penyakit
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Catatan
+                            </p>
+                        </div>
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Aksi
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    @for(item of RiwayatPenyakitKeluarga$ | async; let i = $index; track item) {
+                    <!-- Add or edit -->
+                    <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p-dropdown [options]="RiwayatPenyakitKeluargaDatasource" optionLabel="display"
+                                [filter]="true" styleClass="p-inputtext-sm"
+                                (onFilter)="handleChangeFilter('penyakit_keluarga', $event)"
+                                (onChange)="handleChangeRiwayatPenyakitKeluarga($event, i)">
+                            </p-dropdown>
+                        </div>
+                        <div class="w-5/12">
+                            <input type="text" pInputText class="w-full p-inputtext-sm" [(ngModel)]="item.keterangan">
+                        </div>
+                        <div class="w-1/12">
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatPenyakitKeluarga(i)" />
+                        </div>
+                    </div>
+
+                    <!-- Just view -->
+                    <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.display | titlecase }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.keterangan }}
+                            </p>
+                        </div>
+                        <div class="w-1/12">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                                styleClass="p-button-sm" (onClick)="handleEditRiwayatPenyakitKeluarga(i)" />
+
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatPenyakitKeluarga(i)" />
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Footer -->
+                    <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                        (click)="handleAddRiwayatPenyakitKeluarga()">
+                        <i class="pi pi-plus" style="font-size: 13px"></i>
+                        <p class="text-sm text-gray-800 font-medium text-center">
+                            Tambah Riwayat Penyakit Keluarga
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Riwayat Alergi Makanan -->
+            <div class="grid w-full pb-3 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-gray-700 text-base font-medium mb-3">
+                    Riwayat Alergi Makanan
+                </p>
+
+                <div class="flex flex-col w-full gap-1">
+                    <!-- Heading -->
+                    <div
+                        class="flex flex-row gap-2 items-center mb-2 pb-2 border-b border-t-0 border-x-0 border-solid border-gray-300">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                #
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Nama Makanan
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Catatan
+                            </p>
+                        </div>
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Aksi
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    @for(item of RiwayatAlergiMakanan$ | async; let i = $index; track item) {
+                    <!-- Add or edit -->
+                    <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p-dropdown [options]="RiwayatAlergiMakananDatasource" optionLabel="display" [filter]="true"
+                                styleClass="p-inputtext-sm" (onFilter)="handleChangeFilter('alergi_makanan', $event)"
+                                (onChange)="handleChangeRiwayatAlergiMakanan($event, i)">
+                            </p-dropdown>
+                        </div>
+                        <div class="w-5/12">
+                            <input type="text" pInputText class="w-full p-inputtext-sm" [(ngModel)]="item.keterangan">
+                        </div>
+                        <div class="w-1/12">
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatAlergiMakanan(i)" />
+                        </div>
+                    </div>
+
+                    <!-- Just view -->
+                    <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.display | titlecase }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.keterangan }}
+                            </p>
+                        </div>
+                        <div class="w-1/12">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                                styleClass="p-button-sm" (onClick)="handleEditRiwayatAlergiMakanan(i)" />
+
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatAlergiMakanan(i)" />
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Footer -->
+                    <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                        (click)="handleAddRiwayatAlergiMakanan()">
+                        <i class="pi pi-plus" style="font-size: 13px"></i>
+                        <p class="text-sm text-gray-800 font-medium text-center">
+                            Tambah Riwayat Alergi Makanan
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Riwayat Alergi Obat -->
+            <div class="grid w-full pb-3 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-gray-700 text-base font-medium mb-3">
+                    Riwayat Alergi Obat
+                </p>
+
+                <div class="flex flex-col w-full gap-1">
+                    <!-- Heading -->
+                    <div
+                        class="flex flex-row gap-2 items-center mb-2 pb-2 border-b border-t-0 border-x-0 border-solid border-gray-300">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                #
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Nama Obat
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Catatan
+                            </p>
+                        </div>
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm font-medium">
+                                Aksi
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    @for(item of RiwayatAlergiObat$ | async; let i = $index; track item) {
+                    <!-- Add or edit -->
+                    <div *ngIf="item.is_new || item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p-dropdown [options]="RiwayatAlergiObatDatasource" optionLabel="nama_item" [filter]="true"
+                                styleClass="p-inputtext-sm" (onFilter)="handleChangeFilter('alergi_obat', $event)"
+                                (onChange)="handleChangeRiwayatAlergiObat($event, i)">
+                            </p-dropdown>
+                        </div>
+                        <div class="w-5/12">
+                            <input type="text" pInputText class="w-full p-inputtext-sm" [(ngModel)]="item.keterangan">
+                        </div>
+                        <div class="w-1/12">
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatAlergiObat(i)" />
+                        </div>
+                    </div>
+
+                    <!-- Just view -->
+                    <div *ngIf="!item.is_new && !item.is_edit" class="flex flex-row gap-2 items-center">
+                        <div class="w-1/12">
+                            <p class="text-gray-700 text-sm">
+                                Riwayat {{ i + 1 }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.nama_item | titlecase }}
+                            </p>
+                        </div>
+                        <div class="w-5/12">
+                            <p class="text-gray-700 text-sm">
+                                {{ item.kategori }} - {{ item.kode_kfa }} - {{ item.response.nama_dagang }}
+                            </p>
+                        </div>
+                        <div class="w-1/12">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                                styleClass="p-button-sm" (onClick)="handleEditRiwayatAlergiObat(i)" />
+
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteRiwayatAlergiObat(i)" />
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Footer -->
+                    <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                        (click)="handleAddRiwayatAlergiObat()">
+                        <i class="pi pi-plus" style="font-size: 13px"></i>
+                        <p class="text-sm text-gray-800 font-medium text-center">
+                            Tambah Riwayat Alergi Obat
                         </p>
                     </div>
                 </div>
