@@ -1,0 +1,102 @@
+<app-dashboard>
+    <div class="flex flex-row gap-3 w-full">
+        <!-- Grup Tarif -->
+        <div class="flex flex-col w-4/12 p-3 bg-white rounded-lg shadow-sm">
+            <!-- Header -->
+            <div
+                class="flex flex-row items-center justify-between pb-2 mb-2 border-b border-t-0 border-x-0 border-gray-300 border-dashed">
+                <div class="flex flex-col">
+                    <p class="text-xl font-semibold text-gray-700">
+                        Grup Tarif
+                    </p>
+                    <p class="text-xs text-gray-600">
+                        Pilih grup tarif berdasarkan jenis tarif
+                    </p>
+                </div>
+
+                <p-button severity="info" styleClass="p-button-sm" label="Tambah"
+                    (onClick)="handleActionGrupTarif(null, 'parent', 'insert')">
+                </p-button>
+            </div>
+
+            <!-- Jenis Tarif Search -->
+            <div class="flex flex-col gap-1 w-full mb-3">
+                <p-dropdown [options]="JenisTarifDatasource" [(ngModel)]="JenisTarif" optionLabel="name"
+                    optionValue="name" placeholder="Pilih Jenis Tarif" styleClass="p-inputtext-sm w-full"
+                    (onChange)="handleChangeJenisTarif($event)">
+                </p-dropdown>
+            </div>
+
+            <!-- Content -->
+            <div class="grid w-full gap-1">
+                <p-panelMenu [model]="GrupTarifDatasource" [multiple]="true" styleClass="w-full">
+                    <ng-template pTemplate="item" let-item>
+                        <div class="flex items-center w-full p-2">
+                            <!-- Toggle -->
+                            <span *ngIf="item.items.length" class="mr-3 text-gray-700 cursor-pointer">
+                                <i class="pi pi-chevron-{{ item.expanded ? 'down' : 'right'}}" style="font-size: 10px">
+                                </i>
+                            </span>
+
+                            <!-- Add -->
+                            <span
+                                class="h-5 w-5 flex items-center justify-center bg-blue-600 text-white font-semibold cursor-pointer rounded-full"
+                                (click)="handleActionGrupTarif(item, 'child', 'insert')">
+                                <i class="pi pi-plus" style="font-size: 8px"></i>
+                            </span>
+
+                            <!-- Caption -->
+                            <div class="flex flex-col gap-0 ml-3">
+                                <p class="text-gray-700 text-sm">
+                                    {{ item.kode_tarif_grup }} - {{ item.label }}
+                                </p>
+                            </div>
+
+                            <!-- Edit -->
+                            <span class="ml-auto text-emerald-500 cursor-pointer"
+                                (click)="handleActionGrupTarif(item, item.id_tarif_grup_parent ? 'child' : 'parent', 'update')">
+                                <i class="pi pi-pencil" style="font-size: 12px"></i>
+                            </span>
+                        </div>
+                    </ng-template>
+                </p-panelMenu>
+            </div>
+        </div>
+
+        <!-- Setup Tarif -->
+        <div class="flex flex-col w-8/12 p-3 bg-white rounded-lg shadow-sm">
+
+        </div>
+
+        <!-- Dialog Add / Edit Grup Tarif -->
+        <p-dialog [header]="FormGrupTarifState == 'insert' ? 'Tambah Grup Tarif' : 'Edit Grup Tarif'" [modal]="true"
+            [draggable]="false" [resizable]="false" [(visible)]="ShowDialogFormGrupTarif" [style]="{ width: '40rem' }">
+
+            <!-- Form -->
+            <div class="grid w-full mb-3">
+                <app-dynamic-form #FormGrupTarifComps [props]="FormGrupTarifProps"></app-dynamic-form>
+            </div>
+
+            <!-- Button -->
+            <div class="flex justify-end gap-2">
+                <p-button label="Cancel" severity="secondary" styleClass="p-button-sm"
+                    (onClick)="ShowDialogFormGrupTarif = false">
+                </p-button>
+
+                <p-button *ngIf="FormGrupTarifState == 'insert' && DialogFormGrupTarifState == 'parent'" label="Simpan"
+                    severity="info" styleClass="p-button-sm"
+                    (onClick)="handleSaveGrupTarifParent(FormGrupTarifComps.FormGroup.value)">
+                </p-button>
+
+                <p-button *ngIf="FormGrupTarifState == 'insert' && DialogFormGrupTarifState == 'child'" label="Simpan"
+                    severity="info" styleClass="p-button-sm"
+                    (onClick)="handleSaveGrupTarifChild(FormGrupTarifComps.FormGroup.value)">
+                </p-button>
+
+                <p-button *ngIf="FormGrupTarifState == 'update'" label="Update" severity="warning"
+                    styleClass="p-button-sm" (onClick)="handleUpdateGrupTarif(FormGrupTarifComps.FormGroup.value)">
+                </p-button>
+            </div>
+        </p-dialog>
+    </div>
+</app-dashboard>
