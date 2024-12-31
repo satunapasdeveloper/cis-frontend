@@ -249,16 +249,22 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
 
     handleActionGrupTarif(args: any, state: 'child' | 'parent', action: 'insert' | 'update') {
         this.ShowDialogFormGrupTarif = true;
+        this.FormGrupTarifComps.FormGroup.reset();
+
         this.DialogFormGrupTarifState = state;
         this.FormGrupTarifState = action;
 
-        if (state == 'parent' && action == 'insert') {
+        if (state == 'parent') {
             this.FormGrupTarifComps.FormGroup.get('jenis_tarif')?.setValue(this.JenisTarif);
             this.FormGrupTarifProps.fields[3].hidden = true;
             this.FormGrupTarifProps.fields[4].hidden = true;
+
+            if (action == 'update') {
+                this.FormGrupTarifComps.FormGroup.patchValue(args);
+            }
         }
 
-        if (state == 'child' && action == 'insert') {
+        if (state == 'child') {
             this.FormGrupTarifComps.FormGroup.get('jenis_tarif')?.setValue(this.JenisTarif);
             this.FormGrupTarifComps.FormGroup.get('id_tarif_grup_parent')?.setValue(args.id_tarif_grup);
             this.FormGrupTarifComps.FormGroup.get('kode_tarif_grup_parent')?.setValue(args.kode_tarif_grup);
@@ -268,6 +274,10 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
             this.FormGrupTarifProps.fields[3].hidden = false;
             this.FormGrupTarifProps.fields[4].hidden = false;
             this.FormGrupTarifProps.class = 'grid-rows-2 grid-cols-2';
+
+            if (action == 'update') {
+                this.FormGrupTarifComps.FormGroup.patchValue(args);
+            }
         }
     }
 
@@ -291,6 +301,24 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
 
         this._setupGrupTarifService
             .createChild(data)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil disimpan' });
+                    this.getAllGrupTarif(this.JenisTarif);
+                    this.ShowDialogFormGrupTarif = false;
+                }
+            })
+    }
+
+    handleUpdateGrupTarif(args: any) {
+        let { kode_tarif_grup_parent, nama_tarif_grup_parent, ...data } = args;
+
+        this._setupGrupTarifService
+            .update({
+                ...data,
+                is_active: true
+            })
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {

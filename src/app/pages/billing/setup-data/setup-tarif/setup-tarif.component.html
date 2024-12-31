@@ -94,7 +94,7 @@
                 </p-button>
 
                 <p-button *ngIf="FormGrupTarifState == 'update'" label="Update" severity="warning"
-                    styleClass="p-button-sm" (onClick)="ShowDialogFormGrupTarif = false">
+                    styleClass="p-button-sm" (onClick)="handleUpdateGrupTarif(FormGrupTarifComps.FormGroup.value)">
                 </p-button>
             </div>
         </p-dialog>
