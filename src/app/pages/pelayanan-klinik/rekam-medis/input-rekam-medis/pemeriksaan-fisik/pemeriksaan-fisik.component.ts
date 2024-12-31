@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
@@ -48,6 +47,8 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             icon: 'pi pi-save'
         }
     ];
+
+    AssesmentAwalId: any = null;
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -215,7 +216,7 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
                     value: 0,
                 },
                 {
-                    id: 'pernafasan_menit',
+                    id: 'pernapasan_per_menit',
                     label: 'Pernafasan (/menit)',
                     required: true,
                     type: 'number',
@@ -278,7 +279,6 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     ngOnInit(): void {
-        // this.handleAddCatatanTubuh();
         this.getVariable('tingkat_kesadaran', '');
     }
 
@@ -299,7 +299,28 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             .getAssesment(id_register)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                console.log(result)
+                this.ButtonNavigation = [
+                    {
+                        id: 'back',
+                        title: 'Kembali',
+                        icon: 'pi pi-chevron-left'
+                    },
+                    {
+                        id: 'update',
+                        title: 'Update',
+                        icon: 'pi pi-save'
+                    }
+                ];
+
+                result.data.id_tingkat_kesadaran = result.data.id_tingkat_kesadaran.toString();
+                this.AssesmentAwalId = result.data.id_assessment_awal;
+                this.FormComps.FormGroup.patchValue(result.data);
+                this.FormKeadaanUmumComps.FormGroup.patchValue(result.data);
+                this.FormVitalSignComps.FormGroup.patchValue(result.data);
+                this.RiwayatPenyakitPasien$.next(result.data.riwayat_penyakit_pribadi);
+                this.RiwayatPenyakitKeluarga$.next(result.data.riwayat_penyakit_keluarga);
+                this.RiwayatAlergiMakanan$.next(result.data.alergi_makanan);
+                this.RiwayatAlergiObat$.next(result.data.kfa_alergi_obat);
             })
     }
 
@@ -310,6 +331,10 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
 
         if (data.id == 'save') {
             this.handleSave();
+        };
+
+        if (data.id == 'update') {
+            this.handleUpdate();
         };
     }
 
@@ -665,6 +690,34 @@ export class PemeriksaanFisikComponent implements OnInit, AfterViewInit, OnDestr
             .subscribe((result) => {
                 if (result.responseResult) {
                     this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Assesment Awal Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        this.handleClickButtonNavigation({ id: 'back', icon: '', title: '' });
+                    }, 1000);
+                }
+            })
+    }
+
+    private handleUpdate() {
+        const payload = {
+            id_assessment_awal: this.AssesmentAwalId,
+            ...this.FormComps.FormGroup.value,
+            ...this.FormKeadaanUmumComps.FormGroup.value,
+            ...this.FormVitalSignComps.FormGroup.value,
+            riwayat_penyakit_pribadi: this.RiwayatPenyakitPasien$.value,
+            riwayat_penyakit_keluarga: this.RiwayatPenyakitKeluarga$.value,
+            alergi_makanan: this.RiwayatAlergiMakanan$.value,
+            kfa_alergi_obat: this.RiwayatAlergiObat$.value,
+        };
+
+        !environment.production && console.log("update payload =>", payload);
+
+        this._rekamMedisService
+            .updateAssesment(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Assesment Awal Berhasil Diperbarui' });
 
                     setTimeout(() => {
                         this.handleClickButtonNavigation({ id: 'back', icon: '', title: '' });

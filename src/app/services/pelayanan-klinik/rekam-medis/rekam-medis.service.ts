@@ -4,7 +4,6 @@ import { HttpRequestService } from '../../http/http-request.service';
 import { HttpBaseResponse, PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { environment } from 'src/environments/environment';
-import { AssesmentModel } from 'src/app/model/pages/rekam-medis/assesment.model';
 import { AnamesisModel } from 'src/app/model/pages/rekam-medis/anamesis.model';
 import { PemeriksaanFisikModel } from 'src/app/model/pages/rekam-medis/pemeriksaan-fisik.model';
 import { DiagnosisModel } from 'src/app/model/pages/rekam-medis/diagnosis.model';
@@ -188,7 +187,7 @@ export class RekamMedisService {
 
     updateAssesment(payload: any): Observable<HttpBaseResponse> {
         const { id_assessment_awal, ...data } = payload;
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-assessment-awal/update/${id_assessment_awal}`, data);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/tr-assessment-awal/update/${id_assessment_awal}`, data);
     }
 
     createAnamesis(payload: AnamesisModel.IAnamnesis): Observable<HttpBaseResponse> {
