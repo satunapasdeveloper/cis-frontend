@@ -75,6 +75,12 @@ export class AntrianComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getAllPoli();
         this.getAllDokter();
+
+        const filter = localStorage.getItem("_ANTRIAN_FILTER_SEARCH_") ? JSON.parse(localStorage.getItem("_ANTRIAN_FILTER_SEARCH_") as any) : null;
+
+        if (filter) {
+            this.handleSearchAntrian(filter.tanggal_admisi, filter.id_poli, filter.id_dokter, filter.nama_pasien);
+        };
     }
 
     ngOnDestroy(): void {
@@ -147,16 +153,23 @@ export class AntrianComponent implements OnInit, OnDestroy {
             tanggal_admisi: formatDate(new Date(tanggal_admisi), 'yyyy-MM-dd', 'EN'),
         };
 
+        if (tanggal_admisi) {
+            this.TanggalAdmisiFilterSearch = new Date(tanggal_admisi);
+        }
+
         if (id_poli) {
-            this.AntrianQueryParams = { ...this.AntrianQueryParams, id_poli: id_poli }
+            this.PoliFilterSearch = id_poli;
+            this.AntrianQueryParams = { ...this.AntrianQueryParams, id_poli: id_poli };
         };
 
         if (id_dokter) {
-            this.AntrianQueryParams = { ...this.AntrianQueryParams, id_dokter: id_dokter }
+            this.DokterFilterSearch = id_dokter;
+            this.AntrianQueryParams = { ...this.AntrianQueryParams, id_dokter: id_dokter };
         };
 
         if (nama_pasien) {
-            this.AntrianQueryParams = { ...this.AntrianQueryParams, nama_pasien: nama_pasien }
+            this.PasienFilterSearch = nama_pasien;
+            this.AntrianQueryParams = { ...this.AntrianQueryParams, nama_pasien: nama_pasien };
         };
 
         this._antrianPoliklinikRawatJalanService
@@ -165,7 +178,6 @@ export class AntrianComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 localStorage.setItem('_ANTRIAN_FILTER_SEARCH_', JSON.stringify(this.AntrianQueryParams));
                 this.AntrianDatasource = result.responseResult ? result.data.rows : [];
-                console.log("antrian datasource =>", this.AntrianDatasource);
             })
     }
 

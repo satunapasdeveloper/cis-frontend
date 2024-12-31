@@ -4,7 +4,6 @@ import { HttpRequestService } from '../../http/http-request.service';
 import { HttpBaseResponse, PostRequestByDynamicFiterModel } from 'src/app/model/http/http-request.model';
 import { RekamMedisModel } from 'src/app/model/pages/rekam-medis/rekam-medis.model';
 import { environment } from 'src/environments/environment';
-import { AssesmentModel } from 'src/app/model/pages/rekam-medis/assesment.model';
 import { AnamesisModel } from 'src/app/model/pages/rekam-medis/anamesis.model';
 import { PemeriksaanFisikModel } from 'src/app/model/pages/rekam-medis/pemeriksaan-fisik.model';
 import { DiagnosisModel } from 'src/app/model/pages/rekam-medis/diagnosis.model';
@@ -79,7 +78,7 @@ export class RekamMedisService {
 
     getRiwayatPenyakitPribadi(display: string) {
         return this._httpRequestService
-            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatPenyakitPribadi`, { page: 1, count: 100, display: display })
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatPenyakitPribadi`, { page: 1, count: 50, display: display })
             .pipe(
                 map((result) => {
                     return result.responseResult ? result.data.rows : [];
@@ -89,7 +88,7 @@ export class RekamMedisService {
 
     getRiwayatPenyakitKeluarga(display: string) {
         return this._httpRequestService
-            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatPenyakitKeluarga`, { page: 1, count: 100, display: display })
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatPenyakitKeluarga`, { page: 1, count: 50, display: display })
             .pipe(
                 map((result) => {
                     return result.responseResult ? result.data.rows : [];
@@ -99,7 +98,7 @@ export class RekamMedisService {
 
     getRiwayatAlergiMakanan(display: string) {
         return this._httpRequestService
-            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatAlergiMakanan`, { page: 1, count: 100, display: display })
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatAlergiMakanan`, { page: 1, count: 50, display: display })
             .pipe(
                 map((result) => {
                     return result.responseResult ? result.data.rows : [];
@@ -107,9 +106,19 @@ export class RekamMedisService {
             );
     }
 
-    getRiwayatTingkatKesadaran(display: string) {
+    getRiwayatAlergiObat(display: string) {
         return this._httpRequestService
-            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatTingkatKesadaran`, { page: 1, count: 100, display: display })
+            .getRequest(`${environment.webApiUrl}/kfa/lookUpKfa`, { page: 1, count: 50, nama_item: display })
+            .pipe(
+                map((result) => {
+                    return result.responseResult ? result.data.rows : [];
+                })
+            );
+    }
+
+    getRiwayatTingkatKesadaran() {
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/set-master-satusehat/lookUpRiwayatTingkatKesadaran`, { page: 1, count: 200 })
             .pipe(
                 map((result) => {
                     return result.responseResult ? result.data.rows : [];
@@ -168,8 +177,17 @@ export class RekamMedisService {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Variable`);
     }
 
-    createAssesment(payload: AssesmentModel.IAssesment): Observable<HttpBaseResponse> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/RekamMedis/Assessment`, payload);
+    getAssesment(id_register: number): Observable<HttpBaseResponse> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-assessment-awal/getByIdRegister/${id_register}`);
+    }
+
+    createAssesment(payload: any): Observable<HttpBaseResponse> {
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-assessment-awal/insert`, payload);
+    }
+
+    updateAssesment(payload: any): Observable<HttpBaseResponse> {
+        const { id_assessment_awal, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/tr-assessment-awal/update/${id_assessment_awal}`, data);
     }
 
     createAnamesis(payload: AnamesisModel.IAnamnesis): Observable<HttpBaseResponse> {
