@@ -518,7 +518,7 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
     }
 
     private onUbahStatusTarif(args: any) {
-        this._setupKelompokTarifService
+        this._setupTarifService
             .updateStatus(args)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
