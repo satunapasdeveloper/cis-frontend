@@ -63,32 +63,6 @@
             </div>
         </div>
 
-        <!-- Setup Tarif -->
-        <div class="flex flex-col w-8/12 p-3 bg-white rounded-lg shadow-sm">
-            <!-- Header -->
-            <div
-                class="flex flex-row items-center justify-between pb-2 mb-2 border-b border-t-0 border-x-0 border-gray-300 border-dashed">
-                <div class="flex flex-col">
-                    <p *ngIf="SelectedGrupTarif" class="text-xl font-semibold text-gray-700">
-                        Tarif Pada Grup {{ SelectedGrupTarif.label }}
-                    </p>
-                    <p *ngIf="!SelectedGrupTarif" class="text-xl font-semibold text-gray-700">
-                        Tarif
-                    </p>
-                    <p class="text-xs text-gray-600">
-                        Data tarif berdasarkan grup tarif
-                    </p>
-                </div>
-
-                <p-button severity="info" styleClass="p-button-sm" label="Tambah" [disabled]="!SelectedGrupTarif">
-                </p-button>
-            </div>
-
-            <app-grid [props]="GridTarifProps" (cellClicked)="onCellClicked($event)"
-                (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)">
-            </app-grid>
-        </div>
-
         <!-- Dialog Add / Edit Grup Tarif -->
         <p-dialog [header]="FormGrupTarifState == 'insert' ? 'Tambah Grup Tarif' : 'Edit Grup Tarif'" [modal]="true"
             [draggable]="false" [resizable]="false" [(visible)]="ShowDialogFormGrupTarif" [style]="{ width: '40rem' }">
@@ -116,6 +90,103 @@
 
                 <p-button *ngIf="FormGrupTarifState == 'update'" label="Update" severity="warning"
                     styleClass="p-button-sm" (onClick)="handleUpdateGrupTarif(FormGrupTarifComps.FormGroup.value)">
+                </p-button>
+            </div>
+        </p-dialog>
+
+        <!-- Setup Tarif -->
+        <div class="flex flex-col w-8/12 p-3 bg-white rounded-lg shadow-sm">
+            <!-- Header -->
+            <div
+                class="flex flex-row items-center justify-between pb-2 mb-2 border-b border-t-0 border-x-0 border-gray-300 border-dashed">
+                <div class="flex flex-col">
+                    <p *ngIf="SelectedGrupTarif" class="text-xl font-semibold text-gray-700">
+                        Tarif Pada Grup {{ SelectedGrupTarif.label }}
+                    </p>
+                    <p *ngIf="!SelectedGrupTarif" class="text-xl font-semibold text-gray-700">
+                        Tarif
+                    </p>
+                    <p class="text-xs text-gray-600">
+                        Data tarif berdasarkan grup tarif
+                    </p>
+                </div>
+
+                <p-button severity="info" styleClass="p-button-sm" label="Tambah" [disabled]="!SelectedGrupTarif"
+                    (onClick)="onToolbarClicked({ type: 'add' })">
+                </p-button>
+            </div>
+
+            <app-grid [props]="GridTarifProps" (cellClicked)="onCellClicked($event)"
+                (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)">
+            </app-grid>
+        </div>
+
+        <!-- Dialog Add / Edit Tarif -->
+        <p-dialog [header]="FormTarifState == 'insert' ? 'Tambah Tarif' : 'Edit Tarif'" [modal]="true"
+            [draggable]="false" [resizable]="false" [(visible)]="ShowDialogFormTarif" [style]="{ width: '40rem' }">
+
+            <!-- Form -->
+            <div class="grid w-full mb-3">
+                <app-dynamic-form #FormTarifComps [props]="FormTarifProps"></app-dynamic-form>
+
+                <div class="flex flex-col gap-1 w-full mt-3">
+                    <p class="text-gray-600 font-medium text-sm">
+                        Poli
+                        <span class="text-xs text-red-500">*</span>
+                    </p>
+                    <p-multiSelect appendTo="body" [options]="PoliDatasource" [(ngModel)]="PoliBerlakuTarif"
+                        styleClass="p-inputtext-sm w-full" optionLabel="nama_poli"
+                        placeholder="Anda dapat memilih lebih dari 1 poli">
+                    </p-multiSelect>
+                </div>
+            </div>
+
+            <!-- Kelas -->
+            <div class="flex flex-col w-full my-3 pt-3 border-t border-b-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-gray-700 text-base font-semibold mb-2">
+                    Harga Tarif Per Kelas Perawatan
+                </p>
+
+                <!-- Heading -->
+                <div
+                    class="flex flex-row px-4 gap-2 mb-2 pb-2 border-t-0 border-b border-x-0 border-solid border-gray-300">
+                    <div class="w-5/12">
+                        <p class="text-sm font-medium">
+                            Kelas Perawatan
+                        </p>
+                    </div>
+                    <div class="w-7/12">
+                        <p class="text-sm font-medium">
+                            Harga Tarif Per Kelas Perawatan
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kelas -->
+                <div *ngFor="let item of KelasDatasource" class="flex flex-row px-4 gap-2 mb-2">
+                    <div class="w-5/12">
+                        <p class="text-sm text-gray-700">
+                            {{ item.nama_kelas }}
+                        </p>
+                    </div>
+                    <div class="grid w-7/12">
+                        <p-inputNumber [(ngModel)]="item.nominal_tarif" styleClass="p-inputtext-sm w-full" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button -->
+            <div class="flex justify-end gap-2">
+                <p-button label="Cancel" severity="secondary" styleClass="p-button-sm"
+                    (onClick)="ShowDialogFormTarif = false">
+                </p-button>
+
+                <p-button *ngIf="FormTarifState == 'insert'" label=" Simpan" severity="info" styleClass="p-button-sm"
+                    (onClick)="handleSaveTarif(FormTarifComps.FormGroup.value)">
+                </p-button>
+
+                <p-button *ngIf="FormTarifState == 'update'" label="Update" severity="warning" styleClass="p-button-sm"
+                    (onClick)="handleUpdateTarif(FormTarifComps.FormGroup.value)">
                 </p-button>
             </div>
         </p-dialog>

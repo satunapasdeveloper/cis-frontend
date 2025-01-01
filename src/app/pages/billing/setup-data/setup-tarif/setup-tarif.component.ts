@@ -15,6 +15,11 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { SetupGrupTarifService } from 'src/app/services/billing/setup-data/setup-grup-tarif.service';
 import { SetupTarifService } from 'src/app/services/billing/setup-data/setup-tarif.service';
+import { SetupKelompokTarifService } from 'src/app/services/billing/setup-data/setup-kelompok-tarif.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { PoliService } from 'src/app/services/pelayanan-klinik/setup-data/poli.service';
+import { SetupKelasService } from 'src/app/services/pendaftaran-klinik/setup-data/setup-kelas.service';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
     selector: 'app-setup-tarif',
@@ -27,6 +32,8 @@ import { SetupTarifService } from 'src/app/services/billing/setup-data/setup-tar
         GridComponent,
         DropdownModule,
         PanelMenuModule,
+        MultiSelectModule,
+        InputNumberModule,
         DashboardComponent,
         ConfirmDialogModule,
         DynamicFormComponent,
@@ -67,20 +74,28 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
 
     ShowDialogFormGrupTarif: boolean = false;
     DialogFormGrupTarifState: 'child' | 'parent' = 'parent';
-
     FormGrupTarifState: 'insert' | 'update' = 'insert';
     FormGrupTarifProps: FormModel.IForm;
     @ViewChild('FormGrupTarifComps') FormGrupTarifComps!: DynamicFormComponent;
 
+    ShowDialogFormTarif: boolean = false;
     FormTarifState: 'insert' | 'update' = 'insert';
     FormTarifProps: FormModel.IForm;
     @ViewChild('FormTarifComps') FormTarifComps!: DynamicFormComponent;
 
+    PoliDatasource: any[] = [];
+    PoliBerlakuTarif: any;
+
+    KelasDatasource: any[] = [];
+
     constructor(
+        private _poliService: PoliService,
         private _messageService: MessageService,
+        private _setupKelasService: SetupKelasService,
         private _setupTarifService: SetupTarifService,
         private _confirmationService: ConfirmationService,
         private _setupGrupTarifService: SetupGrupTarifService,
+        private _setupKelompokTarifService: SetupKelompokTarifService,
     ) {
         this.FormGrupTarifProps = {
             id: 'form_setup_grup_tarif',
@@ -152,6 +167,14 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
             id: 'form_setup_grup_tarif',
             fields: [
                 {
+                    id: 'id_tarif',
+                    label: 'ID',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true
+                },
+                {
                     id: 'id_tarif_grup',
                     label: 'ID',
                     required: true,
@@ -160,60 +183,52 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'id_tarif_grup_parent',
-                    label: 'ID PARENT',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                    hidden: true
-                },
-                {
-                    id: 'jenis_tarif',
-                    label: 'Jenis Tarif',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                },
-                {
-                    id: 'kode_tarif_grup_parent',
-                    label: 'Kode Grup Tarif Parent',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                    hidden: true,
-                },
-                {
-                    id: 'nama_tarif_grup_parent',
-                    label: 'Nama Grup Tarif Parent',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                    hidden: true,
-                },
-                {
-                    id: 'kode_tarif_grup',
-                    label: 'Kode Grup Tarif',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                },
-                {
                     id: 'nama_tarif_grup',
-                    label: 'Nama Grup Tarif',
+                    label: 'Grup Tarif',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    readonly: true,
+                },
+                {
+                    id: 'id_tarif_kelompok',
+                    label: 'Kelompok Tarif',
+                    required: true,
+                    type: 'select',
+                    value: '',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'nama_tarif_kelompok',
+                        optionValue: 'id_tarif_kelompok'
+                    }
+                },
+                {
+                    id: 'kode_tarif',
+                    label: 'Kode Tarif',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
+                    id: 'nama_tarif',
+                    label: 'Nama Tarif',
                     required: true,
                     type: 'text',
                     value: '',
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-3 grid-cols-1',
+            class: 'grid-rows-2 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
     }
 
     ngOnInit(): void {
+        this.getAllPoli();
+        this.getAllKelas();
         this.getAllJenisTarif();
+        this.getAllKelompokTarif();
     }
 
     ngOnDestroy(): void {
@@ -228,6 +243,45 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 if (result) {
                     this.JenisTarifDatasource = result.data;
+                }
+            });
+    }
+
+    private getAllKelompokTarif() {
+        this._setupKelompokTarifService
+            .getAllActive({ page: 1, count: 100 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    const index = this.FormTarifProps.fields.findIndex(item => item.id == 'id_tarif_kelompok');
+                    this.FormTarifProps.fields[index].dropdownProps.options = result.data.rows;
+                }
+            });
+    }
+
+    private getAllPoli() {
+        this._poliService
+            .getAllActive({ page: 1, count: 100 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.PoliDatasource = result.data.rows;
+                }
+            });
+    }
+
+    private getAllKelas() {
+        this._setupKelasService
+            .getAllActive({ page: 1, count: 100 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.KelasDatasource = result.data.rows.map((item: any) => {
+                        return {
+                            ...item,
+                            nominal_tarif: 0,
+                        }
+                    });
                 }
             });
     }
@@ -334,7 +388,6 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
 
     // ** Tarif
     handleGetAllTarif(data: any) {
-        console.log("selected grup tarif =>", data);
         this.SelectedGrupTarif = data;
 
         this._setupTarifService
@@ -352,6 +405,7 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.FormTarifState = 'update';
         setTimeout(() => {
+            this.ShowDialogFormTarif = true;
             this.FormTarifComps.FormGroup.patchValue(args);
         }, 500);
     }
@@ -378,6 +432,59 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
         if (args.type == 'detail') {
             this.onRowDoubleClicked(args.data);
         }
+
+        if (args.type == 'add') {
+            this.ShowDialogFormTarif = true;
+            this.FormTarifComps.FormGroup.reset();
+            this.FormTarifComps.FormGroup.get('id_tarif_grup')?.setValue(this.SelectedGrupTarif.id_tarif_grup);
+            this.FormTarifComps.FormGroup.get('nama_tarif_grup')?.setValue(this.SelectedGrupTarif.nama_tarif_grup);
+        }
+    }
+
+    handleSaveTarif(args: any) {
+        let { id_tarif, nama_tarif_grup, ...data } = args;
+
+        data.detail_poli = this.PoliBerlakuTarif.map((item: any) => {
+            return {
+                id_poli: item.id_poli
+            }
+        });
+
+        data.detail_kelas = this.KelasDatasource.filter(item => item.nominal_tarif > 0).map((item: any) => {
+            return {
+                id_kelas: item.id_kelas,
+                nominal_tarif: item.nominal_tarif,
+            }
+        });
+
+        this._setupTarifService
+            .create(data)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil disimpan' });
+                    this.handleGetAllTarif(this.SelectedGrupTarif);
+                    this.ShowDialogFormTarif = false;
+                }
+            })
+    }
+
+    handleUpdateTarif(args: any) {
+        let { nama_tarif_grup, ...data } = args;
+
+        this._setupGrupTarifService
+            .update({
+                ...data,
+                is_active: true
+            })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil diperbarui' });
+                    this.handleGetAllTarif(this.SelectedGrupTarif.id_tarif_grup);
+                    this.ShowDialogFormTarif = false;
+                }
+            })
     }
 
 }
