@@ -27,7 +27,10 @@ export namespace SetupTarifModel {
         responseResult!: boolean
         statusCode!: number
         message!: string
-        data!: ITarif[]
+        data!: {
+            rows: ITarif[]
+            count: number
+        }
     }
 
     export interface GetAllQueryParams {

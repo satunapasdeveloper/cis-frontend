@@ -42,12 +42,15 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
     JenisTarifDatasource: any[] = [];
 
     GrupTarifDatasource: any[] = [];
+    SelectedGrupTarif: any;
 
     GridTarifProps: GridModel.IGrid = {
         id: 'SetupTarif',
         column: [
-            { field: 'kode_tarif_kelompok', headerName: 'Kode Kelompok Tarif', class: 'text-blue-500 font-semibold' },
-            { field: 'nama_tarif_kelompok', headerName: 'Nama Kelompok Tarif' },
+            { field: 'kode_tarif', headerName: 'Kode Tarif', class: 'text-blue-500 font-semibold' },
+            { field: 'nama_tarif', headerName: 'Nama Tarif' },
+            { field: 'nama_tarif_kelompok', headerName: 'Kelompok Tarif' },
+            { field: 'jenis_rawat', headerName: 'Jenis Rawat' },
             { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -328,4 +331,53 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
                 }
             })
     }
+
+    // ** Tarif
+    handleGetAllTarif(data: any) {
+        console.log("selected grup tarif =>", data);
+        this.SelectedGrupTarif = data;
+
+        this._setupTarifService
+            .getAllActive({ page: 1, count: 1000, id_tarif_grup: data.id_tarif_grup })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                this.GridTarifProps.dataSource = result.data.rows;
+            })
+    }
+
+    onCellClicked(args: any): void {
+        this.GridSelectedData = args;
+    }
+
+    onRowDoubleClicked(args: any): void {
+        this.FormTarifState = 'update';
+        setTimeout(() => {
+            this.FormTarifComps.FormGroup.patchValue(args);
+        }, 500);
+    }
+
+    onToolbarClicked(args: any): void {
+        if (args.type == 'ubah status') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data akan diubah statusnya',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    // this.updateStatusKelompokTarif(args.data);
+                }
+            });
+        }
+
+        if (args.type == 'detail') {
+            this.onRowDoubleClicked(args.data);
+        }
+    }
+
 }
