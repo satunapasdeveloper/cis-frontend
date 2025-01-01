@@ -405,9 +405,23 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.FormTarifState = 'update';
         setTimeout(() => {
-            this.ShowDialogFormTarif = true;
-            this.FormTarifComps.FormGroup.patchValue(args);
+            this.getDetailTarif(args.id_tarif);
         }, 500);
+    }
+
+    private getDetailTarif(id_tarif: string) {
+        this._setupTarifService
+            .getById(id_tarif)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    console.log(result.data);
+                    this.ShowDialogFormTarif = true;
+                    this.FormTarifComps.FormGroup.patchValue(result.data);
+                    this.PoliBerlakuTarif = result.data.detail_poli;
+                    this.KelasDatasource = result.data.detail_kelas;
+                }
+            })
     }
 
     onToolbarClicked(args: any): void {
@@ -424,7 +438,7 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    // this.updateStatusKelompokTarif(args.data);
+                    this.onUbahStatusTarif(args.data);
                 }
             });
         }
@@ -434,7 +448,10 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
         }
 
         if (args.type == 'add') {
+            this.FormTarifState = 'insert';
             this.ShowDialogFormTarif = true;
+            this.getAllKelas();
+            this.PoliBerlakuTarif = [];
             this.FormTarifComps.FormGroup.reset();
             this.FormTarifComps.FormGroup.get('id_tarif_grup')?.setValue(this.SelectedGrupTarif.id_tarif_grup);
             this.FormTarifComps.FormGroup.get('nama_tarif_grup')?.setValue(this.SelectedGrupTarif.nama_tarif_grup);
@@ -446,7 +463,7 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
 
         data.detail_poli = this.PoliBerlakuTarif.map((item: any) => {
             return {
-                id_poli: item.id_poli
+                id_poli: item
             }
         });
 
@@ -472,7 +489,20 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
     handleUpdateTarif(args: any) {
         let { nama_tarif_grup, ...data } = args;
 
-        this._setupGrupTarifService
+        data.detail_poli = this.PoliBerlakuTarif.map((item: any) => {
+            return {
+                id_poli: item
+            }
+        });
+
+        data.detail_kelas = this.KelasDatasource.filter(item => item.nominal_tarif > 0).map((item: any) => {
+            return {
+                id_kelas: item.id_kelas,
+                nominal_tarif: item.nominal_tarif,
+            }
+        });
+
+        this._setupTarifService
             .update({
                 ...data,
                 is_active: true
@@ -481,10 +511,21 @@ export class SetupTarifComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 if (result.responseResult) {
                     this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil diperbarui' });
-                    this.handleGetAllTarif(this.SelectedGrupTarif.id_tarif_grup);
+                    this.handleGetAllTarif(this.SelectedGrupTarif);
                     this.ShowDialogFormTarif = false;
                 }
             })
     }
 
+    private onUbahStatusTarif(args: any) {
+        this._setupKelompokTarifService
+            .updateStatus(args)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
+                    this.handleGetAllTarif(this.SelectedGrupTarif);
+                }
+            })
+    }
 }
