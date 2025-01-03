@@ -11,7 +11,7 @@ export namespace GridModel {
     export interface IGridColumn {
         field: string;
         headerName: string;
-        format?: 'date' | 'number' | 'currency';
+        format?: 'date' | 'datetime' | 'number' | 'currency';
         class?: string;
         renderAsCheckbox?: boolean;
         renderAsPills?: boolean;

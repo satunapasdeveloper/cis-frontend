@@ -56,11 +56,14 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'TransaksiPemasukanGrid',
         column: [
-            { field: 'no_kamar', headerName: 'No. Kamar', class: 'text-blue-500 font-semibold' },
-            { field: 'no_bed', headerName: 'No. Bed' },
-            { field: 'is_tampilkan_antrian', headerName: 'Tampilkan Di Antrian', renderAsCheckbox: true, class: 'text-center' },
-            { field: 'is_sesuai_sk', headerName: 'Sesuai SK', renderAsCheckbox: true, class: 'text-center' },
-            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'tanggal_transaksi', headerName: 'Tgl. Transaksi', class: 'text-blue-500 font-semibold', format: 'datetime' },
+            { field: 'nama_tarif', headerName: 'Nama Tarif' },
+            { field: 'qty', headerName: 'Qty', format: 'number', class: 'text-end' },
+            { field: 'harga', headerName: 'Nominal Tarif', format: 'number', class: 'text-end' },
+            { field: 'subtotal', headerName: 'Subtotal', format: 'number', class: 'text-end' },
+            { field: 'nama_dokter', headerName: 'Dokter', },
+            { field: 'nama_poli', headerName: 'Poliklinik', },
+            { field: 'status', headerName: 'Status', class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
@@ -269,6 +272,7 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
+                    console.log("data =>", result.data);
                     this.GridProps.dataSource = result.data;
                 }
             });

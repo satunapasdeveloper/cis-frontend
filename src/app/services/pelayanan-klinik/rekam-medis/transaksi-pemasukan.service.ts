@@ -1,4 +1,3 @@
-import { query } from '@angular/animations';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
@@ -39,6 +38,7 @@ export class TransaksiPemasukanService {
                                 "harga": item.harga,
                                 "diskon_dokter": item.diskon_dokter,
                                 "subtotal": item.subtotal,
+                                "status": item.status,
                             }
                         })
                     }

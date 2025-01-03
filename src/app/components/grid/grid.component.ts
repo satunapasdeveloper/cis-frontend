@@ -204,6 +204,14 @@ export class GridComponent implements OnInit, OnDestroy {
         return parseFloat(data);
     }
 
+    handleFormatDateTime(data: string): string {
+        data = new Date(data).toISOString();
+        const newDate = data.split("T");
+        const date = formatDate(new Date(newDate[0]), 'dd-MM-yyyy', 'EN');
+        const time = newDate[1].split(".")[0];
+        return `${date} ${time}`;
+    }
+
     onClickCustomSearch() {
         const value = this.CustomSearchForm.value;
 
