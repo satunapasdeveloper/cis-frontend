@@ -143,6 +143,9 @@ export class GridComponent implements OnInit, OnDestroy {
                     case 'Batal Pendaftaran':
                         icon = 'pi pi-times';
                         break;
+                    case 'Cancel':
+                        icon = 'pi pi-times';
+                        break;
                     default:
                         break;
                 }

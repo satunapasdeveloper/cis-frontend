@@ -18,18 +18,22 @@ import { SetupTarifModel } from 'src/app/model/pages/billing/setup-data/setup-ta
 import { UtilityService } from 'src/app/services/utility/utility.service';
 import { Store } from '@ngxs/store';
 import { SetupNakesState, SetupNakesActions } from 'src/app/store/setup-data/nakes';
+import { FormsModule } from '@angular/forms';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
     selector: 'app-transaksi-pemasukan',
     standalone: true,
     imports: [
+        FormsModule,
         CommonModule,
-        DashboardComponent,
-        GridComponent,
-        DynamicFormComponent,
         ButtonModule,
         DialogModule,
-        ConfirmDialogModule
+        GridComponent,
+        DashboardComponent,
+        InputTextareaModule,
+        ConfirmDialogModule,
+        DynamicFormComponent,
     ],
     templateUrl: './transaksi-pemasukan.component.html',
     styleUrl: './transaksi-pemasukan.component.scss'
@@ -67,7 +71,7 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Ubah Status', 'Detail'],
+        toolbar: ['Cancel', 'Detail'],
         showPaging: false,
         showSearch: false,
         isCustomSearch: false,
@@ -90,6 +94,9 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
+
+    ShowDialogBatal = false;
+    ReasonCanceled = "";
 
     constructor(
         private _store: Store,
@@ -357,23 +364,9 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'ubah status') {
-            this._confirmationService.confirm({
-                target: (<any>event).target as EventTarget,
-                message: 'Data akan diubah statusnya',
-                header: 'Apakah Anda Yakin?',
-                icon: 'pi pi-info-circle',
-                acceptButtonStyleClass: "p-button-danger p-button-sm",
-                rejectButtonStyleClass: "p-button-secondary p-button-sm",
-                acceptIcon: "none",
-                acceptLabel: 'Iya Saya Yakin',
-                rejectIcon: "none",
-                rejectLabel: 'Tidak, Kembali',
-                accept: () => {
-                    console.log("data =>", args.data);
-                    // this.updateStatusBed(args.data);
-                }
-            });
+        if (args.type == 'cancel') {
+            this.ReasonCanceled = "";
+            this.ShowDialogBatal = true;
         }
 
         if (args.type == 'detail') {
@@ -416,5 +409,38 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
                     this.getAll();
                 }
             })
+    }
+
+    handleBatalDetailTransaksi(reason_canceled: string) {
+        this._confirmationService.confirm({
+            target: (<any>event).target as EventTarget,
+            message: 'Data akan dibatalkan',
+            header: 'Apakah Anda Yakin?',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: "p-button-danger p-button-sm",
+            rejectButtonStyleClass: "p-button-secondary p-button-sm",
+            acceptIcon: "none",
+            acceptLabel: 'Iya Saya Yakin',
+            rejectIcon: "none",
+            rejectLabel: 'Tidak, Kembali',
+            accept: () => {
+                const payload = {
+                    id_transaksi: this.GridSelectedData.id_transaksi,
+                    reason_canceled
+                };
+
+                this._transaksiPemasukanService
+                    .cancel(payload)
+                    .pipe(takeUntil(this.Destroy$))
+                    .subscribe((result) => {
+                        if (result.responseResult) {
+                            this._messageService.clear();
+                            this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil dibatalkan' });
+                            this.ShowDialogBatal = false;
+                            this.getAll();
+                        }
+                    })
+            }
+        });
     }
 }
