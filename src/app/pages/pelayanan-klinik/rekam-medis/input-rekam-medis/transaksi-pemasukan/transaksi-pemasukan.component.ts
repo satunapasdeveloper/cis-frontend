@@ -257,6 +257,7 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
         };
 
         if (data.id == 'add') {
+            this.FormState = 'insert';
             this.ShowDialogForm = true;
             this.FormComps.FormGroup.reset();
             this.FormComps.FormGroup.get('id_register')?.setValue(this._activatedRoute.snapshot.queryParams['id_register']);
@@ -346,7 +347,12 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
 
     onRowDoubleClicked(args: any): void {
         setTimeout(() => {
-            this.FormComps.FormGroup.patchValue(args);
+            let data = JSON.parse(JSON.stringify(args));
+            data.tanggal_transaksi = data.tanggal_transaksi ? new Date(data.tanggal_transaksi) : null;
+            data.total = args.harga * args.qty;
+            this.FormComps.FormGroup.patchValue(data);
+            this.FormState = 'update';
+            this.ShowDialogForm = true;
         }, 500);
     }
 
@@ -399,6 +405,16 @@ export class TransaksiPemasukanComponent implements OnInit, OnDestroy {
     }
 
     handleUpdateDetailTransaksi(args: any) {
-        console.log(args);
+        this._transaksiPemasukanService
+            .update(args)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil diperbarui' });
+                    this.ShowDialogForm = false;
+                    this.getAll();
+                }
+            })
     }
 }
