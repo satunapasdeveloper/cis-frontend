@@ -1,0 +1,27 @@
+:host ::ng-deep {
+  .p-stepper-nav {
+    overflow-y: hidden !important;
+    margin-bottom: 10px;
+  }
+
+  .p-stepper-action {
+    background-color: transparent !important;
+  }
+
+  .p-stepper-panels {
+    background-color: transparent !important;
+    padding: 0 !important;
+  }
+
+  span.p-stepper-number {
+    min-width: 1.25rem !important;
+    height: 1.25rem !important;
+    line-height: 1.25rem !important;
+    font-size: 13px !important;
+    background-color: transparent !important;
+  }
+
+  span.p-stepper-title {
+    font-size: 14px !important;
+  }
+}
