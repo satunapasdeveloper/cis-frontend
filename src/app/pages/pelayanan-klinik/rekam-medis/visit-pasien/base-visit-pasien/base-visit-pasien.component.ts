@@ -9,6 +9,7 @@ import { InformasiPasienComponent } from 'src/app/components/layout/informasi-pa
 import { ButtonModule } from 'primeng/button';
 import { VpObjectiveComponent } from '../vp-objective/vp-objective.component';
 import { VpSubjectiveComponent } from '../vp-subjective/vp-subjective.component';
+import { VpAssesmentComponent } from '../vp-assesment/vp-assesment.component';
 
 @Component({
     selector: 'app-base-visit-pasien',
@@ -18,6 +19,7 @@ import { VpSubjectiveComponent } from '../vp-subjective/vp-subjective.component'
         ButtonModule,
         StepperModule,
         DashboardComponent,
+        VpAssesmentComponent,
         VpObjectiveComponent,
         VpSubjectiveComponent,
         InformasiPasienComponent,
@@ -40,6 +42,8 @@ export class BaseVisitPasienComponent implements OnInit, OnDestroy {
     @ViewChild('VpSubjectiveComps') VpSubjectiveComps!: VpSubjectiveComponent;
 
     @ViewChild('VpObjectiveComps') VpObjectiveComps!: VpObjectiveComponent;
+
+    @ViewChild('VpAssesmentComps') VpAssesmentComps!: VpAssesmentComponent;
 
     constructor(
         private _router: Router,

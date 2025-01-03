@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -12,7 +11,6 @@ import { environment } from 'src/environments/environment';
     selector: 'app-vp-objective',
     standalone: true,
     imports: [
-        CommonModule,
         DynamicFormComponent,
     ],
     templateUrl: './vp-objective.component.html',
