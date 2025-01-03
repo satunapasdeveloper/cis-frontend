@@ -1,4 +1,6 @@
 <app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <app-informasi-pasien></app-informasi-pasien>
+
     <!-- Grid -->
     <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
