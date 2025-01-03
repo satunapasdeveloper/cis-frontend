@@ -1,1 +1,25 @@
-<p>vp-objective works!</p>
+<div class="grid w-full">
+    <!-- Keadaan Umum -->
+    <div class="grid w-full bg-white p-5 rounded-lg shadow-sm">
+        <p class="text-gray-700 text-xl font-semibold">
+            Keadaaan Umum
+        </p>
+        <p class="text-gray-700 text-sm mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            Mohon isi data keadaan umum pasien dengan lengkap
+        </p>
+
+        <app-dynamic-form #FormKeadaanUmumComps [props]="FormKeadaanUmumProps"></app-dynamic-form>
+    </div>
+
+    <!-- Pemeriksaan Fisik -->
+    <div class="grid w-full bg-white p-5 rounded-lg shadow-sm">
+        <p class="text-gray-700 text-xl font-semibold">
+            Pemeriksaan Fisik
+        </p>
+        <p class="text-gray-700 text-sm mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            Mohon isi data pemeriksaan fisik pasien dengan lengkap
+        </p>
+
+        <app-dynamic-form #FormVitalSignComps [props]="FormVitalSignProps"></app-dynamic-form>
+    </div>
+</div>
