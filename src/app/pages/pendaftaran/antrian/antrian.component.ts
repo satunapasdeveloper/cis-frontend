@@ -11,13 +11,11 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { TableModule } from 'primeng/table';
-import { count, map, of, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { map, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { SearchPasienDialogComponent } from 'src/app/components/dialog/search-pasien-dialog/search-pasien-dialog.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { PendaftaranService } from 'src/app/services/pendaftaran-klinik/pendaftaran/pendaftaran.service';
-import { RekamMedisService } from 'src/app/services/pelayanan-klinik/rekam-medis/rekam-medis.service';
-import { RekamMedisActions } from 'src/app/store/rekam-medis';
 import { SetupPoliActions, SetupPoliState } from 'src/app/store/setup-data/setup-poli';
 import { AntrianPoliklinikRawatJalanService } from 'src/app/services/pelayanan-klinik/rawat-jalan/antrian-poliklinik-rawat-jalan.service';
 import { InputTextModule } from 'primeng/inputtext';
@@ -216,7 +214,16 @@ export class AntrianComponent implements OnInit, OnDestroy {
 
     handleGoToAssesmentAwal(args: any) {
         localStorage.setItem('_SPSH_', JSON.stringify(args));
-        this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/assesment-awal?id_register=${args.id_register}`)
+        setTimeout(() => {
+            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/assesment-awal?id_register=${args.id_register}`)
+        }, 500);
+    }
+
+    handleGoToTransaksiPemasukan(args: any) {
+        localStorage.setItem('_SPSH_', JSON.stringify(args));
+        setTimeout(() => {
+            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/transaksi-pemasukan?id_register=${args.id_register}&jenis_rawat=J&id_poli=${args.id_poli}&id_kelas=${args.id_kelas_rawat}`)
+        }, 500);
     }
 
     handleGoToInputRekamMedis(args: any): void {

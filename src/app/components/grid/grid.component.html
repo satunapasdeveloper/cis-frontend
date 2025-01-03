@@ -91,6 +91,9 @@
                         @case ('date') {
                         {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
                         }
+                        @case ('datetime') {
+                        {{ handleFormatDateTime(rowData[col.field])}}
+                        }
                         @case ('number') {
                         {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
                         }
@@ -167,6 +170,9 @@
                             }
                             @case ('date') {
                             {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                            }
+                            @case ('datetime') {
+                            {{ handleFormatDateTime(rowData[col.field])}}
                             }
                             @case ('number') {
                             {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}

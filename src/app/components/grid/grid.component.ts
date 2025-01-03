@@ -143,6 +143,9 @@ export class GridComponent implements OnInit, OnDestroy {
                     case 'Batal Pendaftaran':
                         icon = 'pi pi-times';
                         break;
+                    case 'Cancel':
+                        icon = 'pi pi-times';
+                        break;
                     default:
                         break;
                 }
@@ -202,6 +205,14 @@ export class GridComponent implements OnInit, OnDestroy {
 
     handleFormatStringToNumber(data: string): number {
         return parseFloat(data);
+    }
+
+    handleFormatDateTime(data: string): string {
+        data = new Date(data).toISOString();
+        const newDate = data.split("T");
+        const date = formatDate(new Date(newDate[0]), 'dd-MM-yyyy', 'EN');
+        const time = newDate[1].split(".")[0];
+        return `${date} ${time}`;
     }
 
     onClickCustomSearch() {
