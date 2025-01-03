@@ -1,0 +1,98 @@
+<div *ngIf="Pasien" class="flex flex-col w-full gap-2 bg-white rounded-lg p-3 shadow-sm mb-4">
+    <div
+        class="flex items-center justify-between w-full gap-3 {{ ToggleCard ? 'mb-2 pb-2 border-b border-t-0 border-x-0 border-gray-300 border-dashed' : '' }}">
+        <div class="flex flex-col">
+            <p class="text-base font-semibold text-gray-700">
+                Informasi Pasien
+            </p>
+            <p class="text-xs text-gray-600">
+                Informasi detail pasien terkait pelayanan poliklinik
+            </p>
+        </div>
+
+        <div class="flex">
+            <p-button icon="pi pi-window-{{ ToggleCard ? 'minimize' : 'maximize' }}" severity="secondary"
+                styleClass="p-button-sm p-button-text" (onClick)="toggleCard()"
+                pTooltip="{{ ToggleCard ? 'Sembunyikan' : 'Lihat' }}" tooltipPosition="bottom">
+            </p-button>
+        </div>
+    </div>
+
+    <div id="cardPasien" class="flex w-full duration-75 transition-all gap-3">
+        <div class="w-3/12 flex flex-col gap-2 border-r border-l-0 border-y-0 border-gray-200 border-solid">
+            <!-- Nama Pasien -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Nama Pasien</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.nama_pasien }}</p>
+            </div>
+
+            <!-- No. Rekam Medis -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">No. Rekam Medis</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.no_rekam_medis }}</p>
+            </div>
+
+            <!-- No. Register -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">No. Register</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.no_register }}</p>
+            </div>
+        </div>
+
+        <div class="w-3/12 flex flex-col gap-2 border-r border-l-0 border-y-0 border-gray-200 border-solid">
+            <!-- Tanggal Lahir -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Tanggal Lahir</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.tanggal_lahir }}</p>
+            </div>
+
+            <!-- Umur -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Umur</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.no_rekam_medis }}</p>
+            </div>
+
+            <!-- Gender -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Gender</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.gender == 'P' ? 'Perempuan' : 'Laki - Laki' }}
+                </p>
+            </div>
+        </div>
+
+        <div class="w-3/12 flex flex-col gap-2 border-r border-l-0 border-y-0 border-gray-200 border-solid">
+            <!-- Tanggal Admisi -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Tanggal Admisi</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.tanggal_admisi }}</p>
+            </div>
+
+            <!-- DPJP -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">DPJP</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.nama_dokter }}</p>
+            </div>
+
+            <!-- Poliklinik -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Poliklinik</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.nama_poli }}</p>
+            </div>
+        </div>
+
+        <div class="w-3/12 flex flex-col gap-2">
+            <!-- Penjamin -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Penjamin</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.nama_penjamin }}</p>
+            </div>
+
+            <!-- Diagnosa Primer -->
+            <div class="flex flex-col gap-0">
+                <p class="text-xs text-gray-500">Diagnosa Primer</p>
+                <p class="text-sm text-gray-700 font-medium">{{ Pasien.diagnosa ? Pasien.diagnosa : '-' }}</p>
+            </div>
+        </div>
+    </div>
+
+</div>

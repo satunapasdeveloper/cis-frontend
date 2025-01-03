@@ -20,6 +20,7 @@ import { Store } from '@ngxs/store';
 import { SetupNakesState, SetupNakesActions } from 'src/app/store/setup-data/nakes';
 import { FormsModule } from '@angular/forms';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InformasiPasienComponent } from 'src/app/components/layout/informasi-pasien/informasi-pasien.component';
 
 @Component({
     selector: 'app-transaksi-pemasukan',
@@ -34,6 +35,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
         InputTextareaModule,
         ConfirmDialogModule,
         DynamicFormComponent,
+        InformasiPasienComponent,
     ],
     templateUrl: './transaksi-pemasukan.component.html',
     styleUrl: './transaksi-pemasukan.component.scss'

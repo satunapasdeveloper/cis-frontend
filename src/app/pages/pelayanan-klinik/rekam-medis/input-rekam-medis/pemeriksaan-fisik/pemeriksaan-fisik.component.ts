@@ -13,6 +13,7 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
 import { RekamMedisService } from 'src/app/services/pelayanan-klinik/rekam-medis/rekam-medis.service';
 import { MessageService } from 'primeng/api';
 import { environment } from 'src/environments/environment';
+import { InformasiPasienComponent } from 'src/app/components/layout/informasi-pasien/informasi-pasien.component';
 
 @Component({
     selector: 'app-pemeriksaan-fisik',
@@ -27,6 +28,7 @@ import { environment } from 'src/environments/environment';
         DashboardComponent,
         ReactiveFormsModule,
         DynamicFormComponent,
+        InformasiPasienComponent
     ],
     templateUrl: './pemeriksaan-fisik.component.html',
     styleUrl: './pemeriksaan-fisik.component.scss'
