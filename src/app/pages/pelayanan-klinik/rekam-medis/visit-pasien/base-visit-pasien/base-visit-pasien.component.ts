@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { StepperModule } from 'primeng/stepper';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { Subject, takeUntil } from 'rxjs';
@@ -7,6 +7,8 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
 import { Router } from '@angular/router';
 import { InformasiPasienComponent } from 'src/app/components/layout/informasi-pasien/informasi-pasien.component';
 import { ButtonModule } from 'primeng/button';
+import { VpObjectiveComponent } from '../vp-objective/vp-objective.component';
+import { VpSubjectiveComponent } from '../vp-subjective/vp-subjective.component';
 
 @Component({
     selector: 'app-base-visit-pasien',
@@ -16,6 +18,8 @@ import { ButtonModule } from 'primeng/button';
         ButtonModule,
         StepperModule,
         DashboardComponent,
+        VpObjectiveComponent,
+        VpSubjectiveComponent,
         InformasiPasienComponent,
     ],
     templateUrl: './base-visit-pasien.component.html',
@@ -32,6 +36,10 @@ export class BaseVisitPasienComponent implements OnInit, OnDestroy {
             icon: 'pi pi-chevron-left'
         }
     ];
+
+    @ViewChild('VpSubjectiveComps') VpSubjectiveComps!: VpSubjectiveComponent;
+
+    @ViewChild('VpObjectiveComps') VpObjectiveComps!: VpObjectiveComponent;
 
     constructor(
         private _router: Router,

@@ -7,7 +7,7 @@
             <p-stepperPanel header="Subjective">
                 <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
                     <div class="flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                        <!-- <app-anamesis #AnamesisComps></app-anamesis> -->
+                        <app-vp-subjective #VpSubjectiveComps></app-vp-subjective>
 
                         <div class="flex pt-4 justify-end">
                             <p-button severity="info" label="Selanjutnya" icon="pi pi-arrow-right" iconPos="right"
@@ -19,11 +19,11 @@
             </p-stepperPanel>
 
             <!-- Objective -->
-            <p-stepperPanel header="Subjective">
+            <p-stepperPanel header="Objective">
                 <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback"
                     let-index="index">
                     <div class="flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                        <!-- <app-anamesis #AnamesisComps></app-anamesis> -->
+                        <app-vp-objective #VpObjectiveComps></app-vp-objective>
 
                         <div class="flex pt-4 justify-between">
                             <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
