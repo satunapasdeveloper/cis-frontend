@@ -273,15 +273,20 @@ export class AntrianComponent implements OnInit, OnDestroy {
             })
     }
 
-    handleMulaiPeriksaAntrian(id_register: string) {
-        this._antrianPoliklinikRawatJalanService
-            .mulaiPeriksa(id_register)
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.responseResult) {
-                    this.ShowModalPanggilPasien = false;
-                    this.handleSearchAntrian(this.AntrianQueryParams.tanggal_admisi, this.AntrianQueryParams.id_poli, this.AntrianQueryParams.id_dokter, this.AntrianQueryParams.nama_pasien);
-                }
-            })
+    handleMulaiPeriksaAntrian(status_register: string, id_register: string) {
+        if (status_register == 'PERIKSA') {
+            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/visit-pasien?id_register=${id_register}`)
+        } else {
+            this._antrianPoliklinikRawatJalanService
+                .mulaiPeriksa(id_register)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.responseResult) {
+                        this.ShowModalPanggilPasien = false;
+                        this.handleSearchAntrian(this.AntrianQueryParams.tanggal_admisi, this.AntrianQueryParams.id_poli, this.AntrianQueryParams.id_dokter, this.AntrianQueryParams.nama_pasien);
+                        this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/visit-pasien?id_register=${id_register}`)
+                    }
+                })
+        }
     }
 }

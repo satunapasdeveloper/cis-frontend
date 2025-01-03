@@ -45,6 +45,16 @@ export const pelayananRoutes: Routes = [
                         "Beranda", "Pelayanan", "Rekam Medis", "Transaksi Pemasukan"
                     ]
                 },
+            },
+            {
+                path: 'visit-pasien',
+                loadComponent: async () => (await import('./rekam-medis/visit-pasien/base-visit-pasien/base-visit-pasien.component')).BaseVisitPasienComponent,
+                data: {
+                    title: 'Visit Pasien',
+                    breadcrumbs: [
+                        "Beranda", "Pelayanan", "Rekam Medis", "Visit Pasien"
+                    ]
+                },
             }
         ]
     },

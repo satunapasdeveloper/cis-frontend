@@ -25,7 +25,6 @@ import { InformasiPasienComponent } from 'src/app/components/layout/informasi-pa
         DropdownModule,
         InputTextModule,
         DashboardComponent,
-        DashboardComponent,
         ReactiveFormsModule,
         DynamicFormComponent,
         InformasiPasienComponent
