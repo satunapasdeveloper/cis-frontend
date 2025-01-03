@@ -182,7 +182,6 @@ export class SetupBedComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log(result);
                     this.GridProps.dataSource = result.entities;
                     this.GridProps.totalRows = result.totalRows;
                 }

@@ -35,6 +35,16 @@ export const pelayananRoutes: Routes = [
                         "Beranda", "Pelayanan", "Rekam Medis", "Assesment Awal"
                     ]
                 },
+            },
+            {
+                path: 'transaksi-pemasukan',
+                loadComponent: async () => (await import('./rekam-medis/input-rekam-medis/transaksi-pemasukan/transaksi-pemasukan.component')).TransaksiPemasukanComponent,
+                data: {
+                    title: 'Transaksi Pemasukan',
+                    breadcrumbs: [
+                        "Beranda", "Pelayanan", "Rekam Medis", "Transaksi Pemasukan"
+                    ]
+                },
             }
         ]
     },

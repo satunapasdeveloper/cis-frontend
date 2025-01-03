@@ -30,6 +30,7 @@ export class AntrianPoliklinikRawatJalanService {
                             tanggal_lahir: item.pasien.tanggal_lahir,
                             tanggal_admisi: item.tanggal_admisi,
                             tanggal_pulang: item.tanggal_pulang,
+                            id_kelas_rawat: item.id_kelas_rawat,
                             id_poli: item.id_poli,
                             nama_poli: item.poli.nama_poli,
                             id_jadwal_dokter: item.id_jadwal_dokter,

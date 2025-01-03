@@ -15,7 +15,7 @@ export class SetupTarifService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAllForTindakanMedis(query: SetupTarifModel.GetForTindakanMedisQueryParams): Observable<SetupTarifModel.GetAll> {
+    getAllForTindakanMedis(query: SetupTarifModel.GetForTindakanMedisQueryParams): Observable<any> {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-tarif/lookUpForTindakanMedis`, query);
     }
 
