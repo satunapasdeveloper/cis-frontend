@@ -55,7 +55,27 @@ export const pelayananRoutes: Routes = [
                         "Beranda", "Pelayanan", "Rekam Medis", "Visit Pasien"
                     ]
                 },
-            }
+            },
+            {
+                path: 'surat-kontrol',
+                loadComponent: async () => (await import('./rekam-medis/surat-kontrol/surat-kontrol.component')).SuratKontrolComponent,
+                data: {
+                    title: 'Surat Kontrol',
+                    breadcrumbs: [
+                        "Beranda", "Pelayanan", "Rekam Medis", "Surat Kontrol"
+                    ]
+                },
+            },
+            {
+                path: 'surat-rujukan-keluar',
+                loadComponent: async () => (await import('./rekam-medis/surat-rujukan-keluar/surat-rujukan-keluar.component')).SuratRujukanKeluarComponent,
+                data: {
+                    title: 'Surat Rujukan Keluar',
+                    breadcrumbs: [
+                        "Beranda", "Pelayanan", "Rekam Medis", "Surat Rujukan Keluar"
+                    ]
+                },
+            },
         ]
     },
 ]

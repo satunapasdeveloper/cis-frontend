@@ -1,0 +1,134 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <app-informasi-pasien></app-informasi-pasien>
+
+    <div class="flex flex-row gap-3">
+        <!-- Form -->
+        <div class="flex flex-col w-4/12 p-3 bg-white rounded-lg shadow-sm">
+            <div class="grid w-full">
+                <div class="flex flex-col pb-2 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    <p class="text-base text-gray-700 font-medium">
+                        Surat Kontrol Pasien
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        Buat surat kontrol pasien
+                    </p>
+                </div>
+
+                <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+            </div>
+        </div>
+
+        <!-- Print Out -->
+        <div class="flex flex-col w-8/12 p-3 bg-white rounded-lg shadow-sm">
+            <div class="flex flex-col pb-2 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-base text-gray-700 font-medium">
+                    Print Preview
+                </p>
+                <p class="text-sm text-gray-600">
+                    Simpan surat kontrol pasien untuk mencetak surat kontrol
+                </p>
+            </div>
+
+            <div class="flex flex-col p-2 border-solid border-gray-300 border rounded-md font-serif">
+                <!-- Content -->
+                <div class="flex items-center gap-3 mb-2">
+                    <img src="../../../../../assets/image/logo-bpjs-kesehatan.jpg" alt="logo_bpjs_kesehatan"
+                        class="h-12">
+
+                    <div class="flex flex-col gap-0">
+                        <p class="text-base text-gray-900">
+                            SURAT RENCANA KONTROL
+                        </p>
+                        <p class="text-xs text-gray-900">
+                            RSUD H. ABDUL MANAN SIMATUPANG
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="flex flex-col gap-0 px-2">
+                    <p class="text-sm text-gray-900">
+                        Kepada Yth. <span class="font-bold">{{ SelectedDokter ? SelectedDokter.nama : '' }}</span>
+                        {{ SelectedPoli ? '(' + SelectedPoli.nama_poli + ')' : '' }}
+                    </p>
+                    <p class="text-sm text-gray-900">
+                        Mohon Pemeriksaan dan Penanganan Lebih Lanjut :
+                    </p>
+                </div>
+
+                <!-- No. Kartu -->
+                <div class="flex flex-row gap-2 px-2">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700">
+                            No. Kartu
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-gray-700">
+                            : {{ Pasien ? Pasien.no_kartu_bpjs : '' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Nama Peserta  -->
+                <div class="flex flex-row gap-2 px-2">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700">
+                            Nama Peserta
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-gray-700">
+                            : {{ Pasien ? (Pasien.nama_pasien | uppercase) : '' }}
+                            {{ Pasien ? Pasien.gender == 'L' ? '(Laki - Laki)' : '(Perempuan)' : '' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tanggal lahir  -->
+                <div class="flex flex-row gap-2 px-2">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700">
+                            Tanggal lahir
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-gray-700">
+                            : {{ Pasien ? Pasien.tanggal_lahir : '' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Diagnosa  -->
+                <div class="flex flex-row gap-2 px-2">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700">
+                            Diagnosa
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-gray-700">
+                            : {{ Pasien ? Pasien.diagnosa : '' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Rencana Kontrol  -->
+                <div class="flex flex-row gap-2 px-2">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700">
+                            Rencana Kontrol
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-gray-700">
+                            : {{ FormComps.FormGroup.get('tanggal_rencana_kontrol')?.value | date: 'yyyy-MM-dd HH:mm' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>

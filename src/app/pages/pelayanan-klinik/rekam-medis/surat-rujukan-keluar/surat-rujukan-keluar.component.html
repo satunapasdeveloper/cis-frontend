@@ -1,0 +1,23 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <app-informasi-pasien></app-informasi-pasien>
+
+    <div class="flex flex-row gap-3">
+        <!-- Form -->
+        <div class="flex flex-col w-8/12 p-3 bg-white rounded-lg shadow-sm">
+            <div class="grid w-full">
+                <div class="flex flex-col pb-2 mb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    <p class="text-base text-gray-700 font-medium">
+                        Surat Rujukan Keluar
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        Buat surat rujukan keluar pasien
+                    </p>
+                </div>
+
+                <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+            </div>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>
