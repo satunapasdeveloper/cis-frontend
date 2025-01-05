@@ -226,6 +226,20 @@ export class AntrianComponent implements OnInit, OnDestroy {
         }, 500);
     }
 
+    handleGoToSuratKontrol(args: any) {
+        localStorage.setItem('_SPSH_', JSON.stringify(args));
+        setTimeout(() => {
+            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/surat-kontrol?id_register=${args.id_register}`)
+        }, 500);
+    }
+
+    handleGoToSuratRujukan(args: any) {
+        localStorage.setItem('_SPSH_', JSON.stringify(args));
+        setTimeout(() => {
+            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/surat-rujukan-keluar?id_register=${args.id_register}`)
+        }, 500);
+    }
+
     handleGoToInputRekamMedis(args: any): void {
         setTimeout(() => {
             localStorage.setItem('_SPSH_', JSON.stringify(args));

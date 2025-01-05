@@ -41,6 +41,7 @@ export class AntrianPoliklinikRawatJalanService {
                             nama_dokter: item.dokter.nama,
                             id_penjamin: item.id_penjamin,
                             nama_penjamin: item.penjamin.nama_penjamin,
+                            no_kartu_bpjs: item.log_cek_bpjs ? item.log_cek_bpjs.no_kartu_bpjs : '',
                             is_assessment: item.is_assessment,
                             status_bpjs: item.status_bpjs,
                             status_register: item.status_register,
