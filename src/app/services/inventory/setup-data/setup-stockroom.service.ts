@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
 import { environment } from 'src/environments/environment';
 import { HttpRequestService } from '../../http/http-request.service';
-import { StockroomModel } from 'src/app/model/pages/farmasi/setup-data/setup-stockroom.model';
+import { StockroomModel } from 'src/app/model/pages/inventory/setup-data/setup-stockroom.model';
 
 @Injectable({
     providedIn: 'root'

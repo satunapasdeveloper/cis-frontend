@@ -10,11 +10,11 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { JenisItemModel } from 'src/app/model/pages/farmasi/setup-data/setup-jenis-item.model';
-import { SetupJenisItemService } from 'src/app/services/farmasi/setup-data/setup-jenis-item.service';
+import { SatuanModel } from 'src/app/model/pages/inventory/setup-data/setup-satuan.model';
+import { SetupSatuanService } from 'src/app/services/inventory/setup-data/setup-satuan.service';
 
 @Component({
-    selector: 'app-setup-jenis-item',
+    selector: 'app-setup-satuan',
     standalone: true,
     imports: [
         CommonModule,
@@ -24,10 +24,10 @@ import { SetupJenisItemService } from 'src/app/services/farmasi/setup-data/setup
         ButtonModule,
         ConfirmDialogModule
     ],
-    templateUrl: './setup-jenis-item.component.html',
-    styleUrl: './setup-jenis-item.component.scss'
+    templateUrl: './setup-satuan.component.html',
+    styleUrl: './setup-satuan.component.scss'
 })
-export class SetupJenisItemComponent implements OnInit, OnDestroy {
+export class SetupSatuanComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -42,9 +42,10 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'SetupJenisItem',
+        id: 'SetupSatuan',
         column: [
-            { field: 'cara_pulang', headerName: 'Jenis Item', class: 'text-blue-500 font-semibold' },
+            { field: 'kode_satuan', headerName: 'Kode Satuan', class: 'text-blue-500 font-semibold' },
+            { field: 'nama_satuan', headerName: 'Nama Satuan' },
             { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -55,14 +56,14 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
         isCustomSearch: true,
         customSearchProps: [
             {
-                id: 'cara_pulang',
-                placeholder: 'Cari Jenis Item Disini',
+                id: 'nama_satuan',
+                placeholder: 'Cari Satuan Disini',
                 type: 'text'
             },
         ],
         showSort: false,
         searchKeyword: 'no_kamar',
-        searchPlaceholder: 'Cari No. Jenis Item Disini'
+        searchPlaceholder: 'Cari No. Cara Pulang Disini'
     };
     GridSelectedData: any;
     GridCustomSearchParams: any;
@@ -74,23 +75,30 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
 
     constructor(
         private _messageService: MessageService,
-        private _jenisItemService: SetupJenisItemService,
+        private _satuanService: SetupSatuanService,
         private _confirmationService: ConfirmationService,
     ) {
         this.FormProps = {
-            id: 'form_setup_cara_pulang',
+            id: 'form_setup_satuan',
             fields: [
                 {
-                    id: 'id_item_jenis',
-                    label: 'ID Jenis',
+                    id: 'id_satuan',
+                    label: 'ID Asal Rujukan',
                     required: true,
                     type: 'text',
                     value: '',
                     hidden: true
                 },
                 {
-                    id: 'jenis',
-                    label: 'Jenis Item',
+                    id: 'kode_satuan',
+                    label: 'Kode Satuan',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
+                    id: 'nama_satuan',
+                    label: 'Nama Satuan',
                     required: true,
                     type: 'text',
                     value: '',
@@ -105,7 +113,7 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-1 grid-cols-1',
+            class: 'grid-rows-2 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
@@ -120,8 +128,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
-    private getAll(query: JenisItemModel.IJenisItemQueryParams) {
-        this._jenisItemService
+    private getAll(query: SatuanModel.ISatuanQueryParams) {
+        this._satuanService
             .getAll(query)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -185,7 +193,7 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusJenisItem(args.data);
+                    this.updateStatusSatuan(args.data);
                 }
             });
         }
@@ -205,8 +213,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
         this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
     }
 
-    saveJenisItem(data: any) {
-        this._jenisItemService
+    saveSatuan(data: any) {
+        this._satuanService
             .create(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -218,8 +226,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    updateJenisItem(data: any) {
-        this._jenisItemService
+    updateSatuan(data: any) {
+        this._satuanService
             .update(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -231,8 +239,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusJenisItem(data: any) {
-        this._jenisItemService
+    private updateStatusSatuan(data: any) {
+        this._satuanService
             .updateStatus(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {

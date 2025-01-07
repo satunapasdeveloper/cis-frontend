@@ -10,11 +10,11 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { SatuanModel } from 'src/app/model/pages/farmasi/setup-data/setup-satuan.model';
-import { SetupSatuanService } from 'src/app/services/farmasi/setup-data/setup-satuan.service';
+import { JenisItemModel } from 'src/app/model/pages/inventory/setup-data/setup-jenis-item.model';
+import { SetupJenisItemService } from 'src/app/services/inventory/setup-data/setup-jenis-item.service';
 
 @Component({
-    selector: 'app-setup-satuan',
+    selector: 'app-setup-jenis-item',
     standalone: true,
     imports: [
         CommonModule,
@@ -24,10 +24,10 @@ import { SetupSatuanService } from 'src/app/services/farmasi/setup-data/setup-sa
         ButtonModule,
         ConfirmDialogModule
     ],
-    templateUrl: './setup-satuan.component.html',
-    styleUrl: './setup-satuan.component.scss'
+    templateUrl: './setup-jenis-item.component.html',
+    styleUrl: './setup-jenis-item.component.scss'
 })
-export class SetupSatuanComponent implements OnInit, OnDestroy {
+export class SetupJenisItemComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -42,10 +42,9 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'SetupSatuan',
+        id: 'SetupJenisItem',
         column: [
-            { field: 'kode_satuan', headerName: 'Kode Satuan', class: 'text-blue-500 font-semibold' },
-            { field: 'nama_satuan', headerName: 'Nama Satuan' },
+            { field: 'cara_pulang', headerName: 'Jenis Item', class: 'text-blue-500 font-semibold' },
             { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -56,14 +55,14 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
         isCustomSearch: true,
         customSearchProps: [
             {
-                id: 'nama_satuan',
-                placeholder: 'Cari Satuan Disini',
+                id: 'cara_pulang',
+                placeholder: 'Cari Jenis Item Disini',
                 type: 'text'
             },
         ],
         showSort: false,
         searchKeyword: 'no_kamar',
-        searchPlaceholder: 'Cari No. Cara Pulang Disini'
+        searchPlaceholder: 'Cari No. Jenis Item Disini'
     };
     GridSelectedData: any;
     GridCustomSearchParams: any;
@@ -75,30 +74,23 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
 
     constructor(
         private _messageService: MessageService,
-        private _satuanService: SetupSatuanService,
+        private _jenisItemService: SetupJenisItemService,
         private _confirmationService: ConfirmationService,
     ) {
         this.FormProps = {
-            id: 'form_setup_satuan',
+            id: 'form_setup_cara_pulang',
             fields: [
                 {
-                    id: 'id_satuan',
-                    label: 'ID Asal Rujukan',
+                    id: 'id_item_jenis',
+                    label: 'ID Jenis',
                     required: true,
                     type: 'text',
                     value: '',
                     hidden: true
                 },
                 {
-                    id: 'kode_satuan',
-                    label: 'Kode Satuan',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                },
-                {
-                    id: 'nama_satuan',
-                    label: 'Nama Satuan',
+                    id: 'jenis',
+                    label: 'Jenis Item',
                     required: true,
                     type: 'text',
                     value: '',
@@ -113,7 +105,7 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-2 grid-cols-1',
+            class: 'grid-rows-1 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
@@ -128,8 +120,8 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
-    private getAll(query: SatuanModel.ISatuanQueryParams) {
-        this._satuanService
+    private getAll(query: JenisItemModel.IJenisItemQueryParams) {
+        this._jenisItemService
             .getAll(query)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -193,7 +185,7 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusSatuan(args.data);
+                    this.updateStatusJenisItem(args.data);
                 }
             });
         }
@@ -213,8 +205,8 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
         this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
     }
 
-    saveSatuan(data: any) {
-        this._satuanService
+    saveJenisItem(data: any) {
+        this._jenisItemService
             .create(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -226,8 +218,8 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
             })
     }
 
-    updateSatuan(data: any) {
-        this._satuanService
+    updateJenisItem(data: any) {
+        this._jenisItemService
             .update(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -239,8 +231,8 @@ export class SetupSatuanComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusSatuan(data: any) {
-        this._satuanService
+    private updateStatusJenisItem(data: any) {
+        this._jenisItemService
             .updateStatus(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {

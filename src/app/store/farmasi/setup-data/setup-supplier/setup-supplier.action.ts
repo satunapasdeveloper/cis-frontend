@@ -1,4 +1,4 @@
-import { SupplierModel } from "src/app/model/pages/farmasi/setup-data/setup-supplier.model";
+import { SupplierModel } from "src/app/model/pages/inventory/setup-data/setup-supplier.model";
 
 export namespace SetupSupplierActions {
     export class GetAllSupplier {

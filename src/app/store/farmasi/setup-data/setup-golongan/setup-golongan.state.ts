@@ -3,7 +3,7 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { of, switchMap, tap } from "rxjs";
 import { SetupGolonganService } from "src/app/services/farmasi/setup-data/setup-golongan.service";
 import { SetupGolonganActions } from "./setup-golongan.action";
-import { GolonganModel } from "src/app/model/pages/farmasi/setup-data/setup-golongan.model";
+import { GolonganModel } from "src/app/model/pages/inventory/setup-data/setup-golongan.model";
 
 interface SetupGolonganStateModel {
     entities: GolonganModel.IGolongan[];

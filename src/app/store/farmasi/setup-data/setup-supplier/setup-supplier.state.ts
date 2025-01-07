@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { SetupSupplierActions } from "./setup-supplier.action";
 import { of, switchMap, tap } from "rxjs";
-import { SetupSupplierService } from "src/app/services/farmasi/setup-data/setup-supplier.service";
-import { SupplierModel } from "src/app/model/pages/farmasi/setup-data/setup-supplier.model";
+import { SetupSupplierService } from "src/app/services/inventory/setup-data/setup-supplier.service";
+import { SupplierModel } from "src/app/model/pages/inventory/setup-data/setup-supplier.model";
 
 interface SetupSupplierStateModel {
     entities: SupplierModel.ISupplier[];

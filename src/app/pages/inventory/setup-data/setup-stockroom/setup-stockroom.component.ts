@@ -1,20 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Store } from '@ngxs/store';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { Subject, takeUntil } from 'rxjs';
+import { PaginatorModule } from 'primeng/paginator';
+import { Subject, BehaviorSubject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { GroupItemModel } from 'src/app/model/pages/farmasi/setup-data/setup-grup-item.model';
-import { SetupGroupItemService } from 'src/app/services/farmasi/setup-data/setup-group-item.service';
+import { SetupStockroomService } from 'src/app/services/inventory/setup-data/setup-stockroom.service';
+import { SetupStockroomState, SetupStockroomActions } from 'src/app/store/farmasi/setup-data/setup-stockroom';
 
 @Component({
-    selector: 'app-setup-group-item',
+    selector: 'app-setup-stockroom',
     standalone: true,
     imports: [
         CommonModule,
@@ -22,12 +24,13 @@ import { SetupGroupItemService } from 'src/app/services/farmasi/setup-data/setup
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        PaginatorModule,
     ],
-    templateUrl: './setup-group-item.component.html',
-    styleUrl: './setup-group-item.component.scss'
+    templateUrl: './setup-stockroom.component.html',
+    styleUrl: './setup-stockroom.component.scss'
 })
-export class SetupGroupItemComponent implements OnInit, OnDestroy {
+export class SetupStockroomComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -42,74 +45,66 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'SetupGroupItem',
+        id: 'Setup_Stockroom',
         column: [
-            { field: 'kode_grup', headerName: 'Kode Grup', class: 'text-blue-500 font-semibold' },
-            { field: 'nama_grup', headerName: 'Nama Grup' },
-            { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'kode_stockroom', headerName: 'Kode Stockroom', class: 'font-semibold' },
+            { field: 'nama_stockroom', headerName: 'Nama Stockroom', },
+            { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Ubah Status', 'Detail'],
+        toolbar: ['Delete', 'Detail'],
         showPaging: true,
         showSearch: true,
-        isCustomSearch: true,
-        customSearchProps: [
-            {
-                id: 'nama_grup',
-                placeholder: 'Cari Nama Grup Disini',
-                type: 'text'
-            },
-        ],
-        showSort: false,
-        searchKeyword: 'no_kamar',
-        searchPlaceholder: 'Cari No. Cara Pulang Disini'
+        showSort: true,
+        searchKeyword: 'nama_stockroom',
+        searchPlaceholder: 'Cari Nama Stockroom Disini',
+        totalRows: 0,
     };
     GridSelectedData: any;
-    GridCustomSearchParams: any;
-    GridPaginationData: any = { page: 1, count: 5 };
+
+    First: number = 0;
+
+    Rows: number = 10;
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
+    KfaKeywordSearch$ = new BehaviorSubject(null);
+
     constructor(
+        private _store: Store,
         private _messageService: MessageService,
-        private _groupItemService: SetupGroupItemService,
+        private _stockroomService: SetupStockroomService,
         private _confirmationService: ConfirmationService,
     ) {
         this.FormProps = {
-            id: 'form_setup_item_grup',
+            id: 'form_setup_stockroom',
             fields: [
                 {
-                    id: 'id_item_grup',
-                    label: 'ID Asal Rujukan',
+                    id: 'kode_stockroom',
+                    label: 'Kode Stockroom',
                     required: true,
                     type: 'text',
                     value: '',
-                    hidden: true
+                    readonly: false,
                 },
                 {
-                    id: 'kode_grup',
-                    label: 'Kode Grup',
+                    id: 'nama_stockroom',
+                    label: 'Nama Stockroom',
                     required: true,
                     type: 'text',
                     value: '',
+                    readonly: false,
                 },
                 {
-                    id: 'nama_grup',
-                    label: 'Nama Grup',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                },
-                {
-                    id: 'is_active',
-                    label: 'Is Active',
-                    required: true,
-                    type: 'text',
-                    value: '',
+                    id: 'id_stockroom',
+                    label: 'Id Stockroom',
                     hidden: true,
+                    required: false,
+                    type: 'text',
+                    value: "",
                 },
             ],
             style: 'not_inline',
@@ -120,7 +115,7 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.getAll({ page: 1, count: 5 });
+        this.getAll();
     }
 
     ngOnDestroy(): void {
@@ -128,14 +123,15 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
-    private getAll(query: GroupItemModel.IGroupItemQueryParams) {
-        this._groupItemService
-            .getAll(query)
+    private getAll() {
+        this._store
+            .select(SetupStockroomState.stockroomEntities)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    this.GridProps.dataSource = result.data.rows;
-                    this.GridProps.totalRows = result.data.totalRows;
+                    console.log("get data from setup stockroom =>", result);
+                    this.GridProps.dataSource = result.entities;
+                    this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
@@ -161,8 +157,6 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
                 }
             ];
         }, 100);
-
-        this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
     }
 
     onCellClicked(args: any): void {
@@ -172,14 +166,33 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
-        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            this.FormComps.FormGroup.patchValue(args);
-        }, 500);
+            setTimeout(() => {
+                this.FormComps.FormGroup.patchValue(args);
+            }, 500);
+        }, 100);
     }
 
     onToolbarClicked(args: any): void {
+        if (args.type == 'delete') {
+            this._confirmationService.confirm({
+                target: (<any>event).target as EventTarget,
+                message: 'Data yang dihapus tidak bisa dikembalikan',
+                header: 'Apakah Anda Yakin?',
+                icon: 'pi pi-info-circle',
+                acceptButtonStyleClass: "p-button-danger p-button-sm",
+                rejectButtonStyleClass: "p-button-secondary p-button-sm",
+                acceptIcon: "none",
+                acceptLabel: 'Iya Saya Yakin',
+                rejectIcon: "none",
+                rejectLabel: 'Tidak, Kembali',
+                accept: () => {
+                    this.deleteStockroom(args.data.uuid);
+                }
+            });
+        }
+
         if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
@@ -193,7 +206,7 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusGroupItem(args.data);
+                    this.updateStatusStockroom(args.data.id_stockroom);
                 }
             });
         }
@@ -203,22 +216,18 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
         }
     }
 
-    onPageChanged(args: any) {
-        this.GridPaginationData = { page: args.page + 1, count: args.rows };
-        this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
+    onPageChanged(args: any): void {
+        this._store
+            .dispatch(new SetupStockroomActions.GetAllStockroom({ count: args.rows, page: args.page + 1 }))
+            .pipe(takeUntil(this.Destroy$));
     }
 
-    onSearchGrid(args: any) {
-        this.GridCustomSearchParams = args;
-        this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
-    }
-
-    saveGroupItem(data: any) {
-        this._groupItemService
-            .create(data)
+    saveStockroom(data: any) {
+        this._store
+            .dispatch(new SetupStockroomActions.CreateStockroom(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.responseResult) {
+                if (result.setup_stockroom.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Disimpan' });
                     this.handleBackToList();
@@ -226,12 +235,12 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    updateGroupItem(data: any) {
-        this._groupItemService
-            .update(data)
+    updateStockroom(data: any) {
+        this._store
+            .dispatch(new SetupStockroomActions.UpdateStockroom(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.responseResult) {
+                if (result.setup_stockroom.success) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
                     this.handleBackToList();
@@ -239,17 +248,29 @@ export class SetupGroupItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusGroupItem(data: any) {
-        this._groupItemService
-            .updateStatus(data)
+    private updateStatusStockroom(uuid: string) {
+        // this._store
+        //     .dispatch(new SetupStockroomActions.UpdateStatusStockroom(uuid))
+        //     .pipe(takeUntil(this.Destroy$))
+        //     .subscribe((result) => {
+        //         if (result.setup_stockroom.success) {
+        //             this._messageService.clear();
+        //             this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
+        //             this.handleBackToList();
+        //         }
+        //     })
+    }
+
+    private deleteStockroom(uuid: string) {
+        this._store
+            .dispatch(new SetupStockroomActions.DeleteStockroom(uuid))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
-                if (result.responseResult) {
+                if (result.setup_stockroom.success) {
                     this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Diperbarui' });
-                    this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
+                    this.handleBackToList();
                 }
             })
     }
-
 }

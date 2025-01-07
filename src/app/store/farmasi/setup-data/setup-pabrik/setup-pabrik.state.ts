@@ -3,7 +3,7 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { SetupPabrikActions } from "./setup-pabrik.action";
 import { of, switchMap, tap } from "rxjs";
 import { SetupPabrikService } from "src/app/services/farmasi/setup-data/setup-pabrik.service";
-import { PabrikModel } from "src/app/model/pages/farmasi/setup-data/setup-pabrik.model";
+import { PabrikModel } from "src/app/model/pages/inventory/setup-data/setup-pabrik.model";
 
 interface SetupPabrikStateModel {
     entities: PabrikModel.IPabrik[];

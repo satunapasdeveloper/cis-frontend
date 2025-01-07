@@ -1,4 +1,4 @@
-import { StockroomModel } from "src/app/model/pages/farmasi/setup-data/setup-stockroom.model";
+import { StockroomModel } from "src/app/model/pages/inventory/setup-data/setup-stockroom.model";
 
 export namespace SetupStockroomActions {
     export class GetAllStockroom {

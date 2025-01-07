@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { SetupStockroomActions } from "./setup-stockroom.action";
 import { of, switchMap, tap } from "rxjs";
-import { SetupStockroomService } from "src/app/services/farmasi/setup-data/setup-stockroom.service";
-import { StockroomModel } from "src/app/model/pages/farmasi/setup-data/setup-stockroom.model";
+import { SetupStockroomService } from "src/app/services/inventory/setup-data/setup-stockroom.service";
+import { StockroomModel } from "src/app/model/pages/inventory/setup-data/setup-stockroom.model";
 
 interface SetupStockroomStateModel {
     entities: StockroomModel.IStockroom[];

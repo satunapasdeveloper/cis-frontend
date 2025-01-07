@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
-import { GolonganModel } from 'src/app/model/pages/farmasi/setup-data/setup-golongan.model';
+import { GolonganModel } from 'src/app/model/pages/inventory/setup-data/setup-golongan.model';
 import { environment } from 'src/environments/environment';
 import { HttpRequestService } from '../../http/http-request.service';
 

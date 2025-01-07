@@ -12,7 +12,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { SetupSupplierService } from 'src/app/services/farmasi/setup-data/setup-supplier.service';
+import { SetupSupplierService } from 'src/app/services/inventory/setup-data/setup-supplier.service';
 import { LokasiService } from 'src/app/services/pelayanan-klinik/setup-data/lokasi.service';
 import { SetupSupplierState, SetupSupplierActions } from 'src/app/store/farmasi/setup-data/setup-supplier';
 
