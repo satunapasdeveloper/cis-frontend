@@ -15,7 +15,21 @@ export class SetupMenuService {
     ) { }
 
     getAll(): Observable<MenuModel.GetAllMenu> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-menu/getAll`, { page: 1, count: 1000 })
+        return this._httpRequestService
+            .getRequest(`${environment.webApiUrl}/setup-menu/getAll`, { page: 1, count: 1000 })
+            .pipe(
+                map((result) => {
+                    result.data.rows = result.data.rows.map((item: any) => {
+                        return {
+                            ...item,
+                            id_parent: item.id_parent == 0 ? null : item.id_parent,
+                            nama_parent: item.parent ? item.parent.caption : 'Navbar'
+                        }
+                    })
+
+                    return result;
+                })
+            )
     }
 
     getAllActive(): Observable<MenuModel.GetAllMenu> {
