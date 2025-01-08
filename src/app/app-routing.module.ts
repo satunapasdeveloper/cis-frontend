@@ -40,6 +40,11 @@ const routes: Routes = [
         loadChildren: async () => (await import('./pages/farmasi/farmasi.routes')).farmasiRoutes
     },
     {
+        path: 'inventory',
+        canActivate: [AuthGuard],
+        loadChildren: async () => (await import('./pages/inventory/inventory.routes')).inventoryRoutes
+    },
+    {
         path: 'layanan-dokumen',
         canActivate: [AuthGuard],
         loadChildren: async () => (await import('./pages/layanan-dokumen/layanan-dokumen.routes')).layananDokumenRoutes

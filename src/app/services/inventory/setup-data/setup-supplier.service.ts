@@ -15,18 +15,34 @@ export class SetupSupplierService {
     ) { }
 
     getAll(params: SupplierModel.IQueryString): Observable<SupplierModel.GetAllSupplier> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/supplier/getAllPaginate`, params);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-supplier/getAll`, params);
+    }
+
+    getAllActive(params: SupplierModel.IQueryString): Observable<SupplierModel.GetAllSupplier> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-supplier/getForLookup`, params);
+    }
+
+    getById(id_supplier: string): Observable<SupplierModel.GetByIdSupplier> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-supplier/getById/${id_supplier}`);
     }
 
     create(payload: SupplierModel.CreateSupplier): Observable<HttpBaseResponse> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/supplier/insert`, payload);
+        delete (<any>payload)['id_supplier'];
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-supplier/create`, payload);
     }
 
     update(payload: SupplierModel.UpdateSupplier): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/supplier/update`, payload);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-supplier/update`, payload);
     }
 
-    delete(id_supplier: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/supplier/deactived/${id_supplier}`);
+    updateStatus(payload: SupplierModel.UpdateSupplier): Observable<HttpBaseResponse> {
+        const { id_supplier, ...data } = payload;
+
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-supplier/update/${id_supplier}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 }

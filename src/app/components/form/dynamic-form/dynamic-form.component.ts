@@ -15,6 +15,7 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { LookupDialogComponent } from '../../dialog/lookup-dialog/lookup-dialog.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
     selector: 'app-dynamic-form',
@@ -35,7 +36,8 @@ import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
         LookupDialogComponent,
         InputSwitchModule,
         NgxMaskDirective,
-        NgxMaskPipe
+        NgxMaskPipe,
+        MultiSelectModule
     ],
     templateUrl: './dynamic-form.component.html',
     styleUrls: ['./dynamic-form.component.scss'],

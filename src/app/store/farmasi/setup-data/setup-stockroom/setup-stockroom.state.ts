@@ -109,34 +109,4 @@ export class SetupStockroomState {
                 })
             )
     }
-
-    @Action(SetupStockroomActions.DeleteStockroom)
-    deleteStockroom(ctx: StateContext<SetupStockroomStateModel>, actions: any) {
-        return this._setupStockroomService
-            .delete(actions.payload)
-            .pipe(
-                tap((result) => {
-                    const state = ctx.getState();
-                    if (result.responseResult) {
-                        ctx.setState({
-                            ...state,
-                            entities: result.data,
-                            success: true
-                        })
-                    } else {
-                        ctx.patchState({
-                            ...state,
-                            success: false
-                        })
-                    }
-                }),
-                switchMap((result: any) => {
-                    if (result.responseResult) {
-                        return ctx.dispatch(new SetupStockroomActions.GetAllStockroom({ count: 10, page: 1 }));
-                    } else {
-                        return of([]);
-                    }
-                })
-            )
-    }
 }

@@ -40,6 +40,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     IsFarmasiStateHitted = false;
 
+    IsInventoryStateHitted = false;
+
     constructor(
         private _store: Store,
         private _router: Router,
@@ -56,8 +58,8 @@ export class AppComponent implements OnInit, OnDestroy {
                     }
 
                     // ** Load farmasi state
-                    if (event.url.includes('farmasi') && !this.IsFarmasiStateHitted) {
-                        this.initAllFarmasiState();
+                    if (event.url.includes('inventory') && !this.IsInventoryStateHitted) {
+                        this.initAllInventoryState();
                     }
                 }
             });
@@ -128,12 +130,12 @@ export class AppComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$));
     }
 
-    private initAllFarmasiState() {
+    private initAllInventoryState() {
         this.IsFarmasiStateHitted = true;
 
         // ** Get All Item
         this._store
-            .dispatch(new SetupItemActions.GetAllItem())
+            .dispatch(new SetupItemActions.GetAllItem({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
 
         // ** Get All Supplier
@@ -141,19 +143,9 @@ export class AppComponent implements OnInit, OnDestroy {
             .dispatch(new SetupSupplierActions.GetAllSupplier({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
 
-        // ** Get All Pabrik
-        this._store
-            .dispatch(new SetupPabrikActions.GetAllPabrik({ page: 1, count: 5 }))
-            .pipe(takeUntil(this.Destroy$));
-
         // ** Get All Stockroom
         this._store
             .dispatch(new SetupStockroomActions.GetAllStockroom({ page: 1, count: 5 }))
-            .pipe(takeUntil(this.Destroy$));
-
-        // ** Get All Golongan
-        this._store
-            .dispatch(new SetupGolonganActions.GetAllGolongan({ page: 1, count: 5 }))
             .pipe(takeUntil(this.Destroy$));
     }
 

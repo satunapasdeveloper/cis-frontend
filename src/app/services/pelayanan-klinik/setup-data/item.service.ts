@@ -14,36 +14,54 @@ export class ItemService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(): Observable<ItemModel.GetAllItem> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Item/GetAll`);
+    getAll(query: ItemModel.IItemParams): Observable<ItemModel.GetAllItem> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-item/getAll`, query);
     }
 
-    getById(uuid: string): Observable<ItemModel.GetByIdItem> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/Item/GetByUuid/${uuid}`);
+    getAllActive(query: ItemModel.IItemParams): Observable<ItemModel.GetAllItem> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-item/getForLookup`, query);
     }
 
-    getAllIcd9(keyword?: string): Observable<ItemModel.GetAllKfa> {
+    getById(id_item: string): Observable<ItemModel.GetByIdItem> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-item/getById/${id_item}`);
+    }
+
+    getAllKfa(nama_item: string): Observable<any> {
         const payload = {
-            cari: keyword ? keyword : ""
+            page: 1,
+            count: 50,
+            nama_item: nama_item
         };
 
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/GetKfa`, payload);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/kfa/lookUpKfa`, payload);
+    }
+
+    getAllGolongan(): Observable<ItemModel.GetAllItem> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-item/getGolongan`);
+    }
+
+    getAllJenis(): Observable<ItemModel.GetAllItem> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-item/getJenis`);
     }
 
     create(payload: ItemModel.CreateItem): Observable<HttpBaseResponse> {
-        delete (<any>payload)['uuid'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/Item/Create`, payload);
+        delete (<any>payload)['id_item'];
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-item/create`, payload);
     }
 
     update(payload: ItemModel.UpdateItem): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Item/Update/${payload.uuid}`, payload);
+        const { id_item, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-item/update/${id_item}`, data);
     }
 
-    updateStatus(uuid: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/Item/UpdateStatus/${uuid}`, null);
-    }
+    updateStatus(payload: ItemModel.UpdateItem): Observable<HttpBaseResponse> {
+        const { id_item, ...data } = payload;
 
-    delete(uuid: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/Item/Delete/${uuid}`);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-item-jenis/update/${id_item}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 }

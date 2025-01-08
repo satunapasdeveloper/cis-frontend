@@ -2,9 +2,9 @@ import { HttpBaseResponse } from "src/app/model/http/http-request.model"
 
 export namespace StockroomModel {
     export interface IStockroom {
-        id_stockroom: string
-        kode_stockroom: string
-        nama_stockroom: string
+        id_stokroom: string
+        kode_stokroom: string
+        nama_stokroom: string
         is_active: boolean
         created_at: string
         updated_at: string
@@ -15,8 +15,8 @@ export namespace StockroomModel {
     export interface IQueryString {
         page: number;
         count: number;
-        kode_stockroom?: string;
-        nama_stockroom?: string;
+        kode_stokroom?: string;
+        nama_stokroom?: string;
     }
 
     export class GetAllStockroom implements HttpBaseResponse {
@@ -38,13 +38,14 @@ export namespace StockroomModel {
     }
 
     export interface CreateStockroom {
-        kode_stockroom: string
-        nama_stockroom: string
+        kode_stokroom: string
+        nama_stokroom: string
     }
 
     export interface UpdateStockroom {
-        id_stockroom: string
-        kode_stockroom: string
-        nama_stockroom: string
+        id_stokroom: string
+        kode_stokroom: string
+        nama_stokroom: string
+        is_active: boolean
     }
 }

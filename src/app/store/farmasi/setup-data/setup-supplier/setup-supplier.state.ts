@@ -109,34 +109,4 @@ export class SetupSupplierState {
                 })
             )
     }
-
-    @Action(SetupSupplierActions.DeleteSupplier)
-    deleteSupplier(ctx: StateContext<SetupSupplierStateModel>, actions: any) {
-        return this._setupSupplierService
-            .delete(actions.payload)
-            .pipe(
-                tap((result) => {
-                    const state = ctx.getState();
-                    if (result.responseResult) {
-                        ctx.setState({
-                            ...state,
-                            entities: result.data,
-                            success: true
-                        })
-                    } else {
-                        ctx.patchState({
-                            ...state,
-                            success: false
-                        })
-                    }
-                }),
-                switchMap((result: any) => {
-                    if (result.responseResult) {
-                        return ctx.dispatch(new SetupSupplierActions.GetAllSupplier({ count: 10, page: 1 }));
-                    } else {
-                        return of([]);
-                    }
-                })
-            )
-    }
 }

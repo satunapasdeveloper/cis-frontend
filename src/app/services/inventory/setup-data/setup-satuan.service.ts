@@ -19,27 +19,27 @@ export class SetupSatuanService {
     }
 
     getAllActive(query: SatuanModel.ISatuanQueryParams): Observable<SatuanModel.GetAllSatuan> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-item-jenis/getForLookUp`, query);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-satuan/getForLookUp`, query);
     }
 
     getById(id_satuan: string): Observable<SatuanModel.GetByIdSatuan> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-item-jenis/getById/${id_satuan}`);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-satuan/getById/${id_satuan}`);
     }
 
     create(payload: SatuanModel.CreateSatuan): Observable<HttpBaseResponse> {
         delete (<any>payload)['id_satuan'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-item-jenis/create`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-satuan/create`, payload);
     }
 
     update(payload: SatuanModel.UpdateSatuan): Observable<HttpBaseResponse> {
         const { id_satuan, ...data } = payload;
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-item-jenis/update/${payload.id_satuan}`, data);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-satuan/update/${payload.id_satuan}`, data);
     }
 
     updateStatus(payload: SatuanModel.UpdateSatuan): Observable<HttpBaseResponse> {
         const { id_satuan, ...data } = payload;
 
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-item-jenis/update/${id_satuan}`,
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-satuan/update/${id_satuan}`,
             {
                 ...data,
                 is_active: !payload.is_active

@@ -5,21 +5,25 @@ export namespace SupplierModel {
         id_supplier: number
         kode_supplier: string
         nama_supplier: string
+        npwp: any
+        no_hp: any
         alamat: string
-        npwp: string
         id_provinsi: number
-        provinsi: string
+        nama_provinsi: string
         id_kota: number
-        kota: string
+        nama_kota: string
         id_kecamatan: number
-        kecamatan: string
-        contact_person: string
-        no_wa: string
+        nama_kecamatan: string
+        id_desa: string
+        nama_desa: string
+        kode_pos: number
+        kontak_person: string
+        email: any
         is_active: boolean
-        user_inputed: string
-        time_inputed: string
-        user_last_update: string
-        time_last_update: string
+        created_at: string
+        created_by: string
+        updated_at: string
+        updated_by: any
     }
 
     export interface IQueryString {
@@ -50,16 +54,20 @@ export namespace SupplierModel {
     export interface CreateSupplier {
         kode_supplier: string
         nama_supplier: string
-        alamat: string
         npwp: string
+        no_hp: string
+        alamat: string
         id_provinsi: number
-        provinsi: string
+        nama_provinsi: string
         id_kota: number
-        kota: string
+        nama_kota: string
         id_kecamatan: number
-        kecamatan: string
-        contact_person: string
-        no_wa: string
+        nama_kecamatan: string
+        id_desa: number
+        nama_desa: string
+        kode_pos: number
+        kontak_person: string
+        email: string
     }
 
     export interface UpdateSupplier {
@@ -76,5 +84,6 @@ export namespace SupplierModel {
         kecamatan: string
         contact_person: string
         no_wa: string
+        is_active: boolean
     }
 }

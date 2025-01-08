@@ -15,18 +15,34 @@ export class SetupStockroomService {
     ) { }
 
     getAll(params: StockroomModel.IQueryString): Observable<StockroomModel.GetAllStockroom> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/satunapas/stockroom`, params);
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-stokroom/getAll`, params);
+    }
+
+    getAllActive(params: StockroomModel.IQueryString): Observable<StockroomModel.GetAllStockroom> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-stokroom/getForLookup`, params);
+    }
+
+    getById(id_stokroom: string): Observable<StockroomModel.GetByIdStockroom> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/setup-stokroom/getById/${id_stokroom}`);
     }
 
     create(payload: StockroomModel.CreateStockroom): Observable<HttpBaseResponse> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/satunapas/stockroom/insert`, payload);
+        delete (<any>payload)['id_stokroom'];
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/setup-stokroom/create`, payload);
     }
 
     update(payload: StockroomModel.UpdateStockroom): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/satunapas/stockroom/update`, payload);
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-stokroom/update`, payload);
     }
 
-    delete(id_stockroom: string): Observable<HttpBaseResponse> {
-        return this._httpRequestService.deleteRequest(`${environment.webApiUrl}/satunapas/stockroom/${id_stockroom}`);
+    updateStatus(payload: StockroomModel.UpdateStockroom): Observable<HttpBaseResponse> {
+        const { id_stokroom, ...data } = payload;
+
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-stokroom/update/${id_stokroom}`,
+            {
+                ...data,
+                is_active: !payload.is_active
+            }
+        );
     }
 }

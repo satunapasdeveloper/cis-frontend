@@ -7,7 +7,10 @@ import { ItemModel } from "src/app/model/pages/setup-data/item.model";
 
 interface SetupItemStateModel {
     entities: ItemModel.IItem[];
+    actives?: ItemModel.IItem[];
     single?: ItemModel.IItem;
+    query?: ItemModel.IItemParams;
+    totalRows?: number;
     success?: boolean;
 }
 
@@ -15,6 +18,8 @@ interface SetupItemStateModel {
     name: 'setup_item',
     defaults: {
         entities: [],
+        actives: [],
+        totalRows: 0,
         success: true
     }
 })
@@ -22,24 +27,55 @@ interface SetupItemStateModel {
 export class SetupItemState {
 
     constructor(
-        private _itemService: ItemService,
+        private _setupItemService: ItemService,
     ) { }
+    @Selector()
+    static itemState(state: SetupItemStateModel) {
+        return state;
+    }
 
     @Selector()
     static itemEntities(state: SetupItemStateModel) {
         return state.entities;
     }
 
+    @Selector()
+    static itemTotalRows(state: SetupItemStateModel) {
+        return state.totalRows;
+    }
+
+    @Selector()
+    static itemActives(state: SetupItemStateModel) {
+        return state.actives;
+    }
+
     @Action(SetupItemActions.GetAllItem)
-    getAllItem(ctx: StateContext<SetupItemStateModel>) {
-        return this._itemService
-            .getAll()
+    getAllItem(ctx: StateContext<SetupItemStateModel>, actions: any) {
+        return this._setupItemService
+            .getAll(actions.payload)
             .pipe(
                 tap((result) => {
                     const state = ctx.getState();
                     ctx.setState({
                         ...state,
-                        entities: result.data,
+                        entities: result.data.rows,
+                        totalRows: result.data.totalRows,
+                        query: actions.payload
+                    });
+                })
+            )
+    }
+
+    @Action(SetupItemActions.GetAllActiveItem)
+    getAllActiveItem(ctx: StateContext<SetupItemStateModel>, actions: any) {
+        return this._setupItemService
+            .getAllActive(actions.payload)
+            .pipe(
+                tap((result) => {
+                    const state = ctx.getState();
+                    ctx.setState({
+                        ...state,
+                        actives: result.data.rows,
                     });
                 })
             )
@@ -47,7 +83,7 @@ export class SetupItemState {
 
     @Action(SetupItemActions.GetByIdItem)
     getByIdItem(ctx: StateContext<SetupItemStateModel>, actions: any) {
-        return this._itemService
+        return this._setupItemService
             .getById(actions.payload)
             .pipe(
                 tap((result) => {
@@ -62,7 +98,7 @@ export class SetupItemState {
 
     @Action(SetupItemActions.CreateItem)
     createItem(ctx: StateContext<SetupItemStateModel>, actions: any) {
-        return this._itemService
+        return this._setupItemService
             .create(actions.payload)
             .pipe(
                 tap((result) => {
@@ -82,7 +118,8 @@ export class SetupItemState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupItemActions.GetAllItem());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupItemActions.GetAllItem(state.query!));
                     } else {
                         return of([]);
                     }
@@ -92,7 +129,7 @@ export class SetupItemState {
 
     @Action(SetupItemActions.UpdateItem)
     updateItem(ctx: StateContext<SetupItemStateModel>, actions: any) {
-        return this._itemService
+        return this._setupItemService
             .update(actions.payload)
             .pipe(
                 tap((result) => {
@@ -112,7 +149,9 @@ export class SetupItemState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupItemActions.GetAllItem());
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupItemActions.GetAllItem(state.query!));
+
                     } else {
                         return of([]);
                     }
@@ -122,7 +161,7 @@ export class SetupItemState {
 
     @Action(SetupItemActions.UpdateStatusItem)
     updateStatusItem(ctx: StateContext<SetupItemStateModel>, actions: any) {
-        return this._itemService
+        return this._setupItemService
             .updateStatus(actions.payload)
             .pipe(
                 tap((result) => {
@@ -142,37 +181,9 @@ export class SetupItemState {
                 }),
                 switchMap((result: any) => {
                     if (result.responseResult) {
-                        return ctx.dispatch(new SetupItemActions.GetAllItem());
-                    } else {
-                        return of([]);
-                    }
-                })
-            )
-    }
+                        const state = ctx.getState();
+                        return ctx.dispatch(new SetupItemActions.GetAllItem(state.query!));
 
-    @Action(SetupItemActions.DeleteItem)
-    deleteItem(ctx: StateContext<SetupItemStateModel>, actions: any) {
-        return this._itemService
-            .delete(actions.payload)
-            .pipe(
-                tap((result) => {
-                    const state = ctx.getState();
-                    if (result.responseResult) {
-                        ctx.setState({
-                            ...state,
-                            entities: result.data,
-                            success: true
-                        })
-                    } else {
-                        ctx.patchState({
-                            ...state,
-                            success: false
-                        })
-                    }
-                }),
-                switchMap((result: any) => {
-                    if (result.responseResult) {
-                        return ctx.dispatch(new SetupItemActions.GetAllItem());
                     } else {
                         return of([]);
                     }

@@ -13,20 +13,26 @@ import { LayoutModel } from 'src/app/model/components/layout.model';
 import { ItemService } from 'src/app/services/pelayanan-klinik/setup-data/item.service';
 import { SetupItemActions, SetupItemState } from 'src/app/store/setup-data/item';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { SetupPabrikState } from 'src/app/store/farmasi/setup-data/setup-pabrik';
-import { SetupGolonganState } from 'src/app/store/farmasi/setup-data/setup-golongan';
 import { SetupSupplierState } from 'src/app/store/farmasi/setup-data/setup-supplier';
+import { SetupGroupItemService } from 'src/app/services/inventory/setup-data/setup-group-item.service';
+import { SetupSatuanService } from 'src/app/services/inventory/setup-data/setup-satuan.service';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-setup-item',
     standalone: true,
     imports: [
-        CommonModule,
-        DashboardComponent,
-        GridComponent,
-        DynamicFormComponent,
+        FormsModule,
         ButtonModule,
-        ConfirmDialogModule
+        CommonModule,
+        GridComponent,
+        DropdownModule,
+        InputNumberModule,
+        DashboardComponent,
+        ConfirmDialogModule,
+        DynamicFormComponent,
     ],
     templateUrl: './setup-item.component.html',
     styleUrl: './setup-item.component.scss'
@@ -48,21 +54,40 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'Setup_Item',
         column: [
-            { field: 'kode_kfa', headerName: 'Kode Item', class: 'font-semibold' },
-            { field: 'nama_item', headerName: 'Nama Item', },
-            { field: 'kategori', headerName: 'Kategori', },
-            { field: 'satuan', headerName: 'Satuan', },
-            { field: 'harga_jual', headerName: 'Harga Jual', format: 'currency' },
-            { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
+            { field: 'kode_kfa', headerName: 'Kode Item', class: 'font-semibold', width: '10%' },
+            { field: 'nama_item', headerName: 'Nama Item', width: '30%' },
+            { field: 'golongan', headerName: 'Golongan', width: '12%' },
+            { field: 'satuan_jual', headerName: 'Satuan', width: '12%' },
+            { field: 'harga_beli_terakhir', headerName: 'Harga Beli Terakhir', format: 'currency', width: '20%' },
+            { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center', width: '12%' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
         toolbar: ['Delete', "Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'kode_item',
+                placeholder: 'Cari Kode Item Disini',
+                type: 'text'
+            },
+            {
+                id: 'nama_item',
+                placeholder: 'Cari Nama Item Disini',
+                type: 'text'
+            },
+            {
+                id: 'kode_kfa',
+                placeholder: 'Cari Kode KFA Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'nama_item',
-        searchPlaceholder: 'Cari Nama Item Disini'
+        searchPlaceholder: 'Cari Nama Item Disini',
+        totalRows: 0
     };
     GridSelectedData: any;
 
@@ -72,43 +97,30 @@ export class SetupItemComponent implements OnInit, OnDestroy {
 
     KfaKeywordSearch$ = new BehaviorSubject(null);
 
+    SatuanDatasource: any[] = [];
+
+    DetailSatuan: any[] = [];
+
     constructor(
         private _store: Store,
         private _itemService: ItemService,
         private _messageService: MessageService,
+        private _satuanService: SetupSatuanService,
+        private _grupItemService: SetupGroupItemService,
         private _confirmationService: ConfirmationService,
     ) {
         this.FormProps = {
             id: 'form_setup_item',
             fields: [
                 {
-                    id: 'jenis',
+                    id: 'detail_jenis',
                     label: 'Jenis Item',
                     required: true,
-                    type: 'select',
+                    type: 'multiselect',
                     dropdownProps: {
-                        options: [
-                            { name: 'Konsinyasi', value: 'KONSINYASI' },
-                            { name: 'Non Konsinyasi', value: 'NON KONSINYASI' },
-                        ],
-                        optionName: 'name',
-                        optionValue: 'value',
-                        autoDisplayFirst: false
-                    },
-                    value: '',
-                },
-                {
-                    id: 'kategori',
-                    label: 'Kategori Item',
-                    required: true,
-                    type: 'select',
-                    dropdownProps: {
-                        options: [
-                            { name: 'Obat', value: 'OBAT' },
-                            { name: 'BMHP', value: 'BMHP' },
-                        ],
-                        optionName: 'name',
-                        optionValue: 'value',
+                        options: [],
+                        optionName: 'jenis',
+                        optionValue: 'jenis',
                         autoDisplayFirst: false
                     },
                     value: '',
@@ -130,8 +142,10 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     },
                     onChange: (args) => {
                         this.FormComps.FormGroup.get('kategori')?.setValue(args ? args.kategori : null);
+                        this.FormComps.FormGroup.get('kode_item')?.setValue(args ? args.kode_kfa : "");
                         this.FormComps.FormGroup.get('kode_kfa')?.setValue(args ? args.kode_kfa : "");
-                        this.FormComps.FormGroup.get('satuan')?.setValue(args ? args.satuan : "");
+                        this.FormComps.FormGroup.get('satuan_jual')?.setValue(args ? args.satuan : "");
+                        this.FormComps.FormGroup.get('display_kfa')?.setValue(args ? args : {});
                     }
                 },
                 {
@@ -151,56 +165,49 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     readonly: true
                 },
                 {
-                    id: 'satuan',
-                    label: 'Satuan',
+                    id: 'satuan_jual',
+                    label: 'Satuan Jual',
                     required: false,
                     type: 'text',
                     value: '',
                     readonly: true
                 },
                 {
-                    id: 'harga_jual',
-                    label: 'Harga Jual',
-                    required: false,
-                    type: 'number',
-                    value: 0,
-                },
-                {
                     id: 'kandungan',
                     label: 'Kandungan',
                     required: false,
-                    type: 'number',
-                    value: 0,
+                    type: 'text',
+                    value: "",
                 },
                 {
-                    id: 'indikasi',
-                    label: 'Indikasi',
+                    id: 'kapasitas',
+                    label: 'Kapasitas',
                     required: false,
                     type: 'number',
-                    value: 0,
+                    value: "",
                 },
                 {
-                    id: 'id_manufacture',
-                    label: 'Pabrik',
+                    id: 'golongan',
+                    label: 'Golongan Item',
                     required: true,
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'nama_manufacture',
-                        optionValue: 'id_manufacture',
+                        optionName: 'golongan',
+                        optionValue: 'golongan',
                         autoDisplayFirst: false
                     },
                     value: '',
                 },
                 {
-                    id: 'id_golongan',
-                    label: 'Golongan',
+                    id: 'id_item_grup',
+                    label: 'Grup Item',
                     required: true,
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'nama_golongan',
-                        optionValue: 'id_golongan',
+                        optionName: 'nama_grup',
+                        optionValue: 'id_item_grup',
                         autoDisplayFirst: false
                     },
                     value: '',
@@ -219,22 +226,64 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     value: '',
                 },
                 {
-                    id: 'hpp_average',
-                    label: 'HPP Average',
-                    required: false,
-                    type: 'number',
-                    value: 0,
+                    id: 'catatan',
+                    label: 'Catatan',
+                    required: true,
+                    type: 'text',
+                    value: '',
                 },
                 {
-                    id: 'harga_order',
-                    label: 'Harga Order',
+                    id: 'is_obat_darurat_urgensi',
+                    label: 'Obat Darurat Urgensi',
                     required: false,
-                    type: 'number',
-                    value: 0,
+                    type: 'radio',
+                    value: false,
+                    radioButtonProps: [
+                        { name: 'is_obat_darurat_urgensi', label: 'Iya', value: true },
+                        { name: 'is_obat_darurat_urgensi', label: 'Tidak', value: false },
+                    ]
                 },
                 {
-                    id: 'uuid',
-                    label: 'UUID',
+                    id: 'is_hight_alert',
+                    label: 'High Alert',
+                    required: false,
+                    type: 'radio',
+                    value: false,
+                    radioButtonProps: [
+                        { name: 'is_hight_alert', label: 'Iya', value: true },
+                        { name: 'is_hight_alert', label: 'Tidak', value: false },
+                    ]
+                },
+                {
+                    id: 'is_lasa',
+                    label: 'LASA',
+                    required: false,
+                    type: 'radio',
+                    value: false,
+                    radioButtonProps: [
+                        { name: 'is_lasa', label: 'Iya', value: true },
+                        { name: 'is_lasa', label: 'Tidak', value: false },
+                    ]
+                },
+                {
+                    id: 'id_item',
+                    label: 'Id Item',
+                    hidden: true,
+                    required: false,
+                    type: 'text',
+                    value: "",
+                },
+                {
+                    id: 'display_kfa',
+                    label: 'Display KFA',
+                    hidden: true,
+                    required: false,
+                    type: 'text',
+                    value: "",
+                },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
                     hidden: true,
                     required: false,
                     type: 'text',
@@ -279,23 +328,33 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                 }
             });
 
-        this._store
-            .select(SetupPabrikState.pabrikEntities)
+        this._itemService
+            .getAllJenis()
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_manufacture');
-                    this.FormProps.fields[index].dropdownProps.options = result.entities;
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'detail_jenis');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
                 }
             });
 
-        this._store
-            .select(SetupGolonganState.golonganEntities)
+        this._itemService
+            .getAllGolongan()
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_golongan');
-                    this.FormProps.fields[index].dropdownProps.options = result.entities;
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'golongan');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
+                }
+            });
+
+        this._grupItemService
+            .getAllActive({ page: 1, count: 10000 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_item_grup');
+                    this.FormProps.fields[index].dropdownProps.options = result.data.rows;
                 }
             });
 
@@ -308,16 +367,25 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                     this.FormProps.fields[index].dropdownProps.options = result.entities;
                 }
             });
+
+        this._satuanService
+            .getAllActive({ page: 1, count: 1000 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    this.SatuanDatasource = result.data.rows;
+                }
+            });
     }
 
     private getAllKfa(keyword: string) {
         this._itemService
-            .getAllIcd9(keyword)
+            .getAllKfa(keyword)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
                     const index = this.FormProps.fields.findIndex(item => item.id == 'nama_item');
-                    this.FormProps.fields[index].dropdownProps.options = result.data;
+                    this.FormProps.fields[index].dropdownProps.options = result.data.rows;
                 }
             });
     }
@@ -326,11 +394,13 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         if (data.id == 'add') {
             this.PageState = 'form';
             this.ButtonNavigation = [];
+            this.DetailSatuan = [];
         };
     }
 
     handleBackToList() {
         this.FormComps.onResetForm();
+        this.DetailSatuan = [];
 
         setTimeout(() => {
             this.PageState = 'list';
@@ -352,34 +422,20 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+
         // ** Set value ke Dynamic form components
         setTimeout(() => {
             this.getAllKfa(args.nama_item);
             setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
+                let data = JSON.parse(JSON.stringify(args));
+                data.detail_jenis = data.detail_jenis.map((item: any) => item.jenis);
+                this.FormComps.FormGroup.patchValue(data);
+                this.DetailSatuan = data.detail_satuan;
             }, 500);
         }, 100);
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'delete') {
-            this._confirmationService.confirm({
-                target: (<any>event).target as EventTarget,
-                message: 'Data yang dihapus tidak bisa dikembalikan',
-                header: 'Apakah Anda Yakin?',
-                icon: 'pi pi-info-circle',
-                acceptButtonStyleClass: "p-button-danger p-button-sm",
-                rejectButtonStyleClass: "p-button-secondary p-button-sm",
-                acceptIcon: "none",
-                acceptLabel: 'Iya Saya Yakin',
-                rejectIcon: "none",
-                rejectLabel: 'Tidak, Kembali',
-                accept: () => {
-                    this.deleteItem(args.data.uuid);
-                }
-            });
-        }
-
         if (args.type == 'ubah status') {
             this._confirmationService.confirm({
                 target: (<any>event).target as EventTarget,
@@ -404,8 +460,26 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     }
 
     saveItem(data: any) {
+        delete data.is_active;
+
+        let payload = {
+            ...data,
+            is_obat_darurat_urgensi: data.is_obat_darurat_urgensi ? true : false,
+            is_hight_alert: data.is_hight_alert ? true : false,
+            is_lasa: data.is_lasa ? true : false,
+            detail_jenis: data.detail_jenis.map((item: any) => {
+                return { jenis: item }
+            }),
+            detail_satuan: this.DetailSatuan.map((item: any) => {
+                return {
+                    id_satuan: item.id_satuan,
+                    isi: item.isi
+                }
+            })
+        };
+
         this._store
-            .dispatch(new SetupItemActions.CreateItem(data))
+            .dispatch(new SetupItemActions.CreateItem(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_item.success) {
@@ -417,8 +491,24 @@ export class SetupItemComponent implements OnInit, OnDestroy {
     }
 
     updateItem(data: any) {
+        let payload = {
+            ...data,
+            is_obat_darurat_urgensi: data.is_obat_darurat_urgensi ? true : false,
+            is_hight_alert: data.is_hight_alert ? true : false,
+            is_lasa: data.is_lasa ? true : false,
+            detail_jenis: data.detail_jenis.map((item: any) => {
+                return { jenis: item }
+            }),
+            detail_satuan: this.DetailSatuan.map((item: any) => {
+                return {
+                    id_satuan: item.id_satuan,
+                    isi: item.isi
+                }
+            })
+        };
+
         this._store
-            .dispatch(new SetupItemActions.UpdateItem(data))
+            .dispatch(new SetupItemActions.UpdateItem(payload))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_item.success) {
@@ -429,9 +519,9 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusItem(uuid: string) {
+    private updateStatusItem(data: any) {
         this._store
-            .dispatch(new SetupItemActions.UpdateStatusItem(uuid))
+            .dispatch(new SetupItemActions.UpdateStatusItem(data))
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.setup_item.success) {
@@ -442,17 +532,17 @@ export class SetupItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    private deleteItem(uuid: string) {
-        this._store
-            .dispatch(new SetupItemActions.DeleteItem(uuid))
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.setup_item.success) {
-                    this._messageService.clear();
-                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Data Berhasil Dihapus' });
-                    this.handleBackToList();
-                }
-            })
+    handleAddNewSatuan() {
+        this.DetailSatuan.push({
+            id_satuan: 0,
+            nama_satuan: "",
+            isi: 0,
+        });
     }
 
+    handleDeleteSatuan(index: number) {
+        if (this.DetailSatuan.length > 1) {
+            this.DetailSatuan.splice(index, 1);
+        }
+    }
 }

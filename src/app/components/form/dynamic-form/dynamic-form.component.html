@@ -36,7 +36,7 @@
             <!-- Number -->
             <p-inputNumber *ngIf="item.type == 'number'" inputId="integeronly" class="p-inputtext-sm w-full"
                 formControlName="{{ item.id }}" [readonly]="item.readonly! || props.state == 'read'"
-                (onBlur)="item.onChange?.(FormGroup.get(item.id)?.value)">
+                (onBlur)="item.onChange?.(FormGroup.get(item.id)?.value)" mode="decimal" [maxFractionDigits]="2">
             </p-inputNumber>
 
             <!-- Datepicker -->
@@ -87,8 +87,39 @@
                 </ng-template>
             </p-dropdown>
 
+            <!-- Multiselect -->
+            <p-multiSelect *ngIf="item.type == 'multiselect'" [options]="item.dropdownProps.options"
+                [optionLabel]="item.dropdownProps.optionName"
+                [optionValue]="item.dropdownProps.optionValueAlternative ? item.dropdownProps.optionValueAlternative : item.dropdownProps.optionValue"
+                [showClear]="true" [filter]="true" styleClass="p-inputtext-sm w-full" formControlName="{{ item.id }}"
+                appendTo="body" [disabled]="props.state == 'read'" (onChange)="handleChangeDropdown($event, item)"
+                (onFilter)="handleFilterDropdown($event, item)">
+                <ng-template *ngIf="item.dropdownProps.customField" let-data pTemplate="item">
+                    <div class="flex flex-col gap-2">
+                        <p class="text-blue-500 text-sm font-semibold">
+                            {{ data[item.dropdownProps.customField.title] }}
+                        </p>
+                        <p class="text-gray-800 text-xs">
+                            {{ data[item.dropdownProps.customField.subtitle] }}
+                        </p>
+                        <p *ngIf="item.dropdownProps.customField.description" class="text-gray-600 text-xs">
+                            {{ data[item.dropdownProps.customField.description] ?
+                            data[item.dropdownProps.customField.description] : '-' }}
+                        </p>
+                    </div>
+                </ng-template>
+                <ng-template *ngIf="item.dropdownProps.customField?.footer" let-data pTemplate="footer">
+                    <div class="grid grid-cols-1 w-full p-2 bg-gray-100">
+                        <p-button styleClass="p-button-info p-button-sm w-full"
+                            [label]="item.dropdownProps.customField.footer.label" icon="pi pi-plus"
+                            (onClick)="item.dropdownProps.customField.footer.method()">
+                        </p-button>
+                    </div>
+                </ng-template>
+            </p-multiSelect>
+
             <!-- Radio Button -->
-            <div *ngIf="item.type == 'radio'" class="flex flex-wrap gap-3">
+            <div *ngIf="item.type == 'radio'" class="flex flex-wrap gap-3 mt-2">
                 <div *ngFor="let radio of item.radioButtonProps; let i = index" class="flex align-items-center">
                     <p-radioButton [value]="radio.value" [name]="radio.id" formControlName="{{ item.id }}"
                         styleClass="p-inputtext-sm">

@@ -1,0 +1,7 @@
+:host ::ng-deep {
+  .p-dropdown-panel {
+    max-width: 40rem !important;
+    position: relative !important;
+    left: calc(100vw - 73rem) !important;
+  }
+}
