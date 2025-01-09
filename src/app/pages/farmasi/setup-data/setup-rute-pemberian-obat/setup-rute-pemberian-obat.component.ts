@@ -10,11 +10,12 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { JenisItemModel } from 'src/app/model/pages/farmasi/setup-data/setup-jenis-item.model';
-import { SetupJenisItemService } from 'src/app/services/farmasi/setup-data/setup-jenis-item.service';
+import { GroupItemModel } from 'src/app/model/pages/inventory/setup-data/setup-grup-item.model';
+import { SetupRutePemberianObatService } from 'src/app/services/farmasi/setup-data/setup-rute-pemberian-obat.service';
+import { SetupGroupItemService } from 'src/app/services/inventory/setup-data/setup-group-item.service';
 
 @Component({
-    selector: 'app-setup-jenis-item',
+    selector: 'app-setup-rute-pemberian-obat',
     standalone: true,
     imports: [
         CommonModule,
@@ -24,10 +25,10 @@ import { SetupJenisItemService } from 'src/app/services/farmasi/setup-data/setup
         ButtonModule,
         ConfirmDialogModule
     ],
-    templateUrl: './setup-jenis-item.component.html',
-    styleUrl: './setup-jenis-item.component.scss'
+    templateUrl: './setup-rute-pemberian-obat.component.html',
+    styleUrl: './setup-rute-pemberian-obat.component.scss'
 })
-export class SetupJenisItemComponent implements OnInit, OnDestroy {
+export class SetupRutePemberianObatComponent implements OnInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -42,9 +43,10 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
     ];
 
     GridProps: GridModel.IGrid = {
-        id: 'SetupJenisItem',
+        id: 'SetupGroupItem',
         column: [
-            { field: 'cara_pulang', headerName: 'Jenis Item', class: 'text-blue-500 font-semibold' },
+            { field: 'kode_rute_pemberian_obat', headerName: 'Kode Rute Pemberian Obat', class: 'text-blue-500 font-semibold' },
+            { field: 'rute_pemberian_obat', headerName: 'Rute Pemberian Obat' },
             { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -55,14 +57,19 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
         isCustomSearch: true,
         customSearchProps: [
             {
-                id: 'cara_pulang',
-                placeholder: 'Cari Jenis Item Disini',
+                id: 'kode_rute_pemberian_obat',
+                placeholder: 'Cari Kode Rute Disini',
+                type: 'text'
+            },
+            {
+                id: 'rute_pemberian_obat',
+                placeholder: 'Cari Nama Rute Disini',
                 type: 'text'
             },
         ],
         showSort: false,
         searchKeyword: 'no_kamar',
-        searchPlaceholder: 'Cari No. Jenis Item Disini'
+        searchPlaceholder: 'Cari No. Cara Pulang Disini'
     };
     GridSelectedData: any;
     GridCustomSearchParams: any;
@@ -74,23 +81,30 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
 
     constructor(
         private _messageService: MessageService,
-        private _jenisItemService: SetupJenisItemService,
         private _confirmationService: ConfirmationService,
+        private _setupRutePemberianObatService: SetupRutePemberianObatService,
     ) {
         this.FormProps = {
-            id: 'form_setup_cara_pulang',
+            id: 'form_setup_item_grup',
             fields: [
                 {
-                    id: 'id_item_jenis',
-                    label: 'ID Jenis',
+                    id: 'id_rute_pemberian_obat',
+                    label: 'ID Asal Rujukan',
                     required: true,
                     type: 'text',
                     value: '',
                     hidden: true
                 },
                 {
-                    id: 'jenis',
-                    label: 'Jenis Item',
+                    id: 'kode_rute_pemberian_obat',
+                    label: 'Kode Rute Pemberian Obat',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                },
+                {
+                    id: 'rute_pemberian_obat',
+                    label: 'Nama Rute Pemberian Obat',
                     required: true,
                     type: 'text',
                     value: '',
@@ -105,7 +119,7 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-1 grid-cols-1',
+            class: 'grid-rows-2 grid-cols-1',
             state: 'write',
             defaultValue: null,
         };
@@ -120,8 +134,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
         this.Destroy$.complete();
     }
 
-    private getAll(query: JenisItemModel.IJenisItemQueryParams) {
-        this._jenisItemService
+    private getAll(query: GroupItemModel.IGroupItemQueryParams) {
+        this._setupRutePemberianObatService
             .getAll(query)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -185,7 +199,7 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusJenisItem(args.data);
+                    this.updateStatusGroupItem(args.data);
                 }
             });
         }
@@ -205,8 +219,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
         this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
     }
 
-    saveJenisItem(data: any) {
-        this._jenisItemService
+    saveGroupItem(data: any) {
+        this._setupRutePemberianObatService
             .create(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -218,8 +232,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    updateJenisItem(data: any) {
-        this._jenisItemService
+    updateGroupItem(data: any) {
+        this._setupRutePemberianObatService
             .update(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -231,8 +245,8 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusJenisItem(data: any) {
-        this._jenisItemService
+    private updateStatusGroupItem(data: any) {
+        this._setupRutePemberianObatService
             .updateStatus(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -243,5 +257,6 @@ export class SetupJenisItemComponent implements OnInit, OnDestroy {
                 }
             })
     }
+
 
 }

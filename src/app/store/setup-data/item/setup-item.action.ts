@@ -3,6 +3,12 @@ import { ItemModel } from "src/app/model/pages/setup-data/item.model";
 export namespace SetupItemActions {
     export class GetAllItem {
         static readonly type = '[ITEM] Get All Item';
+        constructor(public payload: ItemModel.IItemParams) { }
+    }
+
+    export class GetAllActiveItem {
+        static readonly type = '[ITEM] Get All Active Item';
+        constructor(public payload: ItemModel.IItemParams) { }
     }
 
     export class GetByIdItem {
@@ -22,11 +28,6 @@ export namespace SetupItemActions {
 
     export class UpdateStatusItem {
         static readonly type = '[ITEM] Update Status Item';
-        constructor(public payload: string) { }
-    }
-
-    export class DeleteItem {
-        static readonly type = '[ITEM] Delete Item';
-        constructor(public payload: string) { }
+        constructor(public payload: ItemModel.UpdateItem) { }
     }
 }

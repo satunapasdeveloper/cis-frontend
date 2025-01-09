@@ -1,4 +1,4 @@
-import { PabrikModel } from "src/app/model/pages/farmasi/setup-data/setup-pabrik.model";
+import { PabrikModel } from "src/app/model/pages/inventory/setup-data/setup-pabrik.model";
 
 export namespace SetupPabrikActions {
     export class GetAllPabrik {

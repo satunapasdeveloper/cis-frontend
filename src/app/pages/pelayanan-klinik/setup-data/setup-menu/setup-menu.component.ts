@@ -17,11 +17,11 @@ import { SetupMenuService } from 'src/app/services/pelayanan-klinik/setup-data/s
     standalone: true,
     imports: [
         CommonModule,
-        DashboardComponent,
-        GridComponent,
-        DynamicFormComponent,
         ButtonModule,
-        ConfirmDialogModule
+        GridComponent,
+        DashboardComponent,
+        ConfirmDialogModule,
+        DynamicFormComponent,
     ],
     templateUrl: './setup-menu.component.html',
     styleUrl: './setup-menu.component.scss'
@@ -43,12 +43,12 @@ export class SetupMenuComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupMenu',
         column: [
-            { field: 'id_menu', headerName: '#' },
+            // { field: 'id_menu', headerName: '#' },
             { field: 'urut', headerName: 'No. Urut' },
             { field: 'caption', headerName: 'Menu', class: 'text-blue-500 font-semibold' },
+            { field: 'nama_parent', headerName: 'Parent' },
             { field: 'icon', headerName: 'Icon' },
             { field: 'url', headerName: 'URL' },
-            { field: 'id_parent', headerName: 'id_parent' },
             { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],

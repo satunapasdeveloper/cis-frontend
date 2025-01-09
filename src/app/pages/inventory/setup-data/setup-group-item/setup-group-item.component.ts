@@ -10,8 +10,8 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { GroupItemModel } from 'src/app/model/pages/farmasi/setup-data/setup-grup-item.model';
-import { SetupGroupItemService } from 'src/app/services/farmasi/setup-data/setup-group-item.service';
+import { GroupItemModel } from 'src/app/model/pages/inventory/setup-data/setup-grup-item.model';
+import { SetupGroupItemService } from 'src/app/services/inventory/setup-data/setup-group-item.service';
 
 @Component({
     selector: 'app-setup-group-item',

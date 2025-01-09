@@ -12,7 +12,8 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { SetupSupplierService } from 'src/app/services/farmasi/setup-data/setup-supplier.service';
+import { SupplierModel } from 'src/app/model/pages/inventory/setup-data/setup-supplier.model';
+import { SetupSupplierService } from 'src/app/services/inventory/setup-data/setup-supplier.service';
 import { LokasiService } from 'src/app/services/pelayanan-klinik/setup-data/lokasi.service';
 import { SetupSupplierState, SetupSupplierActions } from 'src/app/store/farmasi/setup-data/setup-supplier';
 
@@ -50,24 +51,39 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
         column: [
             { field: 'kode_supplier', headerName: 'Kode Supplier', class: 'font-semibold' },
             { field: 'nama_supplier', headerName: 'Nama Supplier', },
-            { field: 'npwp', headerName: 'NPWP', },
             { field: 'alamat', headerName: 'Alamat', },
-            { field: 'provinsi', headerName: 'Provinsi', },
-            { field: 'kota', headerName: 'Kota', },
-            { field: 'kecamatan', headerName: 'Kecamatan', },
+            { field: 'nama_provinsi', headerName: 'Provinsi', },
+            { field: 'nama_kota', headerName: 'Kota', },
+            { field: 'nama_kecamatan', headerName: 'Kecamatan', },
+            { field: 'nama_desa', headerName: 'Kelurahan', },
             { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'kode_supplier',
+                placeholder: 'Cari Kode Supplier Disini',
+                type: 'text'
+            },
+            {
+                id: 'nama_supplier',
+                placeholder: 'Cari Nama Supplier Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'nama_supplier',
         searchPlaceholder: 'Cari Nama Supplier Disini',
         totalRows: 0,
     };
     GridSelectedData: any;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     First: number = 0;
 
@@ -131,14 +147,14 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_provinsi',
+                        optionValue: 'id_provinsi'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKota(args.id);
-                            this.FormComps.FormGroup.get('provinsi')?.setValue(args.name);
+                            this.getKota(args.id_provinsi);
+                            this.FormComps.FormGroup.get('nama_provinsi')?.setValue(args.nama_provinsi);
                         } else {
                             this.FormComps.FormGroup.get('id_kabupaten')?.setValue(null);
                             this.FormComps.FormGroup.get('id_kecamatan')?.setValue(null);
@@ -148,7 +164,7 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     },
                 },
                 {
-                    id: 'provinsi',
+                    id: 'nama_provinsi',
                     label: 'Provinsi',
                     required: false,
                     type: 'text',
@@ -163,14 +179,14 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_kota',
+                        optionValue: 'id_kota'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKecamatan(args.id);
-                            this.FormComps.FormGroup.get('kota')?.setValue(args.name);
+                            this.getKecamatan(args.id_kota);
+                            this.FormComps.FormGroup.get('nama_kota')?.setValue(args.nama_kota);
                         } else {
                             this.FormComps.FormGroup.get('id_kecamatan')?.setValue(null);
                             this.FormProps.fields[8].dropdownProps.options = [];
@@ -178,7 +194,7 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     },
                 },
                 {
-                    id: 'kota',
+                    id: 'nama_kota',
                     label: 'Kota',
                     required: false,
                     type: 'text',
@@ -193,19 +209,19 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_kecamatan',
+                        optionValue: 'id_kecamatan'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKelurahan(args.id);
-                            this.FormComps.FormGroup.get('kecamatan')?.setValue(args.name);
+                            this.getKelurahan(args.id_kecamatan);
+                            this.FormComps.FormGroup.get('nama_kecamatan')?.setValue(args.nama_kecamatan);
                         }
                     },
                 },
                 {
-                    id: 'kecamatan',
+                    id: 'nama_kecamatan',
                     label: 'Kecamatan',
                     required: false,
                     type: 'text',
@@ -214,7 +230,41 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     hidden: true,
                 },
                 {
-                    id: 'contact_person',
+                    id: 'id_desa',
+                    label: 'Kelurahan',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'nama_desa',
+                        optionValue: 'id_desa'
+                    },
+                    value: '',
+                    onChange: (args: any) => {
+                        if (args) {
+                            console.log(args);
+                        }
+                    },
+                },
+                {
+                    id: 'nama_desa',
+                    label: 'Kelurahan',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false,
+                    hidden: true,
+                },
+                {
+                    id: 'kode_pos',
+                    label: 'Kode Pos',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false,
+                },
+                {
+                    id: 'kontak_person',
                     label: 'Nama Kontak Person',
                     required: false,
                     type: 'text',
@@ -222,14 +272,22 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     readonly: false,
                 },
                 {
-                    id: 'no_wa',
-                    label: 'No. Whatsapp',
+                    id: 'no_hp',
+                    label: 'No. Handphone',
                     required: false,
                     type: 'text',
                     value: '',
                     readonly: false,
                     mask: '0000-0000-00000',
                     dropSpecialCharacters: true,
+                },
+                {
+                    id: 'email',
+                    label: 'Email',
+                    required: false,
+                    type: 'text',
+                    value: '',
+                    readonly: false,
                 },
                 {
                     id: 'id_supplier',
@@ -239,9 +297,17 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     type: 'text',
                     value: "",
                 },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    hidden: true,
+                    required: false,
+                    type: 'text',
+                    value: "",
+                },
             ],
             style: 'not_inline',
-            class: 'grid-rows-5 grid-cols-2',
+            class: 'grid-rows-6 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -263,46 +329,54 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get data from setup supplier =>", result);
                     this.GridProps.dataSource = result.entities;
                     this.GridProps.totalRows = result.totalRows;
                 }
             });
     }
 
-    private getProvinsi() {
+    private getProvinsi(id_provinsi?: string, setValue?: boolean, args?: any) {
         this._lokasiService
             .getProvinsi()
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.FormProps.fields[4].dropdownProps.options = result.data;
-                }
-            })
-    }
-
-    private getKota(id_provinsi: string, setValue?: boolean, id_kota?: string) {
-        this._lokasiService
-            .getKota(id_provinsi)
-            .subscribe((result) => {
-                if (result.responseResult) {
-                    this.FormProps.fields[2].dropdownProps.options = result.data;
+                    const index = this.FormProps.fields.findIndex((x) => x.id == 'id_provinsi');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
 
                     if (setValue) {
-                        this.FormComps.FormGroup.get('id_kabupaten')?.setValue(id_kota);
+                        this.getKota(id_provinsi!, true, args.id_kota, args);
                     }
                 }
             })
     }
 
-    private getKecamatan(id_kota: string, setValue?: boolean, id_kecamatan?: string) {
+    private getKota(id_provinsi: string, setValue?: boolean, id_kota?: string, args?: any) {
+        this._lokasiService
+            .getKota(id_provinsi)
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    const index = this.FormProps.fields.findIndex((x) => x.id == 'id_kota');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
+
+                    if (setValue) {
+                        this.FormComps.FormGroup.get('id_kota')?.setValue(id_kota);
+                        this.getKecamatan(id_kota!, true, args.id_kecamatan, args);
+                    }
+                }
+            })
+    }
+
+    private getKecamatan(id_kota: string, setValue?: boolean, id_kecamatan?: string, args?: any) {
         this._lokasiService
             .getKecamatan(id_kota)
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.FormProps.fields[3].dropdownProps.options = result.data;
+                    const index = this.FormProps.fields.findIndex((x) => x.id == 'id_kecamatan');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
 
                     if (setValue) {
                         this.FormComps.FormGroup.get('id_kecamatan')?.setValue(id_kecamatan);
+                        this.getKelurahan(id_kecamatan!, true, args.id_desa);
                     }
                 }
             })
@@ -313,10 +387,11 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
             .getKelurahan(id_kecamatan)
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.FormProps.fields[4].dropdownProps.options = result.data;
+                    const index = this.FormProps.fields.findIndex((x) => x.id == 'id_desa');
+                    this.FormProps.fields[index].dropdownProps.options = result.data;
 
                     if (setValue) {
-                        this.FormComps.FormGroup.get('id_kelurahan')?.setValue(id_kelurahan);
+                        this.FormComps.FormGroup.get('id_desa')?.setValue(id_kelurahan);
                     }
                 }
             })
@@ -352,12 +427,15 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
+            this.getProvinsi(args.id_provinsi, true, args);
+            console.log("data =>", args);
             setTimeout(() => {
                 this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            }, 1000);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {
@@ -402,10 +480,14 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
         }
     }
 
-    onPageChanged(args: any): void {
-        this._store
-            .dispatch(new SetupSupplierActions.GetAllSupplier({ count: args.rows, page: args.page + 1 }))
-            .pipe(takeUntil(this.Destroy$));
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupSupplierActions.GetAllSupplier({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupSupplierActions.GetAllSupplier({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveSupplier(data: any) {
@@ -434,17 +516,16 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusSupplier(uuid: string) {
-        // this._store
-        //     .dispatch(new SetupSupplierActions.UpdateStatusSupplier(uuid))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result.setup_supplier.success) {
-        //             this._messageService.clear();
-        //             this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
-        //             this.handleBackToList();
-        //         }
-        //     })
+    private updateStatusSupplier(data: any) {
+        this._store
+            .dispatch(new SetupSupplierActions.UpdateStatusSupplier(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_supplier.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
+                }
+            })
     }
 
     private deleteSupplier(uuid: string) {
@@ -459,6 +540,4 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                 }
             })
     }
-
-
 }

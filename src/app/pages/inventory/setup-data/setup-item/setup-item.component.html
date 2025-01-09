@@ -1,0 +1,92 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-10/12 p-3 bg-white rounded-lg shadow-sm">
+        <div class="grid w-full">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+
+        <!-- Penjamin -->
+        <div class="grid w-full mb-2 p-3 bg-white rounded-lg shadow-sm">
+            <div class="flex flex-col mb-3">
+                <p class="text-lg text-gray-700 font-medium">
+                    Satuan
+                </p>
+                <p class="text-xs text-gray-600">
+                    Mohon isi detail satuan item
+                </p>
+            </div>
+
+            <div class="flex flex-col w-full">
+                <!-- Header -->
+                <div
+                    class="flex w-full items-center mb-2 gap-2 pb-2 border-b border-t-0 border-x-0 border-solid border-gray-200">
+                    <div class="w-5/12">
+                        <p class="text-sm font-medium">
+                            Satuan
+                        </p>
+                    </div>
+                    <div class="w-4/12">
+                        <p class="text-sm font-medium">
+                            Isi
+                        </p>
+                    </div>
+                    <div class="w-2/12 flex items-center justify-center">
+                        <p class="text-sm font-medium">
+                            Aksi
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Body -->
+                <div *ngFor="let item of DetailSatuan; let i = index; let last = last"
+                    class="flex w-full items-center gap-2 mb-2 {{ last ? '' : 'pb-2 mb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300' }}">
+                    <div class="w-5/12">
+                        <p-dropdown styleClass="w-full p-inputtext-sm" [options]="SatuanDatasource"
+                            optionLabel="nama_satuan" optionValue="id_satuan" autoDisplayFirst="false" appendTo="body"
+                            [(ngModel)]="item.id_satuan">
+                        </p-dropdown>
+                    </div>
+                    <div class="w-4/12">
+                        <p-inputNumber class="p-inputtext-sm w-full" [(ngModel)]="item.isi"></p-inputNumber>
+                    </div>
+                    <div class="w-2/12 flex gap-1 justify-center">
+                        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" [severity]="'danger'"
+                            (onClick)="handleDeleteSatuan(i)" pTooltip="Batal" showDelay="500" hideDelay="500"
+                            tooltipPosition="bottom" />
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="flex items-center justify-center gap-1 py-2 mt-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                    (click)="handleAddNewSatuan()">
+                    <i class="pi pi-plus" style="font-size: 13px"></i>
+                    <p class="text-sm text-gray-800 font-medium text-center">
+                        Tambah Satuan Baru
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex w-full justify-end mt-4 gap-4">
+            <p-button severity="secondary" label="Kembali" styleClass="p-button-sm" (onClick)="handleBackToList()">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'insert'" severity="info" label="Simpan" styleClass="p-button-sm"
+                (onClick)="saveItem(FormComps.FormGroup.value)">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
+                (onClick)="updateItem(FormComps.FormGroup.value)">
+            </p-button>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>

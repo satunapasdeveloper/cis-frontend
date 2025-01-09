@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
-import { GroupItemModel } from 'src/app/model/pages/farmasi/setup-data/setup-grup-item.model';
+import { GroupItemModel } from 'src/app/model/pages/inventory/setup-data/setup-grup-item.model';
 import { environment } from 'src/environments/environment';
 import { HttpRequestService } from '../../http/http-request.service';
 

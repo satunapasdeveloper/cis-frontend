@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
-import { JenisItemModel } from 'src/app/model/pages/farmasi/setup-data/setup-jenis-item.model';
+import { JenisItemModel } from 'src/app/model/pages/inventory/setup-data/setup-jenis-item.model';
 import { environment } from 'src/environments/environment';
 import { HttpRequestService } from '../../http/http-request.service';
 

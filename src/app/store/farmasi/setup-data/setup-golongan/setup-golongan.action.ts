@@ -1,4 +1,4 @@
-import { GolonganModel } from "src/app/model/pages/farmasi/setup-data/setup-golongan.model";
+import { GolonganModel } from "src/app/model/pages/inventory/setup-data/setup-golongan.model";
 
 export namespace SetupGolonganActions {
     export class GetAllGolongan {

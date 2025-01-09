@@ -1,4 +1,4 @@
-import { SupplierModel } from "src/app/model/pages/farmasi/setup-data/setup-supplier.model";
+import { SupplierModel } from "src/app/model/pages/inventory/setup-data/setup-supplier.model";
 
 export namespace SetupSupplierActions {
     export class GetAllSupplier {
@@ -13,6 +13,11 @@ export namespace SetupSupplierActions {
 
     export class UpdateSupplier {
         static readonly type = '[SETUP SUPPLIER] Update Supplier';
+        constructor(public payload: SupplierModel.UpdateSupplier) { }
+    }
+
+    export class UpdateStatusSupplier {
+        static readonly type = '[SETUP SUPPLIER] Update Status Supplier';
         constructor(public payload: SupplierModel.UpdateSupplier) { }
     }
 
