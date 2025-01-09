@@ -16,6 +16,11 @@ export namespace SetupSupplierActions {
         constructor(public payload: SupplierModel.UpdateSupplier) { }
     }
 
+    export class UpdateStatusSupplier {
+        static readonly type = '[SETUP SUPPLIER] Update Status Supplier';
+        constructor(public payload: SupplierModel.UpdateSupplier) { }
+    }
+
     export class DeleteSupplier {
         static readonly type = '[SETUP SUPPLIER] Delete Supplier';
         constructor(public payload: string) { }

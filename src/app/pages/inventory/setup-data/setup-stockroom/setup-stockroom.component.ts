@@ -47,25 +47,36 @@ export class SetupStockroomComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'Setup_Stockroom',
         column: [
-            { field: 'kode_stockroom', headerName: 'Kode Stockroom', class: 'font-semibold' },
-            { field: 'nama_stockroom', headerName: 'Nama Stockroom', },
+            { field: 'kode_stokroom', headerName: 'Kode Stockroom', class: 'font-semibold' },
+            { field: 'nama_stokroom', headerName: 'Nama Stockroom', },
             { field: 'is_active', headerName: 'Status Aktif', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', 'Detail'],
+        toolbar: ['Ubah Status', 'Detail'],
         showPaging: true,
         showSearch: true,
-        showSort: true,
+        isCustomSearch: true,
+        customSearchProps: [
+            {
+                id: 'kode_stokroom',
+                placeholder: 'Cari Kode Stokroom Disini',
+                type: 'text'
+            },
+            {
+                id: 'nama_stokroom',
+                placeholder: 'Cari Nama Stokroom Disini',
+                type: 'text'
+            },
+        ],
+        showSort: false,
         searchKeyword: 'nama_stockroom',
         searchPlaceholder: 'Cari Nama Stockroom Disini',
         totalRows: 0,
     };
     GridSelectedData: any;
-
-    First: number = 0;
-
-    Rows: number = 10;
+    GridCustomSearchParams: any;
+    GridPaginationData: any = { page: 1, count: 5 };
 
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
@@ -83,28 +94,36 @@ export class SetupStockroomComponent implements OnInit, OnDestroy {
             id: 'form_setup_stockroom',
             fields: [
                 {
-                    id: 'kode_stockroom',
-                    label: 'Kode Stockroom',
+                    id: 'kode_stokroom',
+                    label: 'Kode Stokroom',
                     required: true,
                     type: 'text',
                     value: '',
                     readonly: false,
                 },
                 {
-                    id: 'nama_stockroom',
-                    label: 'Nama Stockroom',
+                    id: 'nama_stokroom',
+                    label: 'Nama Stokroom',
                     required: true,
                     type: 'text',
                     value: '',
                     readonly: false,
                 },
                 {
-                    id: 'id_stockroom',
+                    id: 'id_stokroom',
                     label: 'Id Stockroom',
                     hidden: true,
                     required: false,
                     type: 'text',
                     value: "",
+                },
+                {
+                    id: 'is_active',
+                    label: 'Is Active',
+                    required: true,
+                    type: 'text',
+                    value: '',
+                    hidden: true,
                 },
             ],
             style: 'not_inline',
@@ -129,7 +148,6 @@ export class SetupStockroomComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("get data from setup stockroom =>", result);
                     this.GridProps.dataSource = result.entities;
                     this.GridProps.totalRows = result.totalRows;
                 }
@@ -166,12 +184,11 @@ export class SetupStockroomComponent implements OnInit, OnDestroy {
     onRowDoubleClicked(args: any): void {
         this.PageState = 'form';
         this.FormState = 'update';
+        this.ButtonNavigation = [];
         // ** Set value ke Dynamic form components
         setTimeout(() => {
-            setTimeout(() => {
-                this.FormComps.FormGroup.patchValue(args);
-            }, 500);
-        }, 100);
+            this.FormComps.FormGroup.patchValue(args);
+        }, 500);
     }
 
     onToolbarClicked(args: any): void {
@@ -206,7 +223,7 @@ export class SetupStockroomComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusStockroom(args.data.id_stockroom);
+                    this.updateStatusStockroom(args.data);
                 }
             });
         }
@@ -216,10 +233,14 @@ export class SetupStockroomComponent implements OnInit, OnDestroy {
         }
     }
 
-    onPageChanged(args: any): void {
-        this._store
-            .dispatch(new SetupStockroomActions.GetAllStockroom({ count: args.rows, page: args.page + 1 }))
-            .pipe(takeUntil(this.Destroy$));
+    onPageChanged(args: any) {
+        this.GridPaginationData = { page: args.page + 1, count: args.rows };
+        this._store.dispatch(new SetupStockroomActions.GetAllStockroom({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
+    }
+
+    onSearchGrid(args: any) {
+        this.GridCustomSearchParams = args;
+        this._store.dispatch(new SetupStockroomActions.GetAllStockroom({ ...this.GridPaginationData, ...this.GridCustomSearchParams }))
     }
 
     saveStockroom(data: any) {
@@ -248,17 +269,16 @@ export class SetupStockroomComponent implements OnInit, OnDestroy {
             })
     }
 
-    private updateStatusStockroom(uuid: string) {
-        // this._store
-        //     .dispatch(new SetupStockroomActions.UpdateStatusStockroom(uuid))
-        //     .pipe(takeUntil(this.Destroy$))
-        //     .subscribe((result) => {
-        //         if (result.setup_stockroom.success) {
-        //             this._messageService.clear();
-        //             this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
-        //             this.handleBackToList();
-        //         }
-        //     })
+    private updateStatusStockroom(data: any) {
+        this._store
+            .dispatch(new SetupStockroomActions.UpdateStatusStockroom(data))
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.setup_stockroom.success) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil!', detail: 'Status Berhasil Diperbarui' });
+                }
+            })
     }
 
     private deleteStockroom(uuid: string) {

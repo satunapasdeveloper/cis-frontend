@@ -32,7 +32,8 @@ export class SetupSupplierService {
     }
 
     update(payload: SupplierModel.UpdateSupplier): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-supplier/update`, payload);
+        const { id_supplier, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-supplier/update/${id_supplier}`, data);
     }
 
     updateStatus(payload: SupplierModel.UpdateSupplier): Observable<HttpBaseResponse> {

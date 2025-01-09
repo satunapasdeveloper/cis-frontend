@@ -16,6 +16,11 @@ export namespace SetupStockroomActions {
         constructor(public payload: StockroomModel.UpdateStockroom) { }
     }
 
+    export class UpdateStatusStockroom {
+        static readonly type = '[SETUP STOCKROOM] Update Status Stockroom';
+        constructor(public payload: StockroomModel.UpdateStockroom) { }
+    }
+
     export class DeleteStockroom {
         static readonly type = '[SETUP STOCKROOM] Delete Stockroom';
         constructor(public payload: string) { }

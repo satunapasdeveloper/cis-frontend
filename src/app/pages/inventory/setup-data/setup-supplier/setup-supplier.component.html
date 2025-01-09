@@ -3,7 +3,7 @@
     <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
             (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
-            (pageChanged)="onPageChanged($event)">
+            (pageChanged)="onPageChanged($event)" (customSearchClicked)="onSearchGrid($event)">
         </app-grid>
     </div>
 

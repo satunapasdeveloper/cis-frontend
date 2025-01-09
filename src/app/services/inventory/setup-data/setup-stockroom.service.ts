@@ -32,12 +32,12 @@ export class SetupStockroomService {
     }
 
     update(payload: StockroomModel.UpdateStockroom): Observable<HttpBaseResponse> {
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-stokroom/update`, payload);
+        const { id_stokroom, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-stokroom/update/${id_stokroom}`, data);
     }
 
     updateStatus(payload: StockroomModel.UpdateStockroom): Observable<HttpBaseResponse> {
         const { id_stokroom, ...data } = payload;
-
         return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-stokroom/update/${id_stokroom}`,
             {
                 ...data,
