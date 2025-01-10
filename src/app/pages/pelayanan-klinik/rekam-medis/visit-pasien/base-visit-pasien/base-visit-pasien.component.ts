@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { VpObjectiveComponent } from '../vp-objective/vp-objective.component';
 import { VpSubjectiveComponent } from '../vp-subjective/vp-subjective.component';
 import { VpAssesmentComponent } from '../vp-assesment/vp-assesment.component';
+import { VpPlanComponent } from '../vp-plan/vp-plan.component';
 
 @Component({
     selector: 'app-base-visit-pasien',
@@ -18,6 +19,7 @@ import { VpAssesmentComponent } from '../vp-assesment/vp-assesment.component';
         CommonModule,
         ButtonModule,
         StepperModule,
+        VpPlanComponent,
         DashboardComponent,
         VpAssesmentComponent,
         VpObjectiveComponent,
@@ -44,6 +46,8 @@ export class BaseVisitPasienComponent implements OnInit, OnDestroy {
     @ViewChild('VpObjectiveComps') VpObjectiveComps!: VpObjectiveComponent;
 
     @ViewChild('VpAssesmentComps') VpAssesmentComps!: VpAssesmentComponent;
+
+    @ViewChild('VpPlanComps') VpPlanComps!: VpPlanComponent;
 
     constructor(
         private _router: Router,
