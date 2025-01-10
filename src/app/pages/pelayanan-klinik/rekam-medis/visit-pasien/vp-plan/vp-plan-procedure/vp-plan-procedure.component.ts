@@ -116,6 +116,7 @@ export class VpPlanProcedureComponent implements OnInit, OnDestroy {
     handleDeleteProcedure(index: number) {
         if (this.ProcedureForSave.length > 1) {
             this.ProcedureForSave.splice(index, 1);
+            this.handleUpdateProcedure();
         }
     }
 
@@ -124,11 +125,15 @@ export class VpPlanProcedureComponent implements OnInit, OnDestroy {
     }
 
     handleChangeProcedureDropdown(args: any, index: number) {
+        console.log("icd 9 =>", args.value);
+
         this.ProcedureForSave[index].kode_icd_9 = args.value.kode_icd_9;
         this.ProcedureForSave[index].nama_icd_9 = args.value.nama_icd_9;
-        this.ProcedureForSave[index].sab_icd_9 = args.value.sab_icd_9;
+        this.ProcedureForSave[index].sab_icd_9 = args.value.sab;
         this.ProcedureForSave[index].is_new = false;
         this.ProcedureForSave[index].is_edit = false;
+
+        this.handleUpdateProcedure();
     }
 
     private handleUpdateProcedure() {
