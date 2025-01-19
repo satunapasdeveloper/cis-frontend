@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -77,6 +77,10 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
 
     DetailRacikanResep: any[] = [];
 
+    ShowDialogBatal = false;
+    SelectedResep: any;
+    ReasonCanceled = "";
+
     constructor(
         private _formBuilder: FormBuilder,
         private _itemService: ItemService,
@@ -85,6 +89,7 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
         private _messageService: MessageService,
         private _activatedRoute: ActivatedRoute,
         private _setupSatuanService: SetupSatuanService,
+        private _confirmationService: ConfirmationService,
         private _setupStockroomService: SetupStockroomService,
         private _setupRutePemberianObatService: SetupRutePemberianObatService,
     ) {
@@ -391,6 +396,8 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
                 if (result.responseResult) {
                     this._messageService.clear();
                     this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Resep Berhasil Disimpan' });
+                    this.handleResetFormDetail();
+                    this.ShowDialogForm = false;
                     this.getAllResep();
                 }
             })
@@ -403,5 +410,45 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
         };
 
         console.log("payload =>", payload);
+    }
+
+    handleOpenDialogBatalResep(args: any) {
+        this.SelectedResep = args;
+        this.ReasonCanceled = "";
+        this.ShowDialogBatal = true;
+    }
+
+    handleCancelResep(reason_canceled: string) {
+        this._confirmationService.confirm({
+            target: (<any>event).target as EventTarget,
+            message: 'Data akan dibatalkan',
+            header: 'Apakah Anda Yakin?',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: "p-button-danger p-button-sm",
+            rejectButtonStyleClass: "p-button-secondary p-button-sm",
+            acceptIcon: "none",
+            acceptLabel: 'Iya Saya Yakin',
+            rejectIcon: "none",
+            rejectLabel: 'Tidak, Kembali',
+            accept: () => {
+                const payload = {
+                    id_resep: this.SelectedResep.id_resep,
+                    reason_canceled
+                };
+
+                this._resepService
+                    .cancel(payload.id_resep, payload.reason_canceled)
+                    .pipe(takeUntil(this.Destroy$))
+                    .subscribe((result) => {
+                        if (result.responseResult) {
+                            this._confirmationService.close();
+                            this._messageService.clear();
+                            this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil dibatalkan' });
+                            this.ShowDialogBatal = false;
+                            this.getAllResep();
+                        }
+                    })
+            }
+        });
     }
 }
