@@ -242,7 +242,7 @@ export class SetupSupplierComponent implements OnInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            console.log(args);
+                            this.FormComps.FormGroup.get('nama_desa')?.setValue(args.nama_desa)
                         }
                     },
                 },
