@@ -1,7 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
@@ -12,8 +12,6 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { GroupItemModel } from 'src/app/model/pages/inventory/setup-data/setup-grup-item.model';
-import { SetupGroupItemService } from 'src/app/services/inventory/setup-data/setup-group-item.service';
 import { LaboratoriumService } from 'src/app/services/pelayanan-klinik/rekam-medis/laboratorium.service';
 import { RadiologiService } from 'src/app/services/pelayanan-klinik/rekam-medis/radiologi.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
@@ -86,7 +84,6 @@ export class PenjadwalanComponent implements OnInit, OnDestroy {
 
     constructor(
         private _router: Router,
-        private _utilityService: UtilityService,
         private _messageService: MessageService,
         private _radiologiService: RadiologiService,
         private _laboratoriumService: LaboratoriumService,
@@ -271,7 +268,5 @@ export class PenjadwalanComponent implements OnInit, OnDestroy {
                     }
                 })
         }
-
-
     }
 }
