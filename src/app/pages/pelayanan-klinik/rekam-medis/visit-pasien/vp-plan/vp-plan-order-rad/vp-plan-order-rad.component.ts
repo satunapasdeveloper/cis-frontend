@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Store } from '@ngxs/store';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -17,8 +16,7 @@ import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { SetupGrupTarifService } from 'src/app/services/billing/setup-data/setup-grup-tarif.service';
 import { SetupTarifService } from 'src/app/services/billing/setup-data/setup-tarif.service';
-import { LaboratoriumService } from 'src/app/services/pelayanan-klinik/rekam-medis/laboratorium.service';
-import { UtilityService } from 'src/app/services/utility/utility.service';
+import { RadiologiService } from 'src/app/services/pelayanan-klinik/rekam-medis/radiologi.service';
 
 @Component({
     selector: 'app-vp-plan-order-rad',
@@ -55,7 +53,7 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Cancel', 'Detail'],
+        toolbar: ['Cancel'],
         showPaging: false,
         showSearch: false,
         isCustomSearch: false,
@@ -88,18 +86,15 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
     DetailPenunjangDatasource: any[] = [];
 
     constructor(
-        private _store: Store,
-        private _router: Router,
-        private _utilityService: UtilityService,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
+        private _radiologiService: RadiologiService,
         private _setupTarifService: SetupTarifService,
         private _confirmationService: ConfirmationService,
-        private _laboratoriumService: LaboratoriumService,
         private _setupGrupTarifService: SetupGrupTarifService,
     ) {
         this.FormProps = {
-            id: 'form_order_laboratorium',
+            id: 'form_order_radiologi',
             fields: [
                 {
                     id: 'id_register',
@@ -176,7 +171,7 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
     private getAll() {
         const id_register = this._activatedRoute.snapshot.queryParams['id_register'];
 
-        this._laboratoriumService
+        this._radiologiService
             .getAll(id_register)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
@@ -207,7 +202,6 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 if (result) {
                     this.GrupTarifDatasource = result.data;
-                    console.log("grup tarif =>", result.data);
                 }
             });
     }
@@ -218,13 +212,13 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
         this.FormComps.FormGroup.reset();
         this.FormComps.FormGroup.get('id_register')?.setValue(this._activatedRoute.snapshot.queryParams['id_register']);
         this.FormComps.FormGroup.get('id_poli_order')?.setValue(this._activatedRoute.snapshot.queryParams['id_poli']);
-        this.FormComps.FormGroup.get('id_kelas_order')?.setValue(this._activatedRoute.snapshot.queryParams['id_kelas_order']);
+        this.FormComps.FormGroup.get('id_kelas_order')?.setValue(this._activatedRoute.snapshot.queryParams['id_kelas']);
     }
 
     handleClickGrupTarif(args: any) {
         const query = {
             jenis_rawat: this._activatedRoute.snapshot.queryParams['jenis_rawat'],
-            jenis_tarif: 'Tindakan Medis',
+            jenis_tarif: 'Radiologi',
             id_poli: this._activatedRoute.snapshot.queryParams['id_poli'],
             id_kelas: this._activatedRoute.snapshot.queryParams['id_kelas'],
             id_tarif_grup: args.id_tarif_grup
@@ -235,28 +229,43 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.TarifDatasource = result.data.rows;
+                    this.TarifDatasource = result.data.map((item: any) => {
+                        return {
+                            ...item,
+                            checked: this.DetailPenunjangDatasource.findIndex((tarif: any) => { return tarif.id_tarif_berlaku == item.id_tarif_berlaku }) > -1 ? true : false
+                        }
+                    });
                 }
             })
     }
 
-    handleChangeCheckboxTarif(args: any, tarif: any) {
-        const checked = args.target.checked;
-        if (checked) {
+    handleChangeCheckboxTarif(tarif: any) {
+        const indexTarif = this.TarifDatasource.findIndex(item => item.id_tarif_berlaku == tarif.id_tarif_berlaku);
+        this.TarifDatasource[indexTarif].checked = !tarif.checked;
+
+        if (this.TarifDatasource[indexTarif].checked) {
             this.DetailPenunjangDatasource.push({
                 id_tarif_berlaku: tarif.id_tarif_berlaku,
                 id_tarif: tarif.id_tarif,
-                qty_order: tarif.qty_order,
+                nama_tarif: tarif.nama_tarif,
+                qty_order: 1,
                 qty: 1,
                 harga: tarif.nominal_tarif,
                 diskon_dokter: 0,
-                iur_biaya: 1 * tarif.nominal_tarif,
-                subtotal: 0,
+                iur_biaya: 0,
+                subtotal: 1 * tarif.nominal_tarif,
                 subsidi: 0,
             });
         } else {
-            const index = this.DetailPenunjangDatasource.findIndex(item => item.id_tarif == tarif.id_tarif);
+            const index = this.DetailPenunjangDatasource.findIndex(item => item.id_tarif_berlaku == tarif.id_tarif_berlaku);
             this.DetailPenunjangDatasource.splice(index, 1);
+        }
+    }
+
+    handleChangeQtyOrderDetaiPenunjang(args: any, index: number) {
+        if (args) {
+            this.DetailPenunjangDatasource[index].qty_order = args;
+            this.DetailPenunjangDatasource[index].subtotal = args * parseFloat(this.DetailPenunjangDatasource[index].harga);
         }
     }
 
@@ -265,14 +274,14 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
     }
 
     onRowDoubleClicked(args: any): void {
-        setTimeout(() => {
-            let data = JSON.parse(JSON.stringify(args));
-            data.tanggal_transaksi = data.tanggal_transaksi ? new Date(data.tanggal_transaksi) : null;
-            data.total = args.harga * args.qty;
-            this.FormComps.FormGroup.patchValue(data);
-            this.FormState = 'update';
-            this.ShowDialogForm = true;
-        }, 500);
+        // setTimeout(() => {
+        //     let data = JSON.parse(JSON.stringify(args));
+        //     data.tanggal_transaksi = data.tanggal_transaksi ? new Date(data.tanggal_transaksi) : null;
+        //     data.total = args.harga * args.qty;
+        //     this.FormComps.FormGroup.patchValue(data);
+        //     this.FormState = 'update';
+        //     this.ShowDialogForm = true;
+        // }, 500);
     }
 
     onToolbarClicked(args: any): void {
@@ -286,4 +295,59 @@ export class VpPlanOrderRadComponent implements OnInit, OnDestroy {
         }
     }
 
+    handleSaveOrderLab(args: any) {
+        const payload = {
+            ...args,
+            kode_grup_penunjang: 'RAD',
+            detail_penunjang: this.DetailPenunjangDatasource
+        };
+
+        this._radiologiService
+            .create(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Order Berhasil Disimpan' });
+                    this.FormComps.FormGroup.reset();
+                    this.DetailPenunjangDatasource = [];
+                    this.ShowDialogForm = false;
+                    this.getAll();
+                }
+            })
+    }
+
+    handleCancelOrder(reason_canceled: string) {
+        this._confirmationService.confirm({
+            target: (<any>event).target as EventTarget,
+            message: 'Data akan dibatalkan',
+            header: 'Apakah Anda Yakin?',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: "p-button-danger p-button-sm",
+            rejectButtonStyleClass: "p-button-secondary p-button-sm",
+            acceptIcon: "none",
+            acceptLabel: 'Iya Saya Yakin',
+            rejectIcon: "none",
+            rejectLabel: 'Tidak, Kembali',
+            accept: () => {
+                const payload = {
+                    id_order_penunjang: this.GridSelectedData.id_order_penunjang,
+                    reason_canceled
+                };
+
+                this._radiologiService
+                    .cancel(payload)
+                    .pipe(takeUntil(this.Destroy$))
+                    .subscribe((result) => {
+                        if (result.responseResult) {
+                            this._confirmationService.close();
+                            this._messageService.clear();
+                            this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil dibatalkan' });
+                            this.ShowDialogBatal = false;
+                            this.getAll();
+                        }
+                    })
+            }
+        });
+    }
 }

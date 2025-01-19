@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpRequestService } from '../../http/http-request.service';
 import { Observable, map } from 'rxjs';
 import { HttpBaseResponse } from 'src/app/model/http/http-request.model';
-import { TransaksiPemasukanModel } from 'src/app/model/pages/rekam-medis/transaksi-pemasukan.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

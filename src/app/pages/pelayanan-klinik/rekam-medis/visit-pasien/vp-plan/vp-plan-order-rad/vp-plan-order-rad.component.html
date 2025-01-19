@@ -11,7 +11,7 @@
             </p>
         </div>
 
-        <p-button severity="info" styleClass="p-button-sm" label="Tambah Order Lab" (onClick)="handleAddNewOrder()">
+        <p-button severity="info" styleClass="p-button-sm" label="Tambah Order" (onClick)="handleAddNewOrder()">
         </p-button>
     </div>
 
@@ -28,24 +28,30 @@
 
         <div class="flex flex-row gap-3 mb-3">
             <!-- Tarif -->
-            <div class="w-9/12 grid">
+            <div class="w-8/12 grid">
                 <p-tabView [scrollable]="true">
                     <p-tabPanel *ngFor="let tab of GrupTarifDatasource" [header]="tab.nama_tarif_grup">
-                        <div class="flex w-full gap-3">
+                        <div class="flex w-full gap-5">
                             <!-- Side -->
-                            <div class="grid w-3/12 gap-3">
+                            <div class="grid w-4/12 gap-3">
                                 <p-button *ngFor="let item of tab.items" styleClass="p-button-sm w-full"
-                                    [severity]="SelectedGrupTarif == item ? 'success' : 'info'"
+                                    [severity]="SelectedGrupTarif == item ? 'info' : 'secondary'"
                                     [label]="item.nama_tarif_grup"
                                     (onClick)="SelectedGrupTarif = item; handleClickGrupTarif(item)">
                                 </p-button>
                             </div>
 
                             <!-- Tarif -->
-                            <div class="flex flex-col w-9/12 gap-3">
+                            <div class="flex flex-col w-8/12 gap-3">
                                 <div *ngFor="let tarif of TarifDatasource" class="flex gap-2 items-center">
-                                    <p-checkbox [value]="tarif.id_tarif_grup" inputId="{{ tarif.nama_tarif }}"
-                                        (onChange)="handleChangeCheckboxTarif($event, tarif)" />
+                                    <!-- <p-checkbox [(ngModel)]="tarif.checked" inputId="{{ tarif.nama_tarif }}"
+                                        (ngModelChange)="handleChangeCheckboxTarif($event, tarif)" /> -->
+
+                                    <div class="flex items-center justify-center h-[25px] w-[25px] p-1 rounded-md border border-solid border-gray-300 cursor-pointer"
+                                        (click)="handleChangeCheckboxTarif(tarif)">
+                                        <i *ngIf="tarif.checked" class="pi pi-check text-blue-500"></i>
+                                    </div>
+
                                     <label for="{{ tarif.nama_tarif }}">
                                         {{ tarif.nama_tarif }}
                                     </label>
@@ -57,38 +63,41 @@
             </div>
 
             <!-- Form -->
-            <div class="w-3/12 grid p-2 border border-dashed border-gray-300 rounded-lg">
+            <div class="w-4/12 grid p-2 border border-dashed border-gray-300 rounded-lg">
                 <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
 
-                <div class="grid w-full mt-3 gap-3">
-                    <p class="text-sm text-gray-700 font-medium">
+                <div class="grid w-full mt-4 gap-3 p-2 bg-gray-100 rounded-lg">
+                    <p class="text-base text-gray-700 font-semibold">
                         Daftar Order
                     </p>
 
                     <div class="flex flex-col w-full gap-2">
                         <!-- Header -->
-                        <div class="flex w-full gap-3">
+                        <div
+                            class="flex w-full gap-3 mb-2 pb-2 border-b border-t-0 border-x-0 border-solid border-gray-400">
                             <div class="w-9/12">
-                                <p class="text-sm text-gray-700">
+                                <p class="text-sm text-gray-700 font-medium">
                                     Nama Order
                                 </p>
                             </div>
                             <div class="w-3/12">
-                                <p class="text-sm text-gray-700">
+                                <p class="text-sm text-gray-700 font-medium">
                                     Qty
                                 </p>
                             </div>
                         </div>
 
                         <!-- Content -->
-                        <div *ngFor="let item of DetailPenunjangDatasource" class="flex w-full gap-3">
+                        <div *ngFor="let item of DetailPenunjangDatasource; let i = index"
+                            class="flex items-center w-full gap-3">
                             <div class="w-9/12">
                                 <p class="text-sm text-gray-700">
                                     {{ item.nama_tarif }}
                                 </p>
                             </div>
                             <div class="w-3/12">
-                                <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty">
+                                <p-inputNumber styleClass="p-inputtext-sm w-full" [(ngModel)]="item.qty"
+                                    (ngModelChange)="handleChangeQtyOrderDetaiPenunjang($event, i)">
                                 </p-inputNumber>
                             </div>
                         </div>
@@ -102,13 +111,9 @@
             <p-button label="Cancel" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialogForm = false">
             </p-button>
 
-            <!-- <p-button *ngIf="FormState == 'insert'" label="Simpan" severity="info" styleClass="p-button-sm"
-                (onClick)="handleSaveDetailTransaksi(FormComps.FormGroup.value)">
+            <p-button label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleSaveOrderLab(FormComps.FormGroup.value)">
             </p-button>
-
-            <p-button *ngIf="FormState == 'update'" label="Update" severity="warning" styleClass="p-button-sm"
-                (onClick)="handleUpdateDetailTransaksi(FormComps.FormGroup.value)">
-            </p-button> -->
         </div>
     </p-dialog>
 
@@ -126,9 +131,9 @@
             <p-button label="Cancel" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialogBatal = false">
             </p-button>
 
-            <!-- <p-button label="Simpan" severity="info" styleClass="p-button-sm"
-                (onClick)="handleBatalDetailTransaksi(ReasonCanceled)">
-            </p-button> -->
+            <p-button label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleCancelOrder(ReasonCanceled)">
+            </p-button>
         </div>
     </p-dialog>
 

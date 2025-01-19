@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Store } from '@ngxs/store';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -16,7 +15,6 @@ import { GridModel } from 'src/app/model/components/grid.model';
 import { SetupGrupTarifService } from 'src/app/services/billing/setup-data/setup-grup-tarif.service';
 import { SetupTarifService } from 'src/app/services/billing/setup-data/setup-tarif.service';
 import { LaboratoriumService } from 'src/app/services/pelayanan-klinik/rekam-medis/laboratorium.service';
-import { UtilityService } from 'src/app/services/utility/utility.service';
 import { TabViewModule } from 'primeng/tabview';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 
