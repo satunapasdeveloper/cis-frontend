@@ -63,7 +63,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Delete', "Ubah Status", 'Detail'],
+        toolbar: ["Ubah Status", 'Detail'],
         showPaging: true,
         showSearch: true,
         isCustomSearch: true,
@@ -449,7 +449,7 @@ export class SetupItemComponent implements OnInit, OnDestroy {
                 rejectIcon: "none",
                 rejectLabel: 'Tidak, Kembali',
                 accept: () => {
-                    this.updateStatusItem(args.data.uuid);
+                    this.updateStatusItem(args.data);
                 }
             });
         }

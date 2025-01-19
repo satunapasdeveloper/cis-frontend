@@ -57,7 +57,7 @@ export class ItemService {
     updateStatus(payload: ItemModel.UpdateItem): Observable<HttpBaseResponse> {
         const { id_item, ...data } = payload;
 
-        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-item-jenis/update/${id_item}`,
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/setup-item/update/${id_item}`,
             {
                 ...data,
                 is_active: !payload.is_active
