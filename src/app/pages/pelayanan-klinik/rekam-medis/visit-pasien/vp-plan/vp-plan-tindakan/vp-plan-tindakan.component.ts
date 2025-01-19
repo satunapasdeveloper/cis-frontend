@@ -250,7 +250,6 @@ export class VpPlanTindakanComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    console.log("data =>", result.data);
                     this.GridProps.dataSource = result.data;
                 }
             });
@@ -259,6 +258,7 @@ export class VpPlanTindakanComponent implements OnInit, OnDestroy {
     private getAllTarif() {
         const query: SetupTarifModel.GetForTindakanMedisQueryParams = {
             jenis_rawat: this._activatedRoute.snapshot.queryParams['jenis_rawat'],
+            jenis_tarif: 'Tindakan Medis',
             id_poli: this._activatedRoute.snapshot.queryParams['id_poli'],
             id_kelas: this._activatedRoute.snapshot.queryParams['id_kelas'],
         };
