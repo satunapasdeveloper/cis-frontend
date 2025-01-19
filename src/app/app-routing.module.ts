@@ -45,6 +45,11 @@ const routes: Routes = [
         loadChildren: async () => (await import('./pages/inventory/inventory.routes')).inventoryRoutes
     },
     {
+        path: 'order-penunjang',
+        canActivate: [AuthGuard],
+        loadChildren: async () => (await import('./pages/order-penunjang/order-penunjang.routes')).orderPenunjangRoutes
+    },
+    {
         path: 'layanan-dokumen',
         canActivate: [AuthGuard],
         loadChildren: async () => (await import('./pages/layanan-dokumen/layanan-dokumen.routes')).layananDokumenRoutes
