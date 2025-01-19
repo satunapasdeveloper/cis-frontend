@@ -46,6 +46,7 @@ export namespace SetupTarifModel {
         id_poli: number;
         id_kelas: number;
         jenis_rawat: string;
+        jenis_tarif: string;
     }
 
     export interface Create {

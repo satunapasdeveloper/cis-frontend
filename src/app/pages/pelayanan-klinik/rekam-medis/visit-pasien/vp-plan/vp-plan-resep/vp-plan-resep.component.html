@@ -1,0 +1,494 @@
+<div class="flex flex-col w-full bg-white rounded-lg shadow gap-0 p-3">
+    <!-- Header -->
+    <div
+        class="flex justify-between items-center mb-3 pb-3 border-b border-gray-300 border-x-0 border-t-0 border-dashed">
+        <div class="flex flex-col">
+            <p class="text-gray-700 text-xl font-semibold">
+                Resep
+            </p>
+            <p class="text-gray-700 text-sm ">
+                Mohon isi data resep apabila ada
+            </p>
+        </div>
+
+        <p-button severity="info" styleClass="p-button-sm" label="Tambah Resep" (onClick)="handleCreateNewResep()">
+        </p-button>
+    </div>
+
+    <!-- Content -->
+    <div class="grid w-full grid-cols-3 gap-5">
+        <div *ngFor="let item of DataResepByIdRegister"
+            class="flex flex-col p-3 w-full border border-dashed border-gray-300 rounded-lg">
+            <!-- Header -->
+            <div class="flex w-full justify-between items-center mb-3">
+                <p class="text-base font-semibold text-gray-700">
+                    No. Resep {{ item.no_resep }}
+                </p>
+
+                <span class="cursor-pointer" (click)="handleOpenDialogBatalResep(item)">
+                    <i class="pi pi-trash text-red-500"></i>
+                </span>
+            </div>
+
+            <!-- Obat -->
+            <div *ngFor="let obat of item.detail_resep; let  i = index; let last = last"
+                class="flex flex-row gap-2 mb-2 {{ last ? '' : 'pb-2 border-b border-solid border-x-0 border-t-0 border-gray-200' }}">
+                <img src="../../../../../../../assets/icon/prescription.png" alt="rx" class="h-[25px] w-[25px]">
+
+                <div class="flex flex-col w-full">
+                    <p class="text-gray-700 text-sm">
+                        {{ obat.nama_obat }}
+                    </p>
+
+                    <p class="text-gray-700 text-sm">
+                        No. {{ i + 1 }}
+                    </p>
+
+                    <p class="text-gray-700 text-sm">
+                        S: {{ obat.aturan_pakai }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog Add / Edit Resep -->
+    <p-dialog [header]="IsFormResepEdit ? 'Edit Resep' : 'Tambah Resep'" [modal]="true" [(visible)]="ShowDialogForm"
+        [style]="{ width: '70rem' }" [draggable]="false" [resizable]="false" [maximizable]="true">
+
+        <!-- Header -->
+        <div class="grid w-full grid-cols-2 grid-rows-2 grid-flow-col mb-3 pb-5 border-b border-t-0 border-x-0 border-dashed border-gray-300 gap-4"
+            [formGroup]="FormResep">
+            <!-- Tanggal Resep -->
+            <div class="flex flex-row items-center gap-1">
+                <div class="w-3/12">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Tanggal Resep&nbsp;<span class="text-red-500">*</span>
+                    </p>
+                </div>
+                <div class="w-9/12">
+                    <p-calendar styleClass="p-inputtext-sm w-full" dateFormat="dd-mm-yy" appendTo="body"
+                        formControlName="tanggal_resep">
+                    </p-calendar>
+                </div>
+            </div>
+
+            <!-- Stokroom -->
+            <div class="flex flex-row items-center gap-1">
+                <div class="w-3/12">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Stockroom&nbsp;<span class="text-red-500">*</span>
+                    </p>
+                </div>
+                <div class="w-9/12">
+                    <p-dropdown [options]="StockroomDatasource" optionValue="id_stokroom" optionLabel="nama_stokroom"
+                        [filter]="true" [showClear]="true" appendTo="body" formControlName="id_stokroom"
+                        styleClass="p-inputtext-sm w-full">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <!-- Dokter -->
+            <div class="flex flex-row items-center gap-1">
+                <div class="w-3/12">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Dokter&nbsp;<span class="text-red-500">*</span>
+                    </p>
+                </div>
+                <div class="w-9/12">
+                    <p-dropdown [options]="NakesDatasource" optionValue="id_nakes" optionLabel="nama" [filter]="true"
+                        [showClear]="true" appendTo="body" formControlName="id_dokter"
+                        styleClass="p-inputtext-sm w-full">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <!-- Nakes -->
+            <div class="flex flex-row items-center gap-1">
+                <div class="w-3/12">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Petugas&nbsp;<span class="text-red-500">*</span>
+                    </p>
+                </div>
+                <div class="w-9/12">
+                    <p-dropdown [options]="NakesDatasource" optionValue="id_nakes" optionLabel="nama" [filter]="true"
+                        [showClear]="true" appendTo="body" formControlName="id_petugas"
+                        styleClass="p-inputtext-sm w-full">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail -->
+        <div class="flex flex-col w-full gap-3 mb-3">
+            <!-- Header -->
+            <div class="flex flex-col w-full gap-0">
+                <p class="text-base text-gray-800 font-medium">
+                    Tambah Obat
+                </p>
+                <p class="text-xs text-gray-700">
+                    Tambah obat racikan atau non racikan
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="grid grid-cols-3 w-full gap-2">
+                <div *ngFor="let item of ResepDatasource; let i = index"
+                    class="flex flex-col w-full p-2 rounded-lg border-dashed border-gray-300 border gap-2">
+                    <p class="text-sm text-gray-700 font-medium">
+                        {{ item.nama_obat }} x{{ item.qty }}
+                    </p>
+
+                    <div class="flex flex-col gap-0">
+                        <p class="text-sm text-gray-500">
+                            Aturan Pakai
+                        </p>
+
+                        <p class="text-sm text-gray-700 font-medium">
+                            {{ item.aturan_pakai }} | {{ item.waktu_pemberian_obat }}
+                        </p>
+                    </div>
+
+                    <div class="flex w-full justify-between items-end">
+                        <div class="flex flex-col gap-0">
+                            <p class="text-sm text-gray-500">
+                                Rute
+                            </p>
+
+                            <p class="text-sm text-gray-700 font-medium">
+                                {{ item.rute_pemberian_obat }}
+                            </p>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="warning"
+                                styleClass="p-button-sm" (onClick)="handleEditObat(i)" />
+
+                            <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
+                                styleClass="p-button-sm" (onClick)="handleDeleteObat(i)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="IsShowFormDetail"
+                class="flex flex-col gap-3 p-3 border-dashed border-gray-200 border rounded-lg">
+                <!-- Switch Racikan / Non Racikan -->
+                <div [formGroup]="FormDetail" class="flex items-center gap-2">
+                    <p-inputSwitch formControlName="is_racikan" (ngModelChange)="handleChangeIsRacikan($event)" />
+                    <p class="text-sm text-gray-700">
+                        Obat Racikan
+                    </p>
+                </div>
+
+                <!-- Nama Item -->
+                <div *ngIf="!FormDetail.get('is_racikan')?.value" [formGroup]="FormDetail"
+                    class="flex flex-col w-full gap-1">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Nama Obat
+                    </p>
+                    <p-dropdown #DropdownItemComps styleClass="p-inputtext-sm w-full" [options]="ItemDatasource"
+                        [showClear]="true" optionLabel="nama_item" formControlName="selected_item" [filter]="true"
+                        appendTo="body" (onChange)="handleChangeObat($event)">
+                    </p-dropdown>
+                </div>
+
+                <!-- Nama Racikan -->
+                <div *ngIf="FormDetail.get('is_racikan')?.value" [formGroup]="FormDetail"
+                    class="flex flex-row w-full gap-3">
+                    <div class="flex flex-col gap-1 w-9/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Nama Racikan
+                        </p>
+                        <input type="text" pInputText class="p-inputtext-sm w-full" formControlName="nama_obat">
+                    </div>
+
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Qty
+                        </p>
+                        <p-inputNumber formControlName="qty" styleClass="p-inputtext-sm w-full"
+                            (ngModelChange)="handleCountSubtotalObat()">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div *ngIf="!FormDetail.get('is_racikan')?.value" [formGroup]="FormDetail"
+                    class="flex flex-row w-full gap-3">
+                    <!-- Satuan -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Satuan
+                        </p>
+                        <input pInputText formControlName="satuan" class="p-inputtext-sm w-full" readonly>
+                    </div>
+
+                    <!-- Qty -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Qty
+                        </p>
+                        <p-inputNumber formControlName="qty" styleClass="p-inputtext-sm w-full"
+                            (ngModelChange)="handleCountSubtotalObat()">
+                        </p-inputNumber>
+                    </div>
+
+                    <!-- Harga -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Harga
+                        </p>
+                        <p-inputNumber formControlName="harga" styleClass="p-inputtext-sm w-full"
+                            (ngModelChange)="handleCountSubtotalObat()">
+                        </p-inputNumber>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Total
+                        </p>
+                        <p-inputNumber formControlName="subtotal" styleClass="p-inputtext-sm w-full" [readonly]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="flex flex-row w-full gap-3" [formGroup]="FormDetail">
+                    <!-- Sediaan -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Sediaan
+                        </p>
+                        <p-dropdown styleClass="p-inputtext-sm w-full" [options]="SediaanDatasource" optionLabel="name"
+                            optionValue="value" [filter]="true" appendTo="body" formControlName="sediaan">
+                        </p-dropdown>
+                    </div>
+
+                    <!-- Aturan Pakai -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Aturan Pakai Obat
+                        </p>
+                        <input pInputText formControlName="aturan_pakai" class="p-inputtext-sm w-full">
+                    </div>
+
+                    <!-- Rute Pemberian Obat -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Rute Pemberian Obat
+                        </p>
+                        <p-dropdown styleClass="p-inputtext-sm w-full" [options]="RutePemberianObatDatasource"
+                            optionLabel="rute_pemberian_obat" optionValue="rute_pemberian_obat" [filter]="true"
+                            appendTo="body" formControlName="rute_pemberian_obat">
+                        </p-dropdown>
+                    </div>
+
+                    <!-- Waktu Pemberian Obat -->
+                    <div class="flex w-3/12 flex-col gap-1">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Waktu Pemberian Obat
+                        </p>
+                        <p-dropdown styleClass="p-inputtext-sm w-full" [options]="WaktuPemberianObatDatasource"
+                            optionLabel="name" optionValue="value" [filter]="true" appendTo="body"
+                            formControlName="waktu_pemberian_obat">
+                        </p-dropdown>
+                    </div>
+                </div>
+
+                <!-- Detail Racikan -->
+                <div *ngIf="FormDetail.get('is_racikan')?.value"
+                    class="flex flex-col gap-3 p-3 border-dashed border-gray-400 border rounded-lg">
+
+                    <div *ngFor="let item of DetailRacikanResep; let i = index; let last = last"
+                        class="flex flex-col w-full gap-3 {{ last ? '' :'pb-5 mb-1 border-b border-t-0 border-x-0 border-solid border-gray-400'}}">
+                        <!-- Nama Item -->
+                        <div class="flex flex-col w-full gap-2">
+                            <div class="flex w-full justify-between items-end">
+                                <p class="text-sm text-gray-700 font-medium">
+                                    Nama Obat
+                                </p>
+
+                                <span class="px-3 py-1 bg-red-100 rounded-lg cursor-pointer"
+                                    (click)="handleDeleteRacikan(i)">
+                                    <p class="text-xs text-red-500 font-medium">
+                                        Hapus Obat
+                                    </p>
+                                </span>
+                            </div>
+                            <p-dropdown styleClass="p-inputtext-sm w-full" [options]="ItemDatasource" [showClear]="true"
+                                optionLabel="nama_item" [(ngModel)]="item.selected_item" [filter]="true" appendTo="body"
+                                (onChange)="handleChangeObatRacikan($event, i)">
+                            </p-dropdown>
+                        </div>
+
+                        <!-- Dosis, 1/ & Miligram -->
+                        <div class="flex flex-row w-full gap-3">
+                            <!-- Dosis -->
+                            <div class="flex w-4/12 flex-col gap-1">
+                                <p class="text-sm text-gray-700 font-medium">
+                                    Dosis
+                                </p>
+                                <p-inputNumber [(ngModel)]="item.kapasitas" styleClass="p-inputtext-sm w-full"
+                                    (onBlur)="handleCountQtyRacikan(i)">
+                                </p-inputNumber>
+                            </div>
+
+                            <!-- 1/ -->
+                            <div class="flex w-4/12 flex-col gap-1">
+                                <p class="text-sm text-gray-700 font-medium">
+                                    1/
+                                </p>
+                                <p-inputNumber [(ngModel)]="item.dosis_persen" styleClass="p-inputtext-sm w-full"
+                                    (onBlur)="handleCountQtyRacikan(i)">
+                                </p-inputNumber>
+                            </div>
+
+                            <!-- Miligram -->
+                            <div class="flex w-4/12 flex-col gap-1">
+                                <p class="text-sm text-gray-700 font-medium">
+                                    Miligram
+                                </p>
+                                <p-inputNumber [(ngModel)]="item.dosis" styleClass="p-inputtext-sm w-full"
+                                    (onBlur)="handleCountQtyRacikan(i)">
+                                </p-inputNumber>
+                            </div>
+                        </div>
+
+                        <!-- Satuan, Qty & Harga -->
+                        <div class="flex flex-row w-full gap-3">
+                            <!-- Satuan -->
+                            <div class="flex w-4/12 flex-col gap-1">
+                                <p class="text-sm text-gray-700 font-medium">
+                                    Satuan
+                                </p>
+                                <input pInputText [(ngModel)]="item.satuan" class="p-inputtext-sm w-full" readonly>
+                            </div>
+
+                            <!-- Qty -->
+                            <div class="flex w-4/12 flex-col gap-1">
+                                <p class="text-sm text-gray-700 font-medium">
+                                    Qty
+                                </p>
+                                <p-inputNumber [(ngModel)]="item.qty" styleClass="p-inputtext-sm w-full"
+                                    [readonly]="true" (ngModelChange)="handleCountSubtotalRacikan(i)">
+                                </p-inputNumber>
+                            </div>
+
+                            <!-- Harga -->
+                            <div class="flex w-4/12 flex-col gap-1">
+                                <p class="text-sm text-gray-700 font-medium">
+                                    Harga
+                                </p>
+                                <p-inputNumber [(ngModel)]="item.harga" styleClass="p-inputtext-sm w-full"
+                                    (ngModelChange)="handleCountSubtotalRacikan(i)">
+                                </p-inputNumber>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Button -->
+                    <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                        (click)="handleAddNewRacikan()">
+                        <i class="pi pi-plus" style="font-size: 13px"></i>
+                        <p class="text-sm text-gray-800 font-medium text-center">
+                            Tambah Racikan
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button -->
+            <div class="flex items-center justify-center gap-1 py-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer mt-2"
+                (click)="IsFormDetailEdit ? handleUpdateObat(FormDetail.value, SelectedFormDetailIndex) :  handleAddNewObat(FormDetail.value)">
+                <i class="pi pi-{{IsFormDetailEdit ? 'pencil' : 'save'}}" style="font-size: 13px"></i>
+                <p *ngIf="!IsFormDetailEdit" class="text-sm text-gray-800 font-medium text-center">
+                    Simpan & Tambah Obat Baru
+                </p>
+
+                <p *ngIf="IsFormDetailEdit" class="text-sm text-gray-800 font-medium text-center">
+                    Update & Tambah Obat Baru
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-between w-full mb-3" [formGroup]="FormResep">
+            <!-- Keterangan -->
+            <div class="flex flex-col gap-1 w-4/12">
+                <p class="text-sm text-gray-700 font-medium">
+                    Keterangan
+                </p>
+                <textarea pInputTextarea styleClass="p-inputtext-sm w-full" formControlName="keterangan" rows="2">
+                </textarea>
+            </div>
+
+            <!-- Jumlah Item -->
+            <div class="flex flex-col gap-2 w-4/12">
+                <div class="flex flex-row gap-2 items-center">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Jumlah Item
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            <p-inputNumber formControlName="jumlah_item" styleClass="p-inputtext-sm w-full"
+                                [readonly]="true">
+                            </p-inputNumber>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-row gap-2 items-center">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            Grand Total
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <p class="text-sm text-gray-700 font-medium">
+                            <p-inputNumber formControlName="total_harga" styleClass="p-inputtext-sm w-full"
+                                [readonly]="true">
+                            </p-inputNumber>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-3 justify-end w-full">
+            <p-button label="Cancel" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialogForm = false">
+            </p-button>
+
+            <p-button *ngIf="IsFormResepEdit" label="Update" severity="warning" styleClass="p-button-sm"
+                (onClick)="handleEditResep()">
+            </p-button>
+
+            <p-button *ngIf="!IsFormResepEdit" label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleSaveResep()">
+            </p-button>
+        </div>
+    </p-dialog>
+
+    <!-- Dialog Cancel Transaksi -->
+    <p-dialog header="Alasan Pembatalan" [modal]="true" [draggable]="false" [resizable]="false"
+        [(visible)]="ShowDialogBatal" [style]="{ width: '40rem' }">
+
+        <!-- Form -->
+        <div class="grid w-full mb-3">
+            <textarea [(ngModel)]="ReasonCanceled" pInputTextarea class="p-inputtext-sm w-full" rows="5"></textarea>
+        </div>
+
+        <!-- Button -->
+        <div class="flex justify-end gap-2">
+            <p-button label="Cancel" severity="secondary" styleClass="p-button-sm" (onClick)="ShowDialogBatal = false">
+            </p-button>
+
+            <p-button label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleCancelResep(ReasonCanceled)">
+            </p-button>
+        </div>
+    </p-dialog>
+
+    <p-confirmDialog></p-confirmDialog>
+</div>

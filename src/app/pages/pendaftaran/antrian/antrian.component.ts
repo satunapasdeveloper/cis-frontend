@@ -287,18 +287,18 @@ export class AntrianComponent implements OnInit, OnDestroy {
             })
     }
 
-    handleMulaiPeriksaAntrian(status_register: string, id_register: string) {
-        if (status_register == 'PERIKSA') {
-            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/visit-pasien?id_register=${id_register}`)
+    handleMulaiPeriksaAntrian(args: any) {
+        if (args.status_register == 'PERIKSA') {
+            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/visit-pasien?id_register=${args.id_register}&jenis_rawat=J&id_poli=${args.id_poli}&id_kelas=${args.id_kelas_rawat}`)
         } else {
             this._antrianPoliklinikRawatJalanService
-                .mulaiPeriksa(id_register)
+                .mulaiPeriksa(args.id_register)
                 .pipe(takeUntil(this.Destroy$))
                 .subscribe((result) => {
                     if (result.responseResult) {
                         this.ShowModalPanggilPasien = false;
                         this.handleSearchAntrian(this.AntrianQueryParams.tanggal_admisi, this.AntrianQueryParams.id_poli, this.AntrianQueryParams.id_dokter, this.AntrianQueryParams.nama_pasien);
-                        this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/visit-pasien?id_register=${id_register}`)
+                        this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/visit-pasien?id_register=${args.id_register}&jenis_rawat=J&id_poli=${args.id_poli}&id_kelas=${args.id_kelas_rawat}`)
                     }
                 })
         }

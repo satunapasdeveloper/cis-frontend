@@ -62,10 +62,10 @@
             <p-stepperPanel header="Plan">
                 <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback"
                     let-index="index">
-                    <div class="flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                        <!-- <app-anamesis #AnamesisComps></app-anamesis> -->
+                    <div class="flex flex-col">
+                        <app-vp-plan #VpPlanComps></app-vp-plan>
 
-                        <div class="flex pt-4 justify-between">
+                        <div class="flex mt-4 justify-between">
                             <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
                                 styleClass="p-button-sm" (onClick)="prevCallback.emit()">
                             </p-button>
