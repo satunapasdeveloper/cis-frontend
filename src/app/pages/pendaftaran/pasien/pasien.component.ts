@@ -352,14 +352,14 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_provinsi',
+                        optionValue: 'id_provinsi'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKota(false, args.id);
-                            this.FormAlamatComps.FormGroup.get('nama_provinsi_ktp')?.setValue(args.name);
+                            this.getKota(false, args.id_provinsi);
+                            this.FormAlamatComps.FormGroup.get('nama_provinsi_ktp')?.setValue(args.nama_provinsi);
                         } else {
                             this.FormAlamatComps.FormGroup.get('nama_provinsi_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kabupaten_ktp')?.setValue(null);
@@ -388,14 +388,14 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_kota',
+                        optionValue: 'id_kota'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKecamatan(false, args.id);
-                            this.FormAlamatComps.FormGroup.get('nama_kabupaten_ktp')?.setValue(args.name);
+                            this.getKecamatan(false, args.id_kota);
+                            this.FormAlamatComps.FormGroup.get('nama_kabupaten_ktp')?.setValue(args.nama_kota);
                         } else {
                             this.FormAlamatComps.FormGroup.get('nama_kabupaten_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kecamatan_ktp')?.setValue(null);
@@ -420,14 +420,14 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_kecamatan',
+                        optionValue: 'id_kecamatan'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKelurahan(false, args.id);
-                            this.FormAlamatComps.FormGroup.get('nama_kecamatan_ktp')?.setValue(args.name);
+                            this.getKelurahan(false, args.id_kecamatan);
+                            this.FormAlamatComps.FormGroup.get('nama_kecamatan_ktp')?.setValue(args.nama_kecamatan);
                         } else {
                             this.FormAlamatComps.FormGroup.get('nama_kecamatan_ktp')?.setValue(null);
                             this.FormAlamatComps.FormGroup.get('kode_kelurahan_ktp')?.setValue(null);
@@ -450,13 +450,13 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_desa',
+                        optionValue: 'id_desa'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.FormAlamatComps.FormGroup.get('nama_kelurahan_ktp')?.setValue(args.name);
+                            this.FormAlamatComps.FormGroup.get('nama_kelurahan_ktp')?.setValue(args.nama_desa);
                         } else {
                             this.FormAlamatComps.FormGroup.get('nama_kelurahan_ktp')?.setValue(null);
                         }
@@ -530,14 +530,14 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_provinsi',
+                        optionValue: 'id_provinsi'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKota(true, args.id);
-                            this.FormAlamatDomisiliComps.FormGroup.get('nama_provinsi_domisili')?.setValue(args.name);
+                            this.getKota(true, args.id_provinsi);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_provinsi_domisili')?.setValue(args.nama_provinsi);
                         } else {
                             this.FormAlamatDomisiliComps.FormGroup.get('nama_provinsi_domisili')?.setValue(null);
                             this.FormAlamatDomisiliComps.FormGroup.get('kode_kabupatan_domisili')?.setValue(null);
@@ -565,14 +565,14 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_kota',
+                        optionValue: 'id_kota'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKecamatan(true, args.id);
-                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kabupaten_domisili')?.setValue(args.name);
+                            this.getKecamatan(true, args.id_kota);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kabupaten_domisili')?.setValue(args.nama_kota);
                         } else {
                             this.FormAlamatDomisiliComps.FormGroup.get('nama_kabupaten_domisili')?.setValue(null);
                             this.FormAlamatDomisiliComps.FormGroup.get('kode_kecamatan_domisili')?.setValue(null);
@@ -597,14 +597,14 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_kecamatan',
+                        optionValue: 'id_kecamatan'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.getKelurahan(true, args.id);
-                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kecamatan_domisili')?.setValue(args.name);
+                            this.getKelurahan(true, args.id_kecamatan);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kecamatan_domisili')?.setValue(args.nama_kecamatan);
                         } else {
                             this.FormAlamatDomisiliComps.FormGroup.get('nama_kecamatan_domisili')?.setValue(null);
                             this.FormAlamatDomisiliComps.FormGroup.get('kode_kelurahan_domisili')?.setValue(null);
@@ -627,13 +627,13 @@ export class PasienComponent implements OnInit, AfterViewInit, OnDestroy {
                     type: 'select',
                     dropdownProps: {
                         options: [],
-                        optionName: 'name',
-                        optionValue: 'id'
+                        optionName: 'nama_desa',
+                        optionValue: 'id_desa'
                     },
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kelurahan_domisili')?.setValue(args.name);
+                            this.FormAlamatDomisiliComps.FormGroup.get('nama_kelurahan_domisili')?.setValue(args.nama_desa);
                         } else {
                             this.FormAlamatDomisiliComps.FormGroup.get('nama_kelurahan_domisili')?.setValue(null);
                         }
