@@ -95,9 +95,7 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
     ) {
         this.FormResep = this._formBuilder.group({
             id_register: [this._activatedRoute.snapshot.queryParams['id_register'], []],
-            id_dokter: ['', [Validators.required]],
             id_petugas: ['', [Validators.required]],
-            id_stokroom: ['', [Validators.required]],
             tanggal_resep: ['', [Validators.required]],
             jumlah_item: [0, [Validators.required]],
             total_harga: [0, [Validators.required]],
@@ -154,15 +152,15 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
                 }
             });
 
-        // ** Stockroom
-        this._setupStockroomService
-            .getAllActive({ page: 1, count: 100 })
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result.responseResult) {
-                    this.StockroomDatasource = result.data.rows;
-                }
-            });
+        // // ** Stockroom
+        // this._setupStockroomService
+        //     .getAllActive({ page: 1, count: 100 })
+        //     .pipe(takeUntil(this.Destroy$))
+        //     .subscribe((result) => {
+        //         if (result.responseResult) {
+        //             this.StockroomDatasource = result.data.rows;
+        //         }
+        //     });
 
         // ** Item
         this._itemService
@@ -408,8 +406,6 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
             ...this.FormResep.value,
             detail_resep: this.ResepDatasource
         };
-
-        console.log("payload =>", payload);
     }
 
     handleOpenDialogBatalResep(args: any) {
