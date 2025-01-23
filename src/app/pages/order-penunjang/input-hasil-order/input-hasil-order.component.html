@@ -1,1 +1,83 @@
-<p>input-hasil-order works!</p>
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (pageChanged)="onPageChanged($event)" (customSearchClicked)="onSearchGrid($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full">
+        <div class="grid w-full">
+            <app-informasi-pasien #InformasiPasienComps></app-informasi-pasien>
+        </div>
+
+        <div class="grid w-full p-3 bg-white rounded-lg shadow-sm mb-3">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+
+        <div class="grid w-full p-3 bg-white rounded-lg shadow-sm mb-3">
+            <p class="text-base text-gray-700 font-medium">
+                Hasil Pemeriksaan
+            </p>
+            <p class="text-xs text-gray-600 mb-3">
+                Tambah atau hapus hasil pemeriksaan
+            </p>
+
+            <div *ngIf="DetailOrderPenunjang" class="flex w-full items-start gap-5">
+                <div class="w-6/12 grid grid-cols-2 gap-2">
+                    <div *ngFor="let item of DetailOrderPenunjang.detail_hasil"
+                        class="{{ item.is_active ? 'flex' : 'hidden' }} flex-col p-2 rounded-lg border-dashed border-gray-300 border gap-2 w-full items-center justify-center">
+                        <i class="pi pi-file text-gray-500" style="font-size: 15px"></i>
+
+                        <p class="text-emerald-500 text-sm font-medium cursor-pointer"
+                            (click)="handleOpenFileHasil(item.file_hasil_tes_url)">
+                            {{ item.file_hasil_tes_nama }}
+                        </p>
+
+                        <div class="flex w-full p-2 justify-center items-center gap-2 text-center rounded-md bg-red-100 cursor-pointer"
+                            (click)="handleCancelHasilHeader(item.id_order_penunjang_hasil)">
+                            <p class="text-xs text-red-600 font-medium">
+                                Hapus File
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-6/12">
+                    <app-dynamic-form #FormHasilComps [props]="FormHasilProps"></app-dynamic-form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid w-full p-3 gap-3 bg-white rounded-lg shadow-sm mb-3">
+            <app-grid [props]="GridDetailProps" (cellClicked)="onCellDetailClicked($event)"
+                (aksiClicked)="onToolbarDetailClicked($event)">
+            </app-grid>
+        </div>
+    </div>
+
+    <!-- Dialog Edit Dokter -->
+    <p-dialog header="Unggah File Hasil" [modal]="true" [draggable]="false" [resizable]="false"
+        [(visible)]="ShowDialogHasilDetail" [style]="{ width: '40rem' }">
+
+        <!-- Form -->
+        <div class="grid w-full mb-3">
+            <app-dynamic-form #FormHasilDetailComps [props]="FormHasilDetailProps"></app-dynamic-form>
+        </div>
+
+        <!-- Button -->
+        <div class="flex justify-end gap-2">
+            <p-button label="Cancel" severity="secondary" styleClass="p-button-sm"
+                (onClick)="ShowDialogHasilDetail = false;">
+            </p-button>
+
+            <p-button label="Simpan" severity="info" styleClass="p-button-sm"
+                (onClick)="handleCancelHasilDetail(FormHasilDetailComps.FormGroup.value)">
+            </p-button>
+        </div>
+    </p-dialog>
+
+    <p-confirmDialog />
+</app-dashboard>
