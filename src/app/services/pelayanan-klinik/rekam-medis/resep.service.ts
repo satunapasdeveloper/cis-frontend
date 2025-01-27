@@ -17,6 +17,10 @@ export class ResepService {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-resep/getByIdRegister/${id_register}`);
     }
 
+    getByIdResep(id_resep: string): Observable<any> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-resep/getById/${id_resep}`);
+    }
+
     create(payload: any): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-resep/insert`, payload);
     }

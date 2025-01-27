@@ -1,0 +1,76 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="flex flex-row gap-3 w-full items-start">
+        <div class="flex flex-col w-4/12 gap-3">
+            <!-- Form -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+                <p class="text-lg font-medium text-gray-700">
+                    Detail Resep
+                </p>
+                <p class="text-sm text-gray-700 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    Detail resep dan pasien
+                </p>
+
+                <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+            </div>
+
+            <!-- Telaah Resep -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+                <p class="text-lg font-medium text-gray-700">
+                    Telaah Penyerahan Obat
+                </p>
+                <p class="text-sm text-gray-700 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    Isi form telaah penyerahan Obat
+                </p>
+
+                <div class="flex flex-col gap-3">
+                    <!-- Obat Dengan Resep? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox [value]="false" inputId="is_obat_dengan_resep" />
+                        <label for="is_obat_dengan_resep" class="text-sm text-gray-700">
+                            Obat Dengan Resep?
+                        </label>
+                    </div>
+
+                    <!-- Jumlah / Dosis Dengan Resep -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_jumlah_dosis_dengan_resep" [value]="false" />
+                        <label for="is_jumlah_dosis_dengan_resep" class="text-sm text-gray-700">
+                            Jumlah / Dosis Dengan Resep
+                        </label>
+                    </div>
+
+                    <!-- Rute Dengan Resep -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_rute_dengan_resep" [value]="false" />
+                        <label for="is_rute_dengan_resep" class="text-sm text-gray-700">
+                            Rute Dengan Resep
+                        </label>
+                    </div>
+
+                    <!-- Waktu Pemberian Dengan Resep? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_waktu_pemberian_dengan_resep" [value]="false" />
+                        <label for="is_waktu_pemberian_dengan_resep" class="text-sm text-gray-700">
+                            Waktu Pemberian Dengan Resep?
+                        </label>
+                    </div>
+
+                    <!-- Identitas Pasien -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_identitas_pasien" [value]="false" />
+                        <label for="is_identitas_pasien" class="text-sm text-gray-700">
+                            Identitas Pasien?
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid w-8/12 bg-white rounded-lg shadow-sm p-2">
+            <app-grid [props]="GridProps"></app-grid>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>
