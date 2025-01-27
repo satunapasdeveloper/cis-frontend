@@ -10,12 +10,42 @@ export const farmasiRoutes: Routes = [
                 data: {
                     title: 'Setup Rute Pemberian Obat',
                     breadcrumbs: [
-                        "Beranda", "Inventory", "Setup Data", "Setup Rute Pemberian Obat"
+                        "Beranda", "Farmasi", "Setup Data", "Setup Rute Pemberian Obat"
                     ]
                 }
             },
         ]
-    }
+    },
+    {
+        path: 'antrian',
+        loadComponent: async () => (await import('./antrian-farmasi/antrian-farmasi.component')).AntrianFarmasiComponent,
+        data: {
+            title: 'Antrian Farmasi',
+            breadcrumbs: [
+                "Beranda", "Farmasi", "Antrian"
+            ]
+        }
+    },
+    {
+        path: 'telaah-resep',
+        loadComponent: async () => (await import('./telaah-resep/telaah-resep.component')).TelaahResepComponent,
+        data: {
+            title: 'Telaah Resep',
+            breadcrumbs: [
+                "Beranda", "Farmasi", "Telaah Resep"
+            ]
+        }
+    },
+    {
+        path: 'penyerahan-resep',
+        loadComponent: async () => (await import('./penyerahan-resep/penyerahan-resep.component')).PenyerahanResepComponent,
+        data: {
+            title: 'Penyerahan Resep',
+            breadcrumbs: [
+                "Beranda", "Farmasi", "Penyerahan Resep"
+            ]
+        }
+    },
     // {
     //     path: 'purchasing',
     //     children: [

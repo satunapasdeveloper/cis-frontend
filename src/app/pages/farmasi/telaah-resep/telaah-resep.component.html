@@ -1,0 +1,131 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="flex flex-row gap-3 w-full items-start">
+        <div class="flex flex-col w-4/12 gap-3">
+            <!-- Form -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+                <p class="text-lg font-medium text-gray-700">
+                    Detail Resep
+                </p>
+                <p class="text-sm text-gray-700 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    Detail resep dan pasien
+                </p>
+
+                <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+            </div>
+
+            <!-- Telaah Administrasi -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+                <p class="text-lg font-medium text-gray-700">
+                    Telaah Administrasi
+                </p>
+                <p class="text-sm text-gray-700 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    Isi form telaah administrasi resep
+                </p>
+
+                <div class="flex flex-col gap-3">
+                    <!-- Apakah Identitas Pasien Sesuai? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox #CheckboxIdentitasComps [value]="CheckboxIdentitasComps.checked"
+                            inputId="is_identitas_pasien_sesuai" />
+
+                        <label for="is_identitas_pasien_sesuai" class="text-sm text-gray-700">
+                            Apakah Identitas Pasien Sesuai?
+                        </label>
+                    </div>
+
+                    <!-- Nama Paraf Dokter? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_nama_paraf_dokter" [value]="false" />
+                        <label for="is_nama_paraf_dokter" class="text-sm text-gray-700">
+                            Nama Paraf Dokter?
+                        </label>
+                    </div>
+
+                    <!-- Apakah Unit Asal Resep Sesuai? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_unit_asal_resep_sesuai" [value]="false" />
+                        <label for="is_unit_asal_resep_sesuai" class="text-sm text-gray-700">
+                            Apakah Unit Asal Resep Sesuai?
+                        </label>
+                    </div>
+
+                    <!-- Nama Petugas / AA? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_nama_petugas" [value]="false" />
+                        <label for="is_nama_petugas" class="text-sm text-gray-700">
+                            Nama Petugas / AA?
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telaah Resep -->
+            <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+                <p class="text-lg font-medium text-gray-700">
+                    Telaah Resep
+                </p>
+                <p class="text-sm text-gray-700 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                    Isi form telaah resep
+                </p>
+
+                <div class="flex flex-col gap-3">
+                    <!-- Apakah Nama Obat Sesuai -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox [value]="false" inputId="is_nama_obat_sesuai" />
+
+                        <label for="is_nama_obat_sesuai" class="text-sm text-gray-700">
+                            Apakah Nama Obat Sesuai?
+                        </label>
+                    </div>
+
+                    <!-- Apakah Tidak Ada Duplikasi Pengobatan? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_tidak_ada_duplikasi_pengobatan" [value]="false" />
+                        <label for="is_tidak_ada_duplikasi_pengobatan" class="text-sm text-gray-700">
+                            Apakah Tidak Ada Duplikasi Pengobatan?
+                        </label>
+                    </div>
+
+                    <!-- Apakah Tidak Ada Interaksi Obat Dalam Satu Resep? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_tidak_ada_interaksi_obat_dalam_satu_resep" [value]="false" />
+                        <label for="is_tidak_ada_interaksi_obat_dalam_satu_resep" class="text-sm text-gray-700">
+                            Apakah Tidak Ada Interaksi Obat Dalam Satu Resep?
+                        </label>
+                    </div>
+
+                    <!-- Apakah Tepat Indikasi Obat Dengan Diagnosa Dokter? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_tepat_indikasi" [value]="false" />
+                        <label for="is_tepat_indikasi" class="text-sm text-gray-700">
+                            Apakah Tepat Indikasi Obat Dengan Diagnosa Dokter?
+                        </label>
+                    </div>
+
+                    <!-- Apakah Stabilitas Obat Sudah Sesuai Dengan Kondisi Pasien? -->
+                    <div class="flex items-center w-full gap-2">
+                        <p-checkbox inputId="is_stabilitas" [value]="false" />
+                        <label for="is_stabilitas" class="text-sm text-gray-700">
+                            Apakah Stabilitas Obat Sesuai Dengan Kondisi Pasien?
+                        </label>
+                    </div>
+
+                    <!-- Keterangan -->
+                    <div class="flex flex-col w-full gap-1">
+                        <label class="text-sm text-gray-700">
+                            Keterangan
+                        </label>
+                        <textarea rows="3" pInputTextarea class="p-inputtext-sm w-full"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid w-8/12 bg-white rounded-lg shadow-sm p-2">
+            <app-grid [props]="GridProps"></app-grid>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>

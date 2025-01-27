@@ -48,6 +48,8 @@ export class NakesService {
                 nama_jabatan: item.jabatan.nama_jabatan,
                 id_poli: item.id_poli,
                 nama_poli: item.poli.nama_poli,
+                id_stokroom: item.id_stokroom,
+                nama_stokroom: item.stokroom.nama_stokroom,
                 id_role: item.id_role,
                 nama_role: item.role.nama_role,
                 username: item.username,

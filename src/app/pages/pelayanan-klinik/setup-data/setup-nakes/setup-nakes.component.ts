@@ -15,7 +15,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { NakesJadwalModel } from 'src/app/model/pages/setup-data/nakes-jadwal.model';
+import { SetupStockroomService } from 'src/app/services/inventory/setup-data/setup-stockroom.service';
 import { MinioService } from 'src/app/services/minio/minio.service';
 import { NakesJadwalService } from 'src/app/services/pelayanan-klinik/setup-data/nakes-jadwal.service';
 import { UtilityService } from 'src/app/services/utility/utility.service';
@@ -63,6 +63,7 @@ export class SetupNakesComponent implements OnInit, OnDestroy {
             { field: 'username', headerName: 'Username', },
             { field: 'nama_jabatan', headerName: 'Jabatan', },
             { field: 'nama_poli', headerName: 'Poli', },
+            { field: 'nama_stokroom', headerName: 'Stokroom', },
             { field: 'nama_role', headerName: 'Role', },
             { field: 'kode_dpjp', headerName: 'Kode DPJP', },
             { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
@@ -130,6 +131,7 @@ export class SetupNakesComponent implements OnInit, OnDestroy {
         private _utilityService: UtilityService,
         private _nakesJadwalService: NakesJadwalService,
         private _confirmationService: ConfirmationService,
+        private _setupStokroomService: SetupStockroomService,
     ) {
         this.FormProps = {
             id: 'form_setup_nakes',
@@ -174,6 +176,19 @@ export class SetupNakesComponent implements OnInit, OnDestroy {
                 {
                     id: 'id_poli',
                     label: 'Poli',
+                    required: true,
+                    type: 'select',
+                    dropdownProps: {
+                        options: [],
+                        optionName: 'name',
+                        optionValue: 'value',
+                        autoDisplayFirst: false
+                    },
+                    value: '',
+                },
+                {
+                    id: 'id_stokroom',
+                    label: 'Stokroom',
                     required: true,
                     type: 'select',
                     dropdownProps: {
@@ -317,6 +332,7 @@ export class SetupNakesComponent implements OnInit, OnDestroy {
         this.getAllPoli();
         this.getAllRole();
         this.getAllJabatan();
+        this.getAllStockroom();
     }
 
     ngOnDestroy(): void {
@@ -347,6 +363,23 @@ export class SetupNakesComponent implements OnInit, OnDestroy {
                         return {
                             name: item.nama_poli,
                             value: item.id_poli
+                        }
+                    })
+                }
+            });
+    }
+
+    private getAllStockroom() {
+        this._setupStokroomService
+            .getAllActive({ page: 1, count: 100 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_stokroom');
+                    this.FormProps.fields[index].dropdownProps.options = result.data.rows.map((item: any) => {
+                        return {
+                            name: item.nama_stokroom,
+                            value: item.id_stokroom
                         }
                     })
                 }
