@@ -36,7 +36,7 @@ export class PendaftaranRawatJalanService {
                                     id_penjamin: item.id_penjamin,
                                     nama_penjamin: item.penjamin.nama_penjamin,
                                     status_register: item.status_register,
-                                    diagnosa_primer: item.diagnosa_primer.nama_icd_10
+                                    diagnosa_primer: item.diagnosa_primer ? item.diagnosa_primer.nama_icd_10 : ''
                                 }
                             })
                     }

@@ -14,6 +14,8 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { PenjualanObatService } from 'src/app/services/farmasi/penjualan-obat/penjualan-obat.service';
+import { TelaahResepService } from 'src/app/services/farmasi/telaah-resep/telaah-resep.service';
 import { ResepService } from 'src/app/services/pelayanan-klinik/rekam-medis/resep.service';
 
 @Component({
@@ -77,12 +79,20 @@ export class PenyerahanResepComponent implements OnInit, OnDestroy {
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
+    SetupTelaahResep: any[] = [];
+
+    SelectedSetupTelaah: any[] = [];
+
+    KeteranganTelaah: string = "";
+
     constructor(
         private _router: Router,
         private _resepService: ResepService,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
+        private _telaahResepService: TelaahResepService,
         private _confirmationService: ConfirmationService,
+        private _penjualanObatService: PenjualanObatService,
     ) {
         this.FormProps = {
             id: 'form_informasi_resep',
@@ -94,13 +104,6 @@ export class PenyerahanResepComponent implements OnInit, OnDestroy {
                     type: 'text',
                     value: '',
                     readonly: true,
-                },
-                {
-                    id: 'tanggal_penjualan',
-                    label: 'Tgl. Penjualan',
-                    required: false,
-                    type: 'datetime',
-                    value: '',
                 },
                 {
                     id: 'nama_poli',
@@ -159,6 +162,7 @@ export class PenyerahanResepComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.getAllSetupTelaah();
         this.getAll();
     }
 
@@ -185,17 +189,76 @@ export class PenyerahanResepComponent implements OnInit, OnDestroy {
                     this.GridProps.dataSource = result.data.detail_resep;
                 }
             })
+    }
 
+    handleChangeSetupTelaah(id_telaah: number) {
+        const index = this.SelectedSetupTelaah.findIndex(item => item.id_telaah == id_telaah);
+
+        const indexSetup = this.SetupTelaahResep.findIndex(item => item.id_telaah == id_telaah);
+
+        if (index > -1) {
+            this.SelectedSetupTelaah.splice(index, 1);
+
+            if (indexSetup > -1) {
+                this.SetupTelaahResep[indexSetup].checked = false;
+            }
+        } else {
+            this.SelectedSetupTelaah.push({
+                id_telaah: id_telaah
+            });
+
+            if (indexSetup > -1) {
+                this.SetupTelaahResep[indexSetup].checked = true;
+            }
+        }
+    }
+
+    private getAllSetupTelaah() {
+        this._penjualanObatService
+            .getAllSetupTelaahPenjualanObat()
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.SetupTelaahResep = result.data.flatMap((item: any) =>
+                        item.details.map((detail: any) => ({
+                            ...detail,
+                            checked: false
+                        }))
+                    );
+                }
+            })
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'back') {
             this._router.navigateByUrl("/farmasi/antrian");
         };
+
+        if (data.id == 'simpan') {
+            this.handleSaveTelaah();
+        };
     }
 
-    private handleSaveTelaah(data: any) {
+    private handleSaveTelaah() {
+        const payload = {
+            id_register: this._activatedRoute.snapshot.queryParams['id_register'],
+            keterangan_telaah: this.KeteranganTelaah,
+            detail_telaah: this.SelectedSetupTelaah
+        };
 
+        this._telaahResepService
+            .create(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Telaah Penyerahan Obat Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        this.handleClickButtonNavigation({ id: 'back', title: 'Kembali', icon: 'pi pi-chevron-left' })
+                    }, 1500);
+                }
+            })
     }
 
     private handleBatalResep(data: any) {

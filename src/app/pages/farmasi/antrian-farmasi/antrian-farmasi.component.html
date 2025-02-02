@@ -3,31 +3,30 @@
         <!-- Search & Aksi -->
         <div class="flex justify-between mb-2 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
             <div class="grid grid-cols-5 items-end w-full gap-3">
-                <!-- Calendar Tanggal -->
+                <!-- Tanggal -->
                 <div class="grid w-full gap-1">
                     <p class="text-xs font-medium text-gray-700">
-                        Tanggal Mulai <span class="text-red-500">*</span>
+                        Tanggal <span class="text-red-500">*</span>
                     </p>
-                    <p-calendar styleClass="p-inputtext-sm w-full" placeholder="Pilih Tanggal Mulai" appendTo="body"
-                        [(ngModel)]="TanggalStartFilterSearch" dateFormat="dd-mm-yy">
+                    <p-calendar styleClass="p-inputtext-sm w-full" placeholder="Pilih Tanggal" appendTo="body"
+                        [(ngModel)]="TanggalFilterSearch" dateFormat="dd-mm-yy">
                     </p-calendar>
                 </div>
 
-                <!-- Calendar Tanggal -->
+                <!-- Stokroom -->
                 <div class="grid w-full gap-1">
                     <p class="text-xs font-medium text-gray-700">
-                        Tanggal Selesai <span class="text-red-500">*</span>
+                        Stokroom
                     </p>
-                    <p-calendar styleClass="p-inputtext-sm w-full" placeholder="Pilih Tanggal Selesai" appendTo="body"
-                        [(ngModel)]="TanggalEndFilterSearch" dateFormat="dd-mm-yy">
-                    </p-calendar>
+                    <p-dropdown styleClass="p-inputtext-sm w-full" placeholder="Pilih stokroom" appendTo="body"
+                        [(ngModel)]="StokroomFilterSearch" [filter]="true">
+                    </p-dropdown>
                 </div>
 
                 <!-- Button -->
                 <div class="flex w-full justify-start">
-                    <p-button severity="info" label="Cari" styleClass="p-button-sm"
-                        [disabled]="!TanggalStartFilterSearch && !TanggalEndFilterSearch"
-                        (onClick)="handleSearchAntrian(TanggalStartFilterSearch, TanggalEndFilterSearch)">
+                    <p-button severity="info" label="Cari" styleClass="p-button-sm" [disabled]="!TanggalFilterSearch"
+                        (onClick)="handleSearchAntrian(TanggalFilterSearch, StokroomFilterSearch)">
                     </p-button>
                 </div>
             </div>
@@ -37,32 +36,36 @@
             groupRowsBy="id_jadwal_dokter">
             <ng-template pTemplate="header">
                 <tr>
-                    <th class="text-sm">Tanggal Resep</th>
-                    <th class="text-sm">No. Resep</th>
-                    <th class="text-sm">No. Rekam Medis</th>
-                    <th class="text-sm">Nama Pasien</th>
-                    <th class="text-sm">Penjamin</th>
-                    <th class="text-sm">Dokter</th>
-                    <th class="text-sm text-center">Status Telaah</th>
-                    <th class="text-sm text-center">Aksi</th>
+                    <th class="text-xs">Tanggal Resep</th>
+                    <th class="text-xs">No. Antrian</th>
+                    <th class="text-xs">No. Resep</th>
+                    <th class="text-xs">No. Register</th>
+                    <th class="text-xs">Nama Pasien</th>
+                    <th class="text-xs">Penjamin</th>
+                    <th class="text-xs">Dokter</th>
+                    <th class="text-xs text-center">Status Telaah</th>
+                    <th class="text-xs text-center">Status Resep</th>
+                    <th class="text-xs text-center">Aksi</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-antrian>
                 <tr>
-                    <td class="text-sm">{{ antrian.tanggal_resep | date: 'dd-MM-yyyy' }}</td>
-                    <td class="text-sm">{{ antrian.no_resep }}</td>
-                    <td class="text-sm">1702035000001</td>
-                    <td class="text-sm">John Doe</td>
-                    <td class="text-sm">BPJS</td>
-                    <td class="text-sm">{{ antrian.dokter.nama }}</td>
-                    <td class="text-sm text-center">
-                        @if (antrian.is_telaah) {
+                    <td class="text-xs">{{ antrian.tanggal_resep | date: 'dd-MM-yyyy' }}</td>
+                    <td class="text-xs">{{ antrian.register.no_antrian_farmasi }}</td>
+                    <td class="text-xs">{{ antrian.no_resep }}</td>
+                    <td class="text-xs">{{ antrian.register.no_register }} </td>
+                    <td class="text-xs">{{ antrian.register.nama_pasien }}</td>
+                    <td class="text-xs">{{ antrian.register.penjamin }}</td>
+                    <td class="text-xs">{{ antrian.dokter.nama }}</td>
+                    <td class="text-xs text-center">
+                        @if (antrian.keterangan_telaah) {
                         Sudah
                         } @else {
                         Belum
                         }
                     </td>
-                    <td class="text-sm text-center">
+                    <td class="text-xs text-center">{{ antrian.status_resep }}</td>
+                    <td class="text-xs text-center">
                         <span (click)="op.toggle($event)">
                             <i class="pi pi-ellipsis-v"></i>
                         </span>
@@ -71,9 +74,9 @@
                             <div class="flex flex-col gap-3 w-[12rem] p-2">
                                 <span
                                     class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer"
-                                    (click)="handleOpenDialogPanggil(antrian)">
-                                    <i class="pi pi-megaphone" style="font-size: 10px"></i>&nbsp;
-                                    Panggil
+                                    (click)="handleGoToSiapkan(antrian)">
+                                    <i class="pi pi-file-arrow-up" style="font-size: 10px"></i>&nbsp;
+                                    Siapkan Resep
                                 </span>
 
                                 <span
