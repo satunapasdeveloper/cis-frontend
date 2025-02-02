@@ -3,7 +3,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -12,15 +11,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { TableModule } from 'primeng/table';
-import { Subject, takeUntil, switchMap, of, take, map } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { SearchPasienDialogComponent } from 'src/app/components/dialog/search-pasien-dialog/search-pasien-dialog.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
-import { LayoutModel } from 'src/app/model/components/layout.model';
-import { AntrianPoliklinikRawatJalanService } from 'src/app/services/pelayanan-klinik/rawat-jalan/antrian-poliklinik-rawat-jalan.service';
+import { AntrianResepBaruService } from 'src/app/services/farmasi/antrian/antrian-resep-baru.service';
 import { ResepService } from 'src/app/services/pelayanan-klinik/rekam-medis/resep.service';
-import { PendaftaranService } from 'src/app/services/pendaftaran-klinik/pendaftaran/pendaftaran.service';
-import { SetupNakesState, SetupNakesActions } from 'src/app/store/setup-data/nakes';
-import { SetupPoliState, SetupPoliActions } from 'src/app/store/setup-data/setup-poli';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -36,7 +31,6 @@ import { environment } from 'src/environments/environment';
         FormsModule,
         OverlayPanelModule,
         DialogModule,
-        SearchPasienDialogComponent,
         ConfirmDialogModule,
         InputTextModule,
     ],
@@ -51,8 +45,8 @@ export class AntrianFarmasiComponent implements OnInit, OnDestroy {
 
     AntrianQueryParams: any;
 
-    TanggalStartFilterSearch: any;
-    TanggalEndFilterSearch: any;
+    TanggalFilterSearch: any;
+    StokroomFilterSearch: any;
 
     SelectedPasien: any;
     ShowModalPanggilPasien: boolean = false;
@@ -62,13 +56,14 @@ export class AntrianFarmasiComponent implements OnInit, OnDestroy {
         private _store: Store,
         private _router: Router,
         private _resepService: ResepService,
+        private _antrianResepBaruService: AntrianResepBaruService,
     ) { }
 
     ngOnInit(): void {
         const filter = localStorage.getItem("_ANTRIAN_FARMASI_FILTER_SEARCH_") ? JSON.parse(localStorage.getItem("_ANTRIAN_FARMASI_FILTER_SEARCH_") as any) : null;
 
         if (filter) {
-            this.handleSearchAntrian(filter.start_date, filter.end_date);
+            this.handleSearchAntrian(filter.tanggal_resep, filter.id_stokroom);
         };
     }
 
@@ -78,28 +73,28 @@ export class AntrianFarmasiComponent implements OnInit, OnDestroy {
     }
 
 
-    handleSearchAntrian(start_date: string, end_date: string) {
+    handleSearchAntrian(tanggal_resep: string, id_stokroom: number) {
         this.AntrianQueryParams = {
             page: 1,
             count: 100,
-            start_date: formatDate(new Date(start_date), 'yyyy-MM-dd', 'EN'),
-            end_date: formatDate(new Date(end_date), 'yyyy-MM-dd', 'EN'),
+            tanggal_resep: formatDate(new Date(tanggal_resep), 'yyyy-MM-dd', 'EN'),
         };
 
-        if (start_date) {
-            this.TanggalStartFilterSearch = new Date(start_date);
+        if (tanggal_resep) {
+            this.TanggalFilterSearch = new Date(tanggal_resep);
         };
 
-        if (end_date) {
-            this.TanggalEndFilterSearch = new Date(end_date);
+        if (id_stokroom) {
+            this.AntrianQueryParams.id_stokroom = id_stokroom
+            this.StokroomFilterSearch = id_stokroom;
         };
 
-        this._resepService
-            .getResep("68")
+        this._antrianResepBaruService
+            .getAll(this.AntrianQueryParams)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 localStorage.setItem('_ANTRIAN_FARMASI_FILTER_SEARCH_', JSON.stringify(this.AntrianQueryParams));
-                this.AntrianDatasource = result.responseResult ? result.data : [];
+                this.AntrianDatasource = result.responseResult ? result.data.rows : [];
             })
     }
 
@@ -135,6 +130,13 @@ export class AntrianFarmasiComponent implements OnInit, OnDestroy {
         this.ShowModalPanggilPasien = true;
 
         !environment.production && console.log("panggil data pasien =>", data);
+    }
+
+    handleGoToSiapkan(args: any) {
+        localStorage.setItem('_SAFSH_', JSON.stringify(args));
+        setTimeout(() => {
+            this._router.navigateByUrl(`/farmasi/siapkan-resep?id_register=${args.id_register}&id_resep=${args.id_resep}`)
+        }, 500);
     }
 
     handleGoToTelaah(args: any) {

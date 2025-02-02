@@ -22,7 +22,27 @@ export const farmasiRoutes: Routes = [
         data: {
             title: 'Antrian Farmasi',
             breadcrumbs: [
-                "Beranda", "Farmasi", "Antrian"
+                "Beranda", "Farmasi", "Antrian Farmasi"
+            ]
+        }
+    },
+    {
+        path: 'loket-farmasi',
+        loadComponent: async () => (await import('./loket-farmasi/loket-farmasi.component')).LoketFarmasiComponent,
+        data: {
+            title: 'Loket Farmasi',
+            breadcrumbs: [
+                "Beranda", "Farmasi", "Loket"
+            ]
+        }
+    },
+    {
+        path: 'siapkan-resep',
+        loadComponent: async () => (await import('./siapkan-resep/siapkan-resep.component')).SiapkanResepComponent,
+        data: {
+            title: 'Siapkan Resep',
+            breadcrumbs: [
+                "Beranda", "Farmasi", "Siapkan Resep"
             ]
         }
     },

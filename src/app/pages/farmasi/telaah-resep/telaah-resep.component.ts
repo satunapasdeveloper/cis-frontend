@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -14,6 +15,7 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { TelaahResepService } from 'src/app/services/farmasi/telaah-resep/telaah-resep.service';
 import { ResepService } from 'src/app/services/pelayanan-klinik/rekam-medis/resep.service';
 
 @Component({
@@ -22,6 +24,7 @@ import { ResepService } from 'src/app/services/pelayanan-klinik/rekam-medis/rese
     imports: [
         CommonModule,
         DashboardComponent,
+        FormsModule,
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
@@ -77,17 +80,18 @@ export class TelaahResepComponent implements OnInit, OnDestroy {
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
-    FormTelaahAdministrasiProps: FormModel.IForm;
-    @ViewChild('FormTelaahAdministrasiComps') FormTelaahAdministrasiComps!: DynamicFormComponent;
+    SetupTelaahResep: any[] = [];
 
-    FormTelaahResepProps: FormModel.IForm;
-    @ViewChild('FormTelaahResepComps') FormTelaahResepComps!: DynamicFormComponent;
+    SelectedSetupTelaah: any[] = [];
+
+    KeteranganTelaah: string = "";
 
     constructor(
         private _router: Router,
         private _resepService: ResepService,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
+        private _telaahResepService: TelaahResepService,
         private _confirmationService: ConfirmationService,
     ) {
         this.FormProps = {
@@ -139,51 +143,10 @@ export class TelaahResepComponent implements OnInit, OnDestroy {
             state: 'write',
             defaultValue: null,
         };
-
-        this.FormTelaahAdministrasiProps = {
-            id: 'form_telaah_administrasi',
-            fields: [
-                {
-                    id: 'is_identitas_sesuai',
-                    label: 'Apakah Identitas Pasien Sesuai',
-                    required: false,
-                    type: 'checkbox',
-                    checkBoxProps: [
-                        { name: 'is_identitas_sesuai_true', label: '', value: true }
-                    ],
-                    value: '',
-                    readonly: true,
-                },
-            ],
-            style: 'inline',
-            class: 'grid-rows-5 grid-cols-1',
-            state: 'write',
-            defaultValue: null,
-        };
-
-        this.FormTelaahResepProps = {
-            id: 'form_telaah_administrasi',
-            fields: [
-                {
-                    id: 'is_identitas_sesuai',
-                    label: 'Apakah Identitas Pasien Sesuai',
-                    required: false,
-                    type: 'checkbox',
-                    checkBoxProps: [
-                        { name: 'is_identitas_sesuai_true', label: '', value: true }
-                    ],
-                    value: '',
-                    readonly: true,
-                },
-            ],
-            style: 'inline',
-            class: 'grid-rows-5 grid-cols-1',
-            state: 'write',
-            defaultValue: null,
-        };
     }
 
     ngOnInit(): void {
+        this.getAllSetupTelaah();
         this.getAll();
     }
 
@@ -213,14 +176,74 @@ export class TelaahResepComponent implements OnInit, OnDestroy {
 
     }
 
+    private getAllSetupTelaah() {
+        this._telaahResepService
+            .getAllSetupTelaahResep()
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.SetupTelaahResep = result.data.flatMap((item: any) =>
+                        item.details.map((detail: any) => ({
+                            ...detail,
+                            checked: false
+                        }))
+                    );
+                }
+            })
+    }
+
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'back') {
             this._router.navigateByUrl("/farmasi/antrian");
         };
+
+        if (data.id == 'simpan') {
+            this.handleSaveTelaah();
+        }
     }
 
-    private handleSaveTelaah(data: any) {
+    handleChangeSetupTelaah(id_telaah: number) {
+        const index = this.SelectedSetupTelaah.findIndex(item => item.id_telaah == id_telaah);
 
+        const indexSetup = this.SetupTelaahResep.findIndex(item => item.id_telaah == id_telaah);
+
+        if (index > -1) {
+            this.SelectedSetupTelaah.splice(index, 1);
+
+            if (indexSetup > -1) {
+                this.SetupTelaahResep[indexSetup].checked = false;
+            }
+        } else {
+            this.SelectedSetupTelaah.push({
+                id_telaah: id_telaah
+            });
+
+            if (indexSetup > -1) {
+                this.SetupTelaahResep[indexSetup].checked = true;
+            }
+        }
+    }
+
+    private handleSaveTelaah() {
+        const payload = {
+            id_register: this._activatedRoute.snapshot.queryParams['id_register'],
+            keterangan_telaah: this.KeteranganTelaah,
+            detail_telaah: this.SelectedSetupTelaah
+        };
+
+        this._telaahResepService
+            .create(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Telaah Resep Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        this.handleClickButtonNavigation({ id: 'back', title: 'Kembali', icon: 'pi pi-chevron-left' })
+                    }, 1500);
+                }
+            })
     }
 
     private handleBatalResep(data: any) {

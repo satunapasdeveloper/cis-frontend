@@ -23,44 +23,23 @@
                 </p>
 
                 <div class="flex flex-col gap-3">
-                    <!-- Obat Dengan Resep? -->
-                    <div class="flex items-center w-full gap-2">
-                        <p-checkbox [value]="false" inputId="is_obat_dengan_resep" />
-                        <label for="is_obat_dengan_resep" class="text-sm text-gray-700">
-                            Obat Dengan Resep?
+                    <div *ngFor="let item of SetupTelaahResep"
+                        class="{{item.grup == 'Telaah Penyerahan Obat' ? 'flex' : 'hidden'}} items-center w-full gap-2">
+                        <p-checkbox [inputId]="item.id_telaah" [binary]="true"
+                            (onChange)="handleChangeSetupTelaah(item.id_telaah)" />
+                        <label [for]="item.id_telaah" class="text-sm text-gray-700">
+                            {{ item.nama_telaah }}
                         </label>
                     </div>
 
-                    <!-- Jumlah / Dosis Dengan Resep -->
-                    <div class="flex items-center w-full gap-2">
-                        <p-checkbox inputId="is_jumlah_dosis_dengan_resep" [value]="false" />
-                        <label for="is_jumlah_dosis_dengan_resep" class="text-sm text-gray-700">
-                            Jumlah / Dosis Dengan Resep
+                    <!-- Keterangan -->
+                    <div class="flex flex-col w-full gap-1">
+                        <label class="text-sm text-gray-700">
+                            Keterangan
                         </label>
-                    </div>
 
-                    <!-- Rute Dengan Resep -->
-                    <div class="flex items-center w-full gap-2">
-                        <p-checkbox inputId="is_rute_dengan_resep" [value]="false" />
-                        <label for="is_rute_dengan_resep" class="text-sm text-gray-700">
-                            Rute Dengan Resep
-                        </label>
-                    </div>
-
-                    <!-- Waktu Pemberian Dengan Resep? -->
-                    <div class="flex items-center w-full gap-2">
-                        <p-checkbox inputId="is_waktu_pemberian_dengan_resep" [value]="false" />
-                        <label for="is_waktu_pemberian_dengan_resep" class="text-sm text-gray-700">
-                            Waktu Pemberian Dengan Resep?
-                        </label>
-                    </div>
-
-                    <!-- Identitas Pasien -->
-                    <div class="flex items-center w-full gap-2">
-                        <p-checkbox inputId="is_identitas_pasien" [value]="false" />
-                        <label for="is_identitas_pasien" class="text-sm text-gray-700">
-                            Identitas Pasien?
-                        </label>
+                        <textarea rows="3" pInputTextarea class="p-inputtext-sm w-full"
+                            [(ngModel)]="KeteranganTelaah"></textarea>
                     </div>
                 </div>
             </div>
