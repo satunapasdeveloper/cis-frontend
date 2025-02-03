@@ -226,6 +226,13 @@ export class AntrianComponent implements OnInit, OnDestroy {
         }, 500);
     }
 
+    handleGoToBmhp(args: any) {
+        localStorage.setItem('_SPSH_', JSON.stringify(args));
+        setTimeout(() => {
+            this._router.navigateByUrl(`/pelayanan-klinik/rekam-medis/bmhp?id_register=${args.id_register}&jenis_rawat=J&id_poli=${args.id_poli}&id_kelas=${args.id_kelas_rawat}`)
+        }, 500);
+    }
+
     handleGoToSuratKontrol(args: any) {
         localStorage.setItem('_SPSH_', JSON.stringify(args));
         setTimeout(() => {
