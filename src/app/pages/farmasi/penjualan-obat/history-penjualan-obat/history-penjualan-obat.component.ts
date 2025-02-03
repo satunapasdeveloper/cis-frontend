@@ -106,9 +106,11 @@ export class HistoryPenjualanObatComponent implements OnInit, OnDestroy {
     };
 
     ShowModalPengiriman: boolean = false;
-
     AlamatPengiriman: string = "";
     OngkosKirim = 0;
+
+    ShowDialogBatal = false;
+    ReasonCanceled = "";
 
     constructor(
         private _store: Store,
@@ -279,11 +281,6 @@ export class HistoryPenjualanObatComponent implements OnInit, OnDestroy {
     }
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
-        if (data.id == 'add') {
-            this.PageState = 'form';
-            this.ButtonNavigation = [];
-        };
-
         if (data.id == 'back') {
             this.AlamatPengiriman = "";
             this.OngkosKirim = 0;
@@ -300,6 +297,11 @@ export class HistoryPenjualanObatComponent implements OnInit, OnDestroy {
         if (data.id == 'change_status_terkirim') {
             this.updateStatusMejadiTerkirim();
         };
+
+        if (data.id == 'cancel') {
+            this.ReasonCanceled = "";
+            this.ShowDialogBatal = true;
+        }
     }
 
     handleBackToList() {
@@ -410,4 +412,41 @@ export class HistoryPenjualanObatComponent implements OnInit, OnDestroy {
             })
     }
 
-}
+    handleCancelOrder(reason_canceled: string) {
+        this._confirmationService.confirm({
+            target: (<any>event).target as EventTarget,
+            message: 'Data akan dibatalkan',
+            header: 'Apakah Anda Yakin?',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: "p-button-danger p-button-sm",
+            rejectButtonStyleClass: "p-button-secondary p-button-sm",
+            acceptIcon: "none",
+            acceptLabel: 'Iya Saya Yakin',
+            rejectIcon: "none",
+            rejectLabel: 'Tidak, Kembali',
+            accept: () => {
+                const payload = {
+                    id_penjualan_obat: this.FormComps.FormGroup.get('id_penjualan_obat')?.value,
+                    reason_canceled
+                };
+
+                this._penjualanObatService
+                    .cancel(payload.id_penjualan_obat, payload.reason_canceled)
+                    .pipe(takeUntil(this.Destroy$))
+                    .subscribe((result) => {
+                        if (result.responseResult) {
+                            this._confirmationService.close();
+                            this._messageService.clear();
+                            this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil dibatalkan' });
+                            this.ShowDialogBatal = false;
+                            this.handleClickButtonNavigation({
+                                id: 'back',
+                                title: 'Kembali',
+                                icon: 'pi pi-chevron-left'
+                            })
+                        }
+                    })
+            }
+        });
+    }
+}   
