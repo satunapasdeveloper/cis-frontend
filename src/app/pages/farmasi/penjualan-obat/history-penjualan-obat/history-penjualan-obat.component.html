@@ -1,0 +1,61 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (pageChanged)="onPageChanged($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full p-3 bg-white rounded-lg shadow-sm">
+        <div class="grid w-full mb-5 pb-5 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+
+        <div class="grid w-full">
+            <p class="text-lg font-medium text-gray-700">
+                Detail Item
+            </p>
+            <p class="text-sm text-gray-700 mb-3">
+                Detail obat atau bahan medis habis pakai
+            </p>
+
+            <app-grid [props]="GridDetailProps"></app-grid>
+        </div>
+    </div>
+
+    <!-- Dialog Call Pasien -->
+    <p-dialog header="Update Pengiriman" [modal]="true" [(visible)]="ShowModalPengiriman" [style]="{ width: '30rem' }"
+        [draggable]="false" [resizable]="false" [showHeader]="true">
+        <div class="flex flex-col w-full">
+            <!-- Alamat Pengiriman -->
+            <div class="flex flex-col gap-1 w-full mb-2">
+                <p class="text-gray-700 font-medium text-sm">
+                    Alamat Pengiriman
+                </p>
+                <textarea rows="5" pInputTextarea class="p-inputtext-sm w-full"
+                    placeholder="Masukkan alamat pengiriman disini" [(ngModel)]="AlamatPengiriman"></textarea>
+            </div>
+
+            <!-- Ongkos Kirim -->
+            <div class="flex flex-col gap-1 w-full mb-4">
+                <p class="text-gray-700 font-medium text-sm">
+                    Ongkos Kirim
+                </p>
+                <p-inputNumber styleClass="p-inputtext-sm w-full" placeholder="Masukkan ongkos kirim disini"
+                    [(ngModel)]="OngkosKirim">
+                </p-inputNumber>
+            </div>
+
+            <div class="flex justify-end gap-3 ">
+                <p-button label="Tutup" severity="secondary" styleClass="p-button-sm"
+                    (click)="ShowModalPengiriman = false" />
+
+                <p-button label="Update" severity="warning" styleClass="p-button-sm" (onClick)="updatePengiriman()" />
+            </div>
+        </div>
+    </p-dialog>
+
+    <p-confirmDialog />
+</app-dashboard>

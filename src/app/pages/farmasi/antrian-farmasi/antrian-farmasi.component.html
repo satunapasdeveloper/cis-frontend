@@ -54,8 +54,8 @@
                     <td class="text-xs">{{ antrian.register.no_antrian_farmasi }}</td>
                     <td class="text-xs">{{ antrian.no_resep }}</td>
                     <td class="text-xs">{{ antrian.register.no_register }} </td>
-                    <td class="text-xs">{{ antrian.register.nama_pasien }}</td>
-                    <td class="text-xs">{{ antrian.register.penjamin }}</td>
+                    <td class="text-xs">{{ antrian.register.pasien.nama_pasien }}</td>
+                    <td class="text-xs">{{ antrian.register.penjamin.nama_penjamin }}</td>
                     <td class="text-xs">{{ antrian.dokter.nama }}</td>
                     <td class="text-xs text-center">
                         @if (antrian.keterangan_telaah) {
@@ -64,7 +64,7 @@
                         Belum
                         }
                     </td>
-                    <td class="text-xs text-center">{{ antrian.status_resep }}</td>
+                    <td class="text-xs text-center">{{ handleFormatStatusResep(antrian.register.status_farmasi) }}</td>
                     <td class="text-xs text-center">
                         <span (click)="op.toggle($event)">
                             <i class="pi pi-ellipsis-v"></i>
@@ -86,8 +86,7 @@
                                     Telaah Resep
                                 </span>
 
-                                <span (click)="handleGoToPenyerahan(antrian)"
-                                    class="text-sm text-gray-700 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300 cursor-pointer">
+                                <span (click)="handleGoToPenyerahan(antrian)" class="text-sm text-gray-700">
                                     <i class="pi pi-plus" style="font-size: 10px"></i>&nbsp;
                                     Penyerahaan
                                 </span>

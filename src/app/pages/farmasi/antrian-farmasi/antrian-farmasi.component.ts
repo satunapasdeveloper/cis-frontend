@@ -68,10 +68,10 @@ export class AntrianFarmasiComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        localStorage.removeItem("_ANTRIAN_FARMASI_FILTER_SEARCH_");
         this.Destroy$.next(0);
         this.Destroy$.complete();
     }
-
 
     handleSearchAntrian(tanggal_resep: string, id_stokroom: number) {
         this.AntrianQueryParams = {
@@ -90,7 +90,7 @@ export class AntrianFarmasiComponent implements OnInit, OnDestroy {
         };
 
         this._antrianResepBaruService
-            .getAll(this.AntrianQueryParams)
+            .getAllForBackoffice(this.AntrianQueryParams)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 localStorage.setItem('_ANTRIAN_FARMASI_FILTER_SEARCH_', JSON.stringify(this.AntrianQueryParams));
@@ -122,6 +122,13 @@ export class AntrianFarmasiComponent implements OnInit, OnDestroy {
         }
 
         return classColor;
+    }
+
+    handleFormatStatusResep(status: string) {
+        return status ? status
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, (char) => char.toUpperCase())
+            : '-'
     }
 
     handleOpenDialogPanggil(data: any) {

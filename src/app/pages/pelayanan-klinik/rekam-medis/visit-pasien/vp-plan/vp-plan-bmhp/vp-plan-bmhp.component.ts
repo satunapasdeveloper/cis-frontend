@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -67,6 +67,8 @@ export class VpPlanBmhpComponent implements OnInit, OnDestroy {
 
     DetailRacikanResep: any[] = [];
 
+    @ViewChild('ConfirmDialogBmhpComps') ConfirmDialogBmhpComps!: ConfirmDialog;
+
     ShowDialogBatal = false;
     SelectedResep: any;
     ReasonCanceled = "";
@@ -116,12 +118,13 @@ export class VpPlanBmhpComponent implements OnInit, OnDestroy {
     private getAllResep() {
         const id_register = this._activatedRoute.snapshot.queryParams['id_register'];
 
-        this._resepService
-            .getResep(id_register)
+        this._bmhpService
+            .getAll(id_register)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
-                    this.DataResepByIdRegister = result.data;
+                    console.log("data =>", result.data.rows);
+                    this.DataResepByIdRegister = result.data.rows;
                 }
             })
     }
@@ -306,6 +309,34 @@ export class VpPlanBmhpComponent implements OnInit, OnDestroy {
         this.SelectedResep = args;
         this.ReasonCanceled = "";
         this.ShowDialogBatal = true;
+    }
+
+    handleValidasiResep(args: any) {
+        this._confirmationService.confirm({
+            target: this.ConfirmDialogBmhpComps as any,
+            message: 'Data akan divalidasi',
+            header: 'Apakah Anda Yakin?',
+            icon: 'pi pi-info-circle',
+            acceptButtonStyleClass: "p-button-danger p-button-sm",
+            rejectButtonStyleClass: "p-button-secondary p-button-sm",
+            acceptIcon: "none",
+            acceptLabel: 'Iya Saya Yakin',
+            rejectIcon: "none",
+            rejectLabel: 'Tidak, Kembali',
+            accept: () => {
+                this._bmhpService
+                    .validasi(args.id_penjualan_obat)
+                    .pipe(takeUntil(this.Destroy$))
+                    .subscribe((result) => {
+                        if (result.responseResult) {
+                            this._confirmationService.close();
+                            this._messageService.clear();
+                            this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Data berhasil divalidasi' });
+                            this.getAllResep();
+                        }
+                    })
+            }
+        });
     }
 
     handleCancelResep(reason_canceled: string) {

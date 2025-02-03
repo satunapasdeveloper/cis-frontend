@@ -13,11 +13,19 @@ export class AntrianResepBaruService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(query: any): Observable<HttpBaseResponse> {
+    getAllForBackoffice(query: any): Observable<HttpBaseResponse> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-resep/getResepForFarmasiBackOffice`, query)
+    }
+
+    getAllForLoket(query: any): Observable<HttpBaseResponse> {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-resep/getResepForFarmasi`, query)
     }
 
     getByIdRegister(id_register: number): Observable<HttpBaseResponse> {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-resep/getResepGroupByRegister/${id_register}`)
+    }
+
+    panggil(id_register: number): Observable<HttpBaseResponse> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-resep/panggilAntrianFarmasi/${id_register}`)
     }
 }

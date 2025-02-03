@@ -47,6 +47,16 @@ export const pelayananRoutes: Routes = [
                 },
             },
             {
+                path: 'bmhp',
+                loadComponent: async () => (await import('./rekam-medis/input-rekam-medis/bmhp/bmhp.component')).BmhpComponent,
+                data: {
+                    title: 'Bahan Medis Habis Pakai',
+                    breadcrumbs: [
+                        "Beranda", "Pelayanan", "Rekam Medis", "Bahan Medis Habis Pakai"
+                    ]
+                },
+            },
+            {
                 path: 'visit-pasien',
                 loadComponent: async () => (await import('./rekam-medis/visit-pasien/base-visit-pasien/base-visit-pasien.component')).BaseVisitPasienComponent,
                 data: {
