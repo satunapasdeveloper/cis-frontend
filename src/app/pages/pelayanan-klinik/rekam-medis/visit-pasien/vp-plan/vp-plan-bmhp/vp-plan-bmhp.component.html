@@ -20,32 +20,46 @@
         <div *ngFor="let item of DataResepByIdRegister"
             class="flex flex-col p-3 w-full border border-dashed border-gray-300 rounded-lg">
             <!-- Header -->
-            <div class="flex w-full justify-between items-center mb-3">
-                <p class="text-base font-semibold text-gray-700">
-                    No. Resep {{ item.no_resep }}
+            <div class="flex flex-col w-full mb-3 pb-3 border-b border-dashed border-gray-300 border-t-0 border-x-0">
+                <div class="flex flex-row w-full justify-between">
+                    <p class="text-base font-semibold text-gray-700">
+                        No. Penjualan {{ item.no_penjualan }}
+                    </p>
+
+                    <div *ngIf="item.status_penjualan == 'OPEN'"
+                        class="flex items-center cursor-pointer px-2 py-1 text-sm bg-emerald-100 rounded-lg gap-1"
+                        (click)="handleValidasiResep(item)">
+                        <i class="pi pi-check text-emerald-500" style="font-size: 12px"></i>
+                        <p class="text-xs font-semibold text-emerald-500">
+                            Validasi
+                        </p>
+                    </div>
+                </div>
+
+                <p class="text-sm font-medium text-gray-700">
+                    Tgl. Penjualan : {{ item.tanggal_penjualan | date: 'dd-MM-yyyy' }}
                 </p>
 
-                <span class="cursor-pointer" (click)="handleOpenDialogBatalResep(item)">
-                    <i class="pi pi-trash text-red-500"></i>
-                </span>
+                <p class="text-sm font-medium text-gray-700">
+                    Status : {{ item.status_penjualan }}
+                </p>
+
             </div>
 
             <!-- Obat -->
             <div *ngFor="let obat of item.detail_resep; let  i = index; let last = last"
-                class="flex flex-row gap-2 mb-2 {{ last ? '' : 'pb-2 border-b border-solid border-x-0 border-t-0 border-gray-200' }}">
-                <img src="../../../../../../../assets/icon/prescription.png" alt="rx" class="h-[25px] w-[25px]">
-
+                class="flex flex-row gap-2 mb-2 px-2 {{ last ? '' : 'pb-2 border-b border-solid border-x-0 border-t-0 border-gray-200' }}">
                 <div class="flex flex-col w-full">
-                    <p class="text-gray-700 text-sm">
+                    <p class="text-gray-700 text-sm font-medium">
                         {{ obat.nama_obat }}
                     </p>
 
-                    <p class="text-gray-700 text-sm">
+                    <p class="text-gray-600 text-sm">
                         No. {{ i + 1 }}
                     </p>
 
-                    <p class="text-gray-700 text-sm">
-                        S: {{ obat.aturan_pakai }}
+                    <p class="text-gray-600 text-sm">
+                        Qty : {{ obat.qty }} {{ obat.satuan }}
                     </p>
                 </div>
             </div>
@@ -199,11 +213,7 @@
         <div class="flex justify-between w-full mb-3" [formGroup]="FormResep">
             <!-- Keterangan -->
             <div class="flex flex-col gap-1 w-4/12">
-                <p class="text-sm text-gray-700 font-medium">
-                    Keterangan
-                </p>
-                <textarea pInputTextarea styleClass="p-inputtext-sm w-full" formControlName="keterangan" rows="2">
-                </textarea>
+
             </div>
 
             <!-- Jumlah Item -->
@@ -274,5 +284,5 @@
         </div>
     </p-dialog>
 
-    <p-confirmDialog></p-confirmDialog>
+    <p-confirmDialog #ConfirmDialogBmhpComps></p-confirmDialog>
 </div>
