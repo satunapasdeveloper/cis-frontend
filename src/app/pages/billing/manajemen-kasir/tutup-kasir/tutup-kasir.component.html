@@ -1,1 +1,46 @@
-<p>tutup-kasir works!</p>
+<app-dashboard>
+    <!-- Form -->
+    <div class="flex flex-col w-6/12 p-3 bg-white rounded-lg shadow-sm">
+        <div class="grid w-full mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+
+        <div class="grid w-full">
+            <p class="text-base font-semibold text-gray-700 mb-0">
+                Detail Pendapatan Kasir
+            </p>
+            <p class="text-sm text-gray-600 mb-3">
+                Detail pendapatan kasir per metode bayar
+            </p>
+
+            <div class="flex flex-row gap-5 mb-2 pb-2 border-b border-t-0 border-x-0 border-gray-300 border-solid">
+                <div class="flex w-4/12">
+                    <p class="text-sm text-gray-700">
+                        Metode Pembayaran
+                    </p>
+                </div>
+                <div class="flex w-8/12">
+                    <p class="text-sm text-gray-700">
+                        Nominal Pendapatan
+                    </p>
+                </div>
+            </div>
+
+            <div *ngFor="let item of PaymentMethodDatasource" class="flex flex-row gap-5 mb-2">
+                <div class="flex w-4/12">
+                    <p class="text-sm text-gray-700">
+                        {{ item.nama_metode_pembayaran }}
+                    </p>
+                </div>
+                <div class="flex w-8/12">
+                    <p-inputNumber [(ngModel)]="item.nominal" styleClass="p-inputtext-sm w-full"></p-inputNumber>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex w-full justify-end mt-4 gap-4">
+            <p-button severity="info" label="Simpan" styleClass="p-button-sm" (onClick)="handleSaveTutupKasir()">
+            </p-button>
+        </div>
+    </div>
+</app-dashboard>

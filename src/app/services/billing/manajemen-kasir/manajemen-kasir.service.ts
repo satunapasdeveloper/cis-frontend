@@ -17,6 +17,10 @@ export class ManajemenKasirService {
         return this._httpRequestService.getRequest(`${environment.webApiUrl}/kasir-shift/getForLookUp`, query);
     }
 
+    getById(id_kasir_shift: number): Observable<HttpBaseResponse> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/kasir-shift/getById/${id_kasir_shift}`);
+    }
+
     bukaKasir(payload: any): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/kasir-shift/insertOpenKasir`, payload);
     }

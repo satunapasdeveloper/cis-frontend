@@ -263,8 +263,6 @@ export class SettingModalKasirComponent implements OnInit, OnDestroy {
             opening_balance: this.OpeningBalance
         };
 
-        console.log("data =>", data);
-
         this._manajemenKasirService
             .updateModalKasir(data)
             .pipe(takeUntil(this.Destroy$))
