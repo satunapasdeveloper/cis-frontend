@@ -242,5 +242,4 @@ export class SetupMetodePembayaranComponent implements OnInit, OnDestroy {
                 }
             })
     }
-
 }
