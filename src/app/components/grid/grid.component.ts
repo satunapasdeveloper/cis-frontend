@@ -158,8 +158,6 @@ export class GridComponent implements OnInit, OnDestroy {
             });
         };
 
-        console.log("custom search length =>", this.props.customSearchProps?.length)
-
         if (this.props.customSearchProps?.length) {
             this.props.customSearchProps.forEach((item) => {
                 this.CustomSearchForm.addControl(item.id, new FormControl(null, []));

@@ -242,6 +242,7 @@ export class PenyerahanResepComponent implements OnInit, OnDestroy {
     private handleSaveTelaah() {
         const payload = {
             id_register: this._activatedRoute.snapshot.queryParams['id_register'],
+            id_resep: this._activatedRoute.snapshot.queryParams['id_resep'],
             keterangan_telaah: this.KeteranganTelaah,
             detail_telaah: this.SelectedSetupTelaah
         };

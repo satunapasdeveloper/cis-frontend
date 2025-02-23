@@ -1,7 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -58,6 +58,7 @@ export class LoketFarmasiComponent implements OnInit, OnDestroy {
         private _store: Store,
         private _router: Router,
         private _resepService: ResepService,
+        private _activatedRoute: ActivatedRoute,
         private _antrianResepBaruService: AntrianResepBaruService,
     ) { }
 

@@ -384,7 +384,25 @@ export class VpPlanResepComponent implements OnInit, OnDestroy {
     handleSaveResep() {
         const payload = {
             ...this.FormResep.value,
-            detail_resep: this.ResepDatasource
+            detail_resep: this.ResepDatasource.map((item: any) => {
+                if (item.is_racikan) {
+                    item.id_item = null;
+                    item.harga = null;
+                    item.satuan = null;
+
+                    delete item.selected_item;
+
+                    item.detail_racikan = item.detail_racikan.map((racikan: any) => {
+                        delete racikan.selected_item;
+                        return racikan;
+                    })
+
+                } else {
+                    delete item.selected_item;
+                }
+
+                return item;
+            })
         };
 
         this._resepService

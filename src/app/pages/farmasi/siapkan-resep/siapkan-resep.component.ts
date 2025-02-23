@@ -78,6 +78,7 @@ export class SiapkanResepComponent implements OnInit, OnDestroy {
 
     constructor(
         private _router: Router,
+        private _resepService: ResepService,
         private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
         private _utilityService: UtilityService,
@@ -209,10 +210,10 @@ export class SiapkanResepComponent implements OnInit, OnDestroy {
     }
 
     private getAll() {
-        const id_register = this._activatedRoute.snapshot.queryParams['id_register'];
+        const id_resep = this._activatedRoute.snapshot.queryParams['id_resep'];
 
-        this._antrianResepBaruService
-            .getByIdRegister(id_register)
+        this._resepService
+            .getByIdResep(id_resep)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {

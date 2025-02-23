@@ -11,6 +11,9 @@ import { VpObjectiveComponent } from '../vp-objective/vp-objective.component';
 import { VpSubjectiveComponent } from '../vp-subjective/vp-subjective.component';
 import { VpAssesmentComponent } from '../vp-assesment/vp-assesment.component';
 import { VpPlanComponent } from '../vp-plan/vp-plan.component';
+import { StatusComponent } from '../../input-rekam-medis/status/status.component';
+import { PendaftaranRawatJalanService } from 'src/app/services/pelayanan-klinik/rawat-jalan/pendaftaran-rawat-jalan.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-base-visit-pasien',
@@ -24,6 +27,7 @@ import { VpPlanComponent } from '../vp-plan/vp-plan.component';
         VpAssesmentComponent,
         VpObjectiveComponent,
         VpSubjectiveComponent,
+        StatusComponent,
         InformasiPasienComponent,
     ],
     templateUrl: './base-visit-pasien.component.html',
@@ -49,8 +53,12 @@ export class BaseVisitPasienComponent implements OnInit, OnDestroy {
 
     @ViewChild('VpPlanComps') VpPlanComps!: VpPlanComponent;
 
+    @ViewChild('VpStatusComps') VpStatusComps!: StatusComponent;
+
     constructor(
         private _router: Router,
+        private _messageService: MessageService,
+        private _pendaftaranRawatJalanService: PendaftaranRawatJalanService,
     ) { }
 
     ngOnInit(): void {
@@ -67,5 +75,20 @@ export class BaseVisitPasienComponent implements OnInit, OnDestroy {
 
     handleCreateSubjective(nextCallback: any) {
         nextCallback.emit();
+    }
+
+    handleSaveStatusPulang() {
+        this._pendaftaranRawatJalanService
+            .updateStatus(this.VpStatusComps.onSaveStatus())
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Status Pendaftaran Berhasil Diubah' });
+                    setTimeout(() => {
+                        this._router.navigateByUrl('pelayanan-klinik/rawat-jalan/antrian-poliklinik');
+                    }, 1500);
+                }
+            })
     }
 }

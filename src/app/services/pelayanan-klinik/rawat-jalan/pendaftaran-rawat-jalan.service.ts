@@ -94,4 +94,8 @@ export class PendaftaranRawatJalanService {
     createBpjsDenganSep(payload: PendaftaranRawatJalanModel.ICreateBpjsTanpaSep): Observable<HttpBaseResponse> {
         return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-pendaftaran/createIrjaBpjsWithSEP`, payload);
     }
+
+    updateStatus(payload: any): Observable<HttpBaseResponse> {
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/tr-pendaftaran/updateStatus`, payload);
+    }
 }

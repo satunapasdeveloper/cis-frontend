@@ -83,7 +83,7 @@
                 <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback"
                     let-index="index">
                     <div class="flex flex-col justify-between bg-white rounded-lg shadow gap-2 p-3">
-                        <!-- <app-anamesis #AnamesisComps></app-anamesis> -->
+                        <app-status #VpStatusComps></app-status>
 
                         <div class="flex pt-4 justify-between">
                             <p-button severity="info" label="Sebelumnya" icon="pi pi-arrow-left"
@@ -91,7 +91,7 @@
                             </p-button>
 
                             <p-button severity="info" label="Simpan" icon="pi pi-save" styleClass="p-button-sm"
-                                (onClick)="handleCreateSubjective(nextCallback)">
+                                (onClick)="handleSaveStatusPulang()">
                             </p-button>
                         </div>
                     </div>

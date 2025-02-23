@@ -6,16 +6,21 @@
         Mohon pilih status pasien
     </p>
 
-    <div class="flex flex-row gap-5">
+    <div class="flex flex-row w-full gap-5 mb-5">
         <div *ngFor="let item of Status"
-            class="w-3/12 flex flex-col gap-1 p-3 rounded-md shadow bg-gray-100 items-center justify-center h-[7rem] cursor-pointer
-        {{ SelectedStatus == item.value ? 'border border-solid border-sky-500' : 'border border-solid border-gray-300' }}"
-            (click)="SelectedStatus = item.value">
-            <i class="pi pi-{{ item.image ? item.image : item.icon }}"></i>
-            <p class="text-sm text-gray-700 font-medium">
-                {{ item.title }}
+            class="w-4/12 flex flex-col gap-1 p-3 rounded-md shadow bg-gray-100 items-center justify-center h-[7rem] cursor-pointer
+        {{ SelectedStatus == item.id_kondisi_pulang ? 'border border-solid border-sky-500' : 'border border-solid border-gray-300' }}"
+            (click)="SelectedStatus = item.id_kondisi_pulang; StatusForSave = item.kondisi_pulang">
+            <p class="text-sm text-gray-700 font-medium text-center">
+                {{ item.kondisi_pulang }}
             </p>
         </div>
     </div>
 
+    <div class="flex flex-col w-full gap-1">
+        <p class="text-sm text-gray-700 font-medium">
+            Catatan
+        </p>
+        <textarea [(ngModel)]="Catatan" pInputTextarea class="p-inputtext-sm w-full" rows="4"></textarea>
+    </div>
 </div>
