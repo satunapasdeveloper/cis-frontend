@@ -256,6 +256,4 @@ export class SetupKelompokTarifComponent implements OnInit, OnDestroy {
                 }
             })
     }
-
-
 }
