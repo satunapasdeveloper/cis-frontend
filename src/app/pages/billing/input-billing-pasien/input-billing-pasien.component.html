@@ -95,9 +95,9 @@
     </div>
 
     <p-dialog header="Bayar Tagihan" [modal]="true" [draggable]="false" [resizable]="false" [(visible)]="ShowModalBayar"
-        [style]="{ width: '35rem' }">
+        [style]="{ width: '50rem' }">
 
-        <div class="grid grid-cols-1 gap-3">
+        <div class="grid grid-cols-2 gap-3 mb-4 pb-3 border-b border-dashed border-t-0 border-x-0 border-gray-300">
             <!-- Tgl Tagihan -->
             <div class="flex flex-row gap-2 items-center">
                 <div class="w-4/12">
@@ -145,28 +145,30 @@
                     <p-inputNumber styleClass="p-inputtext-sm"></p-inputNumber>
                 </div>
             </div>
+        </div>
 
-            <!-- Metode Pembayaran -->
-            <div class="flex flex-row gap-2 items-center">
-                <div class="w-4/12">
-                    <p class="text-sm text-gray-700 font-medium">
+        <div class="grid w-full">
+            <div class="flex flex-row gap-5 mb-2 pb-2 border-b border-t-0 border-x-0 border-gray-300 border-solid">
+                <div class="flex w-4/12">
+                    <p class="text-sm font-medium text-gray-700">
                         Metode Pembayaran
                     </p>
                 </div>
-                <div class="w-8/12">
-                    <p-inputNumber styleClass="p-inputtext-sm"></p-inputNumber>
+                <div class="flex w-8/12">
+                    <p class="text-sm font-medium text-gray-700">
+                        Nominal Pendapatan
+                    </p>
                 </div>
             </div>
 
-            <!-- Metode Pembayaran -->
-            <div class="flex flex-row gap-2 items-center">
-                <div class="w-4/12">
-                    <p class="text-sm text-gray-700 font-medium">
-                        Nominal Pembayaran
+            <div *ngFor="let item of PaymentMethodDatasource" class="flex flex-row gap-5 mb-2">
+                <div class="flex w-4/12">
+                    <p class="text-sm text-gray-700">
+                        {{ item.nama_metode_pembayaran }}
                     </p>
                 </div>
-                <div class="w-8/12">
-                    <p-inputNumber styleClass="p-inputtext-sm"></p-inputNumber>
+                <div class="flex w-8/12">
+                    <p-inputNumber [(ngModel)]="item.nominal" styleClass="p-inputtext-sm w-full"></p-inputNumber>
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@ import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
 import { ManajemenKasirService } from 'src/app/services/billing/manajemen-kasir/manajemen-kasir.service';
 import { SetupLoketKasirService } from 'src/app/services/billing/manajemen-kasir/setup-loket-kasir.service';
-import { SetupMetodePembayaranService } from 'src/app/services/billing/setup-data/setup-metode-pembayaran.service';
+import { NakesService } from 'src/app/services/pelayanan-klinik/setup-data/nakes.service';
 
 @Component({
     selector: 'app-setting-modal-kasir',
@@ -58,7 +58,7 @@ export class SettingModalKasirComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Edit', 'Detail'],
+        toolbar: ['Tambah Modal'],
         showPaging: true,
         showSearch: true,
         isCustomSearch: true,
@@ -86,6 +86,7 @@ export class SettingModalKasirComponent implements OnInit, OnDestroy {
     OpeningBalance = 0;
 
     constructor(
+        private _nakesService: NakesService,
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
         private _manajemenKasirService: ManajemenKasirService,
@@ -108,14 +109,14 @@ export class SettingModalKasirComponent implements OnInit, OnDestroy {
                     hidden: false
                 },
                 {
-                    id: 'id_user',
+                    id: 'id_kasir',
                     label: 'Nama Kasir',
                     required: true,
                     type: 'select',
                     dropdownProps: {
                         options: [],
                         optionName: 'nama',
-                        optionValue: 'id_user'
+                        optionValue: 'id_nakes'
                     },
                     value: '',
                     hidden: false
@@ -152,6 +153,7 @@ export class SettingModalKasirComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.getAll({ page: 1, count: 5 });
         this.getAllLoketKasir();
+        this.getAllNakes();
     }
 
     ngOnDestroy(): void {
@@ -178,6 +180,18 @@ export class SettingModalKasirComponent implements OnInit, OnDestroy {
             .subscribe((result) => {
                 if (result.responseResult) {
                     const index = this.FormProps.fields.findIndex(item => item.id == 'id_loket_kasir');
+                    this.FormProps.fields[index].dropdownProps.options = result.data.rows;
+                }
+            });
+    }
+
+    private getAllNakes() {
+        this._nakesService
+            .getAllActive({ page: 1, count: 100 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_kasir');
                     this.FormProps.fields[index].dropdownProps.options = result.data.rows;
                 }
             });
@@ -223,7 +237,7 @@ export class SettingModalKasirComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        if (args.type == 'edit') {
+        if (args.type == 'tambah modal') {
             this.IdKasirShift = args.data.id_kasir_shift;
             this.OpeningBalance = 0;
             this.ShowModalUpdateModal = true;
