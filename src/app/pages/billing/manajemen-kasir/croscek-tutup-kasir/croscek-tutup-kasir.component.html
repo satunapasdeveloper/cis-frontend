@@ -1,1 +1,82 @@
-<p>croscek-tutup-kasir works!</p>
+<app-dashboard>
+    <!-- Grid -->
+    <div class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (aksiClicked)="onToolbarClicked($event)" (pageChanged)="onPageChanged($event)"
+            (customSearchClicked)="onSearchGrid($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form Update Modal -->
+    <p-dialog header="Detail Pendapatan" [modal]="true" [resizable]="false" [draggable]="false"
+        [(visible)]="ShowDialogDetail" [style]="{ width: '45rem' }">
+        <!-- Header -->
+        <div
+            class="flex flex-row items-center w-full gap-2 mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <div class="w-3/12 text-center">
+                <p class="font-semibold text-gray-700 text-sm">
+                    Metode Pembayaran
+                </p>
+            </div>
+
+            <div class="w-3/12 text-center">
+                <p class="font-semibold text-gray-700 text-sm">
+                    Pendapatan Kasir
+                </p>
+            </div>
+
+            <div class="w-3/12 text-center">
+                <p class="font-semibold text-gray-700 text-sm">
+                    Pendapatan Sistem
+                </p>
+            </div>
+
+            <div class="w-3/12 text-center">
+                <p class="font-semibold text-gray-700 text-sm">
+                    Selisih
+                </p>
+            </div>
+        </div>
+
+        <!-- Detail -->
+        <div *ngFor="let item of DetailTutupKasir" class="flex flex-row items-center w-full gap-2 mb-2">
+            <div class="w-3/12">
+                <p class="font-medium text-gray-700 text-sm">
+                    {{ item.nama_metode_pembayaran }}
+                </p>
+            </div>
+
+            <div class="w-3/12">
+                <p-inputNumber [(ngModel)]="item.total_input" [readonly]="true" styleClass="p-inputtext-sm w-full">
+                </p-inputNumber>
+            </div>
+
+            <div class="w-3/12">
+                <p-inputNumber [(ngModel)]="item.total_system" [readonly]="true" styleClass="p-inputtext-sm w-full">
+                </p-inputNumber>
+            </div>
+
+            <div class="w-3/12">
+                <p-inputNumber [(ngModel)]="item.selisih" [readonly]="true" styleClass="p-inputtext-sm w-full">
+                </p-inputNumber>
+            </div>
+        </div>
+
+        <div class="flex flex-col w-full gap-2 my-4">
+            <p class="text-sm text-gray-700 font-medium">
+                Keterangan Validasi
+            </p>
+            <textarea rows="3" [(ngModel)]="Keterangan" pInputTextarea></textarea>
+        </div>
+
+        <div class="flex w-full justify-end gap-4">
+            <p-button severity="secondary" label="Kembali" styleClass="p-button-sm"
+                (onClick)="ShowDialogDetail = false;">
+            </p-button>
+
+            <p-button severity="warning" label="Simpan" styleClass="p-button-sm" (onClick)="handleValidasi()">
+            </p-button>
+        </div>
+    </p-dialog>
+
+    <p-confirmDialog />
+</app-dashboard>
