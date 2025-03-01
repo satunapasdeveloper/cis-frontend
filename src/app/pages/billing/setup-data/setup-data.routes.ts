@@ -20,5 +20,15 @@ export const setupDataBillingRoutes: Routes = [
                 "Beranda", "Billing", "Setup Data", "Setup Tarif"
             ]
         }
+    },
+    {
+        path: 'setup-metode-pembayaran',
+        loadComponent: async () => (await import('./setup-metode-pembayaran/setup-metode-pembayaran.component')).SetupMetodePembayaranComponent,
+        data: {
+            title: 'Setup Metode Pembayaran',
+            breadcrumbs: [
+                "Beranda", "Billing", "Setup Data", "Setup Metode Pembayaran"
+            ]
+        }
     }
 ]

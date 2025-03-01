@@ -1,0 +1,46 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (aksiClicked)="onToolbarClicked($event)" (pageChanged)="onPageChanged($event)"
+            (customSearchClicked)="onSearchGrid($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form_buka_kasir'" class="flex flex-col w-6/12 p-3 bg-white rounded-lg shadow-sm">
+        <div class="grid w-full">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+
+        <div class="flex w-full justify-end mt-4 gap-4">
+            <p-button severity="secondary" label="Kembali" styleClass="p-button-sm" (onClick)="handleBackToList()">
+            </p-button>
+
+            <p-button severity="info" label="Simpan" styleClass="p-button-sm"
+                (onClick)="handleBukaKasir(FormComps.FormGroup.value)">
+            </p-button>
+        </div>
+    </div>
+
+    <!-- Form Update Modal -->
+    <p-dialog header="Edit Modal Kasir" [modal]="true" [resizable]="false" [draggable]="false"
+        [(visible)]="ShowModalUpdateModal" [style]="{ width: '25rem' }">
+        <div class="flex flex-col w-full gap-1 mb-4">
+            <label for="username" class="font-medium text-gray-700 text-sm">
+                Tambah Modal
+            </label>
+            <p-inputNumber [(ngModel)]="OpeningBalance" styleClass="p-inputtext-sm w-full"></p-inputNumber>
+        </div>
+
+        <div class="flex w-full justify-end gap-4">
+            <p-button severity="secondary" label="Kembali" styleClass="p-button-sm"
+                (onClick)="ShowModalUpdateModal = false;">
+            </p-button>
+
+            <p-button severity="warning" label="Simpan" styleClass="p-button-sm" (onClick)="handleEditModalKasir()">
+            </p-button>
+        </div>
+    </p-dialog>
+
+    <p-confirmDialog />
+</app-dashboard>
