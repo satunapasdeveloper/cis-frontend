@@ -1,0 +1,7 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="grid w-full bg-white rounded-xl shadow p-2">
+        <app-grid [props]="GridProps" (aksiClicked)="onToolbarClicked($event)" (pageChanged)="onPageChanged($event)"
+            (customSearchClicked)="onSearchGrid($event)">
+        </app-grid>
+    </div>
+</app-dashboard>

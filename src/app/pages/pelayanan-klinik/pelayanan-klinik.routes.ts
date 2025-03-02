@@ -13,6 +13,11 @@ export const pelayananRoutes: Routes = [
         loadChildren: async () => (await import('./rawat-jalan/rawat-jalan.routes')).rawatJalanRoutes
     },
     {
+        path: 'rawat-inap',
+        canActivate: [AuthGuard],
+        loadChildren: async () => (await import('./rawat-inap/rawat-inap.routes')).rawatInapRoutes
+    },
+    {
         path: 'dokter',
         canActivate: [AuthGuard],
         loadComponent: async () => (await import('./dokter/dokter.component')).DokterComponent,
