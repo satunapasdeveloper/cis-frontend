@@ -35,6 +35,7 @@ import { DialogModule } from 'primeng/dialog';
         InformasiPasienComponent,
         TableModule,
         InputTextModule,
+        InputNumberModule,
         DialogModule
     ],
     templateUrl: './input-billing-pasien.component.html',
@@ -46,6 +47,8 @@ export class InputBillingPasienComponent implements OnInit, OnDestroy {
 
     @ViewChild('InformasiPasienComps') InformasiPasienComps!: InformasiPasienComponent;
 
+    Billing: any;
+
     DetailBillingDatasource: any[] = [];
 
     SelectedDetailBilling: any[] = [];
@@ -53,6 +56,14 @@ export class InputBillingPasienComponent implements OnInit, OnDestroy {
     ShowModalBayar = false;
 
     PaymentMethodDatasource: any[] = [];
+
+    tanggal_billing: Date = this._utilityService.onFormatDate(new Date(), 'DD-MM-yyyy HH:mm:ss');
+    total_tagihan = 0;
+    sudah_terbayar = 0;
+    sisa_tagihan = 0;
+    total_bayar = 0;
+
+    detail_billing: any[] = [];
 
     constructor(
         private _activatedRoute: ActivatedRoute,
@@ -86,19 +97,23 @@ export class InputBillingPasienComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
+                    this.Billing = result.data;
                     this.InformasiPasienComps.getByIdRegister(result.data.id_register);
-                    this.getDetailBilling(result.data.id_register);
+                    this.getDetailBilling(result.data.id_register, result.data.type == 'BPJS');
                 }
             })
     }
 
-    private getDetailBilling(id_register: any) {
+    private getDetailBilling(id_register: any, is_bpjs: boolean) {
         this._billingService
-            .getDetailBilling(id_register)
+            .getDetailBilling(id_register, is_bpjs)
             .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
+            .subscribe((result: any) => {
                 if (result.responseResult) {
                     this.DetailBillingDatasource = result.data;
+                    this.sudah_terbayar = result.totals.sudah_terbayar;
+                    this.sisa_tagihan = result.totals.sisa_tagihan;
+                    this.total_tagihan = result.totals.sisa_tagihan + result.totals.sudah_terbayar;
                 }
             })
     }
@@ -115,6 +130,85 @@ export class InputBillingPasienComponent implements OnInit, OnDestroy {
                             nominal: 0
                         }
                     })
+                }
+            })
+    }
+
+    handleGridEditComplete(args: any, jenis_layanan: string) {
+        let { data, field, newValue } = args;
+
+        // Ensure values are treated as numbers and default to 0 if null/undefined
+        const asuransi = Number(data.asuransi) || 0;
+        const subsidi = Number(data.subsidi) || 0;
+        const subtotal = Number(data.subtotal) || 0;
+
+        // Recalculate iur (out-of-pocket cost)
+        data.iur = subtotal - asuransi - subsidi;
+
+        console.log("data =>", data);
+    }
+
+    handleOpenModalBayar() {
+        this.detail_billing = this.SelectedDetailBilling.map((item: any) => {
+            return {
+                jenis_layanan: item.jenis_layanan,
+                id_reff: item.id_reff,
+                nama: item.nama,
+                satuan: item.satuan,
+                qty: item.qty,
+                harga: item.harga,
+                subtotal: item.subtotal,
+                asuransi: item.asuransi,
+                iur: item.iur,
+                subsidi: item.subsidi,
+            }
+        });
+        this.total_bayar = this.detail_billing.reduce((sum, item) => sum + (item.iur || 0), 0);
+
+        const payload = {
+            type: this.Billing.type,
+            tanggal_billing: this.tanggal_billing,
+            id_register: this.Billing.id_register,
+            keterangan: `invoice_${this.Billing.register.pasien.no_register}`,
+            detail_billing: this.detail_billing
+        };
+
+        this._billingService
+            .create(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this.getById();
+                    this.ShowModalBayar = true;
+                }
+            })
+
+    }
+
+    handlePayment() {
+        const payload = {
+            id_billing: this.Billing.id_billing,
+            id_kasir_shift: this.Billing.id_kasir_shift,
+            detail: this.PaymentMethodDatasource.map((item: any) => {
+                return {
+                    id_metode_pembayaran: item.id_metode_pembayaran,
+                    nominal_bayar: item.nominal
+                }
+            }),
+        };
+
+        this._billingService
+            .payment(payload)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result.responseResult) {
+                    this._messageService.clear();
+                    this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Billing Berhasil Disimpan' });
+
+                    setTimeout(() => {
+                        this.ShowModalBayar = false;
+                        this.getById();
+                    }, 1000);
                 }
             })
     }
