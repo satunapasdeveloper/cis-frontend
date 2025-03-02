@@ -34,4 +34,12 @@ export class SuratPerintahRawatInapService {
         const { id_spri, ...data } = payload;
         return this._httpRequestService.putRequest(`${environment.webApiUrl}/tr-spri/update/${payload.id_spri}`, data);
     }
+
+    updateStatus(payload: any): Observable<HttpBaseResponse> {
+        const { id_spri, ...data } = payload;
+        return this._httpRequestService.putRequest(`${environment.webApiUrl}/tr-spri/update/${payload.id_spri}`, {
+            ...data,
+            is_active: !data.is_active
+        });
+    }
 }

@@ -76,7 +76,7 @@ export class PendaftaranRawatInapService {
     }
 
     createUmum(payload: any): Observable<HttpBaseResponse> {
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-pendaftaran-irna/createIrjaUmum`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-pendaftaran-irna/createIrnaUmum`, payload);
     }
 
     cekPasienBpjs(id_pasien: string, no_rujukan?: string): Observable<HttpBaseResponse> {

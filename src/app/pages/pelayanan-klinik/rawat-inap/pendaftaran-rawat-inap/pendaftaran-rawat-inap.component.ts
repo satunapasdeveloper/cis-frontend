@@ -218,7 +218,7 @@ export class PendaftaranRawatInapComponent implements OnInit, OnDestroy {
                     value: '',
                     onChange: (args) => {
                         if (args) {
-                            this._store.dispatch(new SetupBedActions.GetAllActiveBed({ page: 1, count: 100, id_bed_kamar: args.id_bed_kamar }));
+                            this._store.dispatch(new SetupBedActions.GetAllActiveBed({ page: 1, count: 100 }));
                             this.getAllBed(args.id_bed_kamar)
                         }
                     }
@@ -229,7 +229,7 @@ export class PendaftaranRawatInapComponent implements OnInit, OnDestroy {
                     required: true,
                     type: 'select',
                     dropdownProps: {
-                        optionName: 'nama_bed',
+                        optionName: 'no_bed',
                         optionValue: 'id_bed',
                         options: []
                     },
@@ -305,7 +305,7 @@ export class PendaftaranRawatInapComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-5 grid-cols-2',
+            class: 'grid-rows-4 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
