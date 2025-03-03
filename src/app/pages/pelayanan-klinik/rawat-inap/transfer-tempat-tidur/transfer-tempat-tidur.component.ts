@@ -248,6 +248,7 @@ export class TransferTempatTidurComponent implements OnInit, AfterViewInit, OnDe
     }
 
     ngOnDestroy(): void {
+        localStorage.removeItem("_SPSH_");
         this.Destroy$.next(0);
         this.Destroy$.complete();
     }

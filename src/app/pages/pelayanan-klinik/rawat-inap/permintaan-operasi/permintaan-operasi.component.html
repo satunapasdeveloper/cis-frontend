@@ -1,4 +1,4 @@
-<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+<app-dashboard>
     <!-- Grid -->
     <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
         <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
@@ -8,8 +8,12 @@
     </div>
 
     <!-- Form -->
-    <div *ngIf="PageState == 'form'" class="flex flex-col w-6/12 p-3 bg-white rounded-lg shadow-sm">
-        <div class="grid w-full">
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full gap-3">
+        <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+            <app-informasi-pasien></app-informasi-pasien>
+        </div>
+
+        <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
             <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
         </div>
 

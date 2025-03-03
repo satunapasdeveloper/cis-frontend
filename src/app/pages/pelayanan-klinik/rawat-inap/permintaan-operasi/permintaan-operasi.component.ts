@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -7,6 +8,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
+import { InformasiPasienComponent } from 'src/app/components/layout/informasi-pasien/informasi-pasien.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
@@ -24,12 +26,13 @@ import { SetupRencanaAnestesiService } from 'src/app/services/pelayanan-klinik/s
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        InformasiPasienComponent,
     ],
     templateUrl: './permintaan-operasi.component.html',
     styleUrl: './permintaan-operasi.component.scss'
 })
-export class PermintaanOperasiComponent implements OnInit, OnDestroy {
+export class PermintaanOperasiComponent implements OnInit, AfterViewInit, OnDestroy {
 
     Destroy$ = new Subject();
 
@@ -94,6 +97,7 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
     constructor(
+        private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
         private _setupRuangOperasiService: SetupKamarOperasiService,
@@ -124,7 +128,7 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
                     id: 'tanggal_permintaan',
                     label: 'Tgl. Permintaan Operasi',
                     required: true,
-                    type: 'date',
+                    type: 'datetime',
                     value: '',
                 },
                 {
@@ -210,7 +214,7 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-8 grid-cols-1',
+            class: 'grid-rows-4 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -222,7 +226,23 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
         this.getAllGedungOperasi();
     }
 
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const state = this._activatedRoute.snapshot.queryParams['state'];
+
+            if (state == 'create') {
+                this.PageState = 'form';
+
+                setTimeout(() => {
+                    const pasien = JSON.parse(localStorage.getItem("_SPSH_") as any);
+                    this.FormComps.FormGroup.get('id_register')?.setValue(pasien.id_register);
+                }, 500);
+            }
+        }, 1);
+    }
+
     ngOnDestroy(): void {
+        localStorage.removeItem("_SPSH_");
         this.Destroy$.next(0);
         this.Destroy$.complete();
     }

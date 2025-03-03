@@ -182,8 +182,6 @@ export class ListPendaftaranRawatInapComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
-        console.log(args);
-
         if (args.type == 'bed transfer') {
             localStorage.setItem("_SPSH_", JSON.stringify(args.data));
             setTimeout(() => {
@@ -191,10 +189,10 @@ export class ListPendaftaranRawatInapComponent implements OnInit, OnDestroy {
             }, 1000);
         }
 
-        if (args.type == 'permintaan_operasi') {
+        if (args.type == 'permintaan operasi') {
             localStorage.setItem("_SPSH_", JSON.stringify(args.data));
             setTimeout(() => {
-                this._router.navigateByUrl('/pelayanan-klinik/rawat-inap/permintaan_operasi?state=create')
+                this._router.navigateByUrl('/pelayanan-klinik/rawat-inap/permintaan-operasi?state=create')
             }, 1000);
         }
     }
