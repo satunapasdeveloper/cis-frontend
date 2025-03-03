@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
@@ -14,6 +14,7 @@ import { PendaftaranRawatInapService } from 'src/app/services/pelayanan-klinik/r
 import { SuratPerintahRawatInapService } from 'src/app/services/pelayanan-klinik/rawat-inap/surat-perintah-rawat-inap.service';
 import { NakesService } from 'src/app/services/pelayanan-klinik/setup-data/nakes.service';
 import { PoliService } from 'src/app/services/pelayanan-klinik/setup-data/poli.service';
+import { PasienService } from 'src/app/services/pendaftaran-klinik/pasien/pasien.service';
 
 @Component({
     selector: 'app-surat-perintah-rawat-inap',
@@ -46,8 +47,11 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
     GridProps: GridModel.IGrid = {
         id: 'SetupSpri',
         column: [
-            { field: 'kode_satuan', headerName: 'Kode Spri', class: 'text-blue-500 font-semibold' },
-            { field: 'nama_satuan', headerName: 'Nama Spri' },
+            { field: 'tanggal_rencana_inap', headerName: 'Tgl. Rencana Inap', class: 'text-blue-500 font-semibold' },
+            { field: 'pasien.nama_pasien', headerName: 'Nama Pasien', },
+            { field: 'pasien.no_rekam_medis', headerName: 'No. Rekam Medis', },
+            { field: 'poli.nama_poli', headerName: 'Poliklinik' },
+            { field: 'dokter.nama', headerName: 'Dokter' },
             { field: 'is_active', headerName: 'Status', renderAsCheckbox: true, class: 'text-center' },
         ],
         dataSource: [],
@@ -58,8 +62,13 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
         isCustomSearch: true,
         customSearchProps: [
             {
-                id: 'nama_satuan',
-                placeholder: 'Cari Spri Disini',
+                id: 'tanggal_rencana_inap',
+                placeholder: 'Cari Tgl. Rencana Inap Disini',
+                type: 'date'
+            },
+            {
+                id: 'nama_pasien',
+                placeholder: 'Cari Nama Pasien Disini',
                 type: 'text'
             },
         ],
@@ -75,9 +84,12 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
+    KeywordPasien$ = new BehaviorSubject(null);
+
     constructor(
         private _poliService: PoliService,
         private _nakesService: NakesService,
+        private _pasienService: PasienService,
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
         private _pendaftaranRawatInapService: PendaftaranRawatInapService,
@@ -95,29 +107,29 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
                     hidden: true
                 },
                 {
-                    id: 'id_register',
-                    label: 'Pilih Register',
+                    id: 'id_pasien',
+                    label: 'Pilih Pasien',
                     required: true,
                     type: 'select',
                     dropdownProps: {
                         options: [],
                         optionName: 'nama_pasien',
-                        optionValue: 'id_regsiter'
+                        optionValue: 'id_pasien',
+                        customField: {
+                            title: 'nama_pasien',
+                            subtitle: 'no_rekam_medis',
+                            description: 'tanggal_lahir'
+                        }
                     },
                     value: '',
+                    onFilter: (args: any) => {
+                        this.KeywordPasien$.next(args.filter);
+                    },
                     onChange: (args: any) => {
                         if (args) {
-                            this.FormComps.FormGroup.get('id_pasien')?.setValue(args.id_pasien)
+                            this.getDetailPasien(args.id_pasien);
                         }
                     }
-                },
-                {
-                    id: 'id_pasien',
-                    label: 'Id Pasien',
-                    required: true,
-                    type: 'text',
-                    value: '',
-                    hidden: true
                 },
                 {
                     id: 'no_kartu',
@@ -167,7 +179,7 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
                     value: '',
                     onChange: (args: any) => {
                         if (args) {
-                            this.FormComps.FormGroup.get('kode_poli_kontrol')?.setValue(args.kode_poli)
+                            this.FormComps.FormGroup.get('kode_poli_kontrol')?.setValue(args.kode_poli_bpjs)
                         }
                     }
                 },
@@ -209,13 +221,21 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
             state: 'write',
             defaultValue: null,
         };
+
+        this.KeywordPasien$
+            .pipe(
+                takeUntil(this.Destroy$),
+                debounceTime(500),
+                distinctUntilChanged(),
+            ).subscribe((result) => {
+                this.getAllPasien(result);
+            })
     }
 
     ngOnInit(): void {
         this.getAll({ page: 1, count: 5 });
         this.getAllPoli({ page: 1, count: 100 });
         this.getAllNakes({ page: 1, count: 100 });
-        this.getAllRegister({ page: 1, count: 100 });
     }
 
     ngOnDestroy(): void {
@@ -235,16 +255,40 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
             });
     }
 
-    private getAllRegister(query: any) {
-        this._pendaftaranRawatInapService
-            .getAll(query)
+    private getAllPasien(keyword: any) {
+        let queries: any = { page: 1, count: 100 };
+
+        if (keyword && keyword.length) {
+            queries.nama_pasien = keyword;
+        }
+
+        this._pasienService
+            .getAll(queries)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
-                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_register');
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_pasien');
                     this.FormProps.fields[index].dropdownProps.options = result.data.rows;
                 }
             });
+    }
+
+    private getDetailPasien(id_pasien: string) {
+        this._pasienService
+            .getById(id_pasien)
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result: any) => {
+                if (result.responseResult) {
+                    const penjaminBpjs = result.data.detail_penjamin.filter((item: any) => item.nama_penjamin == 'BPJS');
+
+                    if (penjaminBpjs.length) {
+                        this.FormComps.FormGroup.get('no_kartu')?.setValue(penjaminBpjs[0].nomor_penjamin);
+                    } else {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'warn', summary: 'Oops', detail: 'No. Kartu BPJS Pasien Tidak Ditemukan / Belum Terdaftar' })
+                    }
+                }
+            })
     }
 
     private getAllPoli(query: any) {
@@ -345,6 +389,9 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
     }
 
     saveSpri(data: any) {
+        delete data.id_spri;
+        delete data.is_active;
+
         this._suratPerintahRawatInapService
             .create(data)
             .pipe(takeUntil(this.Destroy$))
@@ -372,7 +419,7 @@ export class SuratPerintahRawatInapComponent implements OnInit, OnDestroy {
 
     private updateStatusSpri(data: any) {
         this._suratPerintahRawatInapService
-            .update(data)
+            .updateStatus(data)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result.responseResult) {
