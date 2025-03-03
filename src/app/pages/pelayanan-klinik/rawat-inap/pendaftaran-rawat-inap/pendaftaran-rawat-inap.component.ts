@@ -338,7 +338,7 @@ export class PendaftaranRawatInapComponent implements OnInit, OnDestroy {
         };
 
         if (data.id == 'back') {
-            this._router.navigate(['/pelayanan-klinik/rawat-jalan/pelayanan']);
+            this._router.navigate(['/pelayanan-klinik/rawat-inap/pelayanan']);
         };
     }
 

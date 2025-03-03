@@ -15,7 +15,7 @@ export class PendaftaranRawatInapService {
 
     getAll(query: any): Observable<HttpBaseResponse> {
         return this._httpRequestService
-            .getRequest(`${environment.webApiUrl}/tr-pendaftaran-irna/getAll`, { jenis_rawat: 'I', status_billing: 'BELUM LUNAS', ...query })
+            .getRequest(`${environment.webApiUrl}/tr-pendaftaran-irna/getAll`, { jenis_rawat: 'I', ...query })
             .pipe(
                 map((result) => {
                     if (result.data.rows.length) {

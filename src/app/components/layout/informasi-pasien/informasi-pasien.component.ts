@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subject, takeUntil } from 'rxjs';
@@ -26,6 +26,7 @@ export class InformasiPasienComponent implements OnInit, OnDestroy {
     ToggleCard = true;
 
     constructor(
+        private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _pendaftaranRawatJalanService: PendaftaranRawatJalanService
     ) { }
@@ -42,6 +43,9 @@ export class InformasiPasienComponent implements OnInit, OnDestroy {
     }
 
     getByIdRegister(id_register: any) {
+        const url = this._router.url[0];
+        console.log("url =>", url);
+
         this._pendaftaranRawatJalanService
             .getByIdRegister(id_register)
             .pipe(takeUntil(this.Destroy$))

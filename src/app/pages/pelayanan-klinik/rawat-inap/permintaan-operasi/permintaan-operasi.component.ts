@@ -10,9 +10,10 @@ import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboar
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
-import { AsalRujukanModel } from 'src/app/model/pages/setup-data/asal-rujukan.model';
 import { PermintaanOperasiService } from 'src/app/services/pelayanan-klinik/rawat-inap/permintaan-operasi.service';
-import { AsalRujukanService } from 'src/app/services/pelayanan-klinik/setup-data/asal-rujukan.service';
+import { SetupGedungOperasiService } from 'src/app/services/pelayanan-klinik/setup-data/setup-gedung-operasi.service';
+import { SetupKamarOperasiService } from 'src/app/services/pelayanan-klinik/setup-data/setup-kamar-operasi.service';
+import { SetupRencanaAnestesiService } from 'src/app/services/pelayanan-klinik/setup-data/setup-rencana-anestesi.service';
 
 @Component({
     selector: 'app-permintaan-operasi',
@@ -95,7 +96,10 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
     constructor(
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
+        private _setupRuangOperasiService: SetupKamarOperasiService,
         private _permintaanOperasiService: PermintaanOperasiService,
+        private _setupGedungOperasiService: SetupGedungOperasiService,
+        private _setupRencanaAnastesiService: SetupRencanaAnestesiService,
     ) {
         this.FormProps = {
             id: 'form_setup_asal_rujukan',
@@ -131,7 +135,7 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
                     value: '',
                     dropdownProps: {
                         options: [],
-                        optionName: 'rencana_anestesi',
+                        optionName: 'nama_anestesi',
                         optionValue: 'id_rencana_anestesi',
                     }
                 },
@@ -143,8 +147,13 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
                     value: '',
                     dropdownProps: {
                         options: [],
-                        optionName: 'ruang_operasi',
-                        optionValue: 'id_ruang_operasi',
+                        optionName: 'nama_gedung_operasi',
+                        optionValue: 'id_gedung_operasi',
+                    },
+                    onChange: (args: any) => {
+                        if (args) {
+                            this.getAllKamarOperasi(args.kode_gedung_operasi);
+                        }
                     }
                 },
                 {
@@ -155,7 +164,7 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
                     value: '',
                     dropdownProps: {
                         options: [],
-                        optionName: 'ruang_operasi',
+                        optionName: 'nama_ruang_operasi',
                         optionValue: 'id_ruang_operasi',
                     }
                 },
@@ -209,6 +218,8 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.getAll({ page: 1, count: 5 });
+        this.getAllRencanaAnastesi();
+        this.getAllGedungOperasi();
     }
 
     ngOnDestroy(): void {
@@ -224,6 +235,42 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
                 if (result) {
                     this.GridProps.dataSource = result.data.rows;
                     this.GridProps.totalRows = result.data.totalRows;
+                }
+            });
+    }
+
+    private getAllRencanaAnastesi() {
+        this._setupRencanaAnastesiService
+            .getAllActive({ page: 1, count: 100 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_rencana_anestesi');
+                    this.FormProps.fields[index].dropdownProps.options = result.data.rows;
+                }
+            });
+    }
+
+    private getAllGedungOperasi() {
+        this._setupGedungOperasiService
+            .getAllActive({ page: 1, count: 100 })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_gedung_operasi');
+                    this.FormProps.fields[index].dropdownProps.options = result.data.rows;
+                }
+            });
+    }
+
+    private getAllKamarOperasi(kode_gedung_operasi: string) {
+        this._setupRuangOperasiService
+            .getAllActive({ page: 1, count: 100, kode_gedung_operasi: kode_gedung_operasi })
+            .pipe(takeUntil(this.Destroy$))
+            .subscribe((result) => {
+                if (result) {
+                    const index = this.FormProps.fields.findIndex(item => item.id == 'id_ruang_operasi');
+                    this.FormProps.fields[index].dropdownProps.options = result.data.rows;
                 }
             });
     }
@@ -302,6 +349,9 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
     }
 
     saveAsalRujukan(data: any) {
+        delete data.id_permintaan_operasi;
+        delete data.id_gedung_operasi;
+
         this._permintaanOperasiService
             .create(data)
             .pipe(takeUntil(this.Destroy$))
@@ -315,6 +365,8 @@ export class PermintaanOperasiComponent implements OnInit, OnDestroy {
     }
 
     updateAsalRujukan(data: any) {
+        delete data.id_gedung_operasi;
+
         this._permintaanOperasiService
             .update(data)
             .pipe(takeUntil(this.Destroy$))

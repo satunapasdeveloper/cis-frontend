@@ -275,7 +275,6 @@ export class GridComponent implements OnInit, OnDestroy {
 
     getNestedValue(obj: any, path: string): any {
         const fields = path.split('.').reduce((o, key) => (o ? o[key] : ''), obj);
-        console.log("fields =>", fields);
         return fields;
     }
 }
