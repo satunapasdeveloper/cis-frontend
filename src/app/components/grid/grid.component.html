@@ -89,19 +89,19 @@
                         {{ handleFormatStringToNumber(rowData[col.field]) | currency: 'Rp. ' }}
                         }
                         @case ('date') {
-                        {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                        {{ rowData[col.field] ? (rowData[col.field] | date: 'dd-MM-yyyy') : '-' }}
                         }
                         @case ('datetime') {
-                        {{ handleFormatDateTime(rowData[col.field])}}
+                        {{ rowData[col.field] ? handleFormatDateTime(rowData[col.field]) : '-'}}
                         }
                         @case ('number') {
                         {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
                         }
                         @case (undefined) {
-                        {{ rowData[col.field] }}
+                        {{ getNestedValue(rowData, col.field) }}
                         }
                         @default {
-                        {{ rowData[col.field] }}
+                        {{ getNestedValue(rowData, col.field) }}
                         }
                         }
                     </span>
@@ -169,19 +169,19 @@
                             {{ handleFormatStringToNumber(rowData[col.field]) | currency: 'Rp. ' }}
                             }
                             @case ('date') {
-                            {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                            {{ rowData[col.field] ? (rowData[col.field] | date: 'dd-MM-yyyy') : '-' }}
                             }
                             @case ('datetime') {
-                            {{ handleFormatDateTime(rowData[col.field])}}
+                            {{ rowData[col.field] ? handleFormatDateTime(rowData[col.field]) : '-'}}
                             }
                             @case ('number') {
                             {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
                             }
                             @case (undefined) {
-                            {{ rowData[col.field] }}
+                            {{ getNestedValue(rowData, col.field) }}
                             }
                             @default {
-                            {{ rowData[col.field] }}
+                            {{ getNestedValue(rowData, col.field) }}
                             }
                             }
                         </span>

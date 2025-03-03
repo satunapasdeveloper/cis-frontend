@@ -174,5 +174,45 @@ export const setupDataRoutes: Route[] = [
                 "Beranda", "Pelayanan Klinik", "Setup Data", "Manajemen User"
             ]
         }
-    }
+    },
+    {
+        path: 'setup-gedung-operasi',
+        loadComponent: async () => (await import('./setup-gedung-operasi/setup-gedung-operasi.component')).SetupGedungOperasiComponent,
+        data: {
+            title: 'Setup Gedung Operasi',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Gedung Operasi"
+            ]
+        }
+    },
+    {
+        path: 'setup-ruang-operasi',
+        loadComponent: async () => (await import('./setup-ruang-operasi/setup-ruang-operasi.component')).SetupRuangOperasiComponent,
+        data: {
+            title: 'Setup Ruang Operasi',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Ruang Operasi"
+            ]
+        }
+    },
+    {
+        path: 'setup-dokter-operasi',
+        loadComponent: async () => (await import('./setup-dokter-operasi/setup-dokter-operasi.component')).SetupDokterOperasiComponent,
+        data: {
+            title: 'Setup Ruang Operasi',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Dokter Operasi"
+            ]
+        }
+    },
+    {
+        path: 'setup-rencana-anestesi',
+        loadComponent: async () => (await import('./setup-rencana-operasi/setup-rencana-operasi.component')).SetupRencanaOperasiComponent,
+        data: {
+            title: 'Setup Ruang Anestesi',
+            breadcrumbs: [
+                "Beranda", "Pelayanan Klinik", "Setup Data", "Setup Dokter Anestesi"
+            ]
+        }
+    },
 ];

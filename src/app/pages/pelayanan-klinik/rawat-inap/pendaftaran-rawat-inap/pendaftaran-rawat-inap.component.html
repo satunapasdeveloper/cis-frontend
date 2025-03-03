@@ -1,0 +1,157 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <div class="flex gap-3 items-start relative">
+        <!-- Form -->
+        <div class="flex flex-col w-8/12">
+            <!-- Form Pilih Pasien -->
+            <div class="flex flex-col w-full p-3 bg-white rounded-lg shadow-sm mb-2">
+                <div class="grid w-full">
+                    <div
+                        class="flex flex-col gap-0 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                        <p class="text-lg font-medium text-gray-700">
+                            Data Pasien
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            Input data nomor antrian dan pasien disini
+                        </p>
+                    </div>
+
+                    <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+                </div>
+            </div>
+
+            <!-- Form Pilih Pasien -->
+            <div *ngIf="ShowFormResult" class="flex flex-col w-full p-3 bg-white rounded-lg shadow-sm">
+                <div class="grid w-full">
+                    <div
+                        class="flex flex-col gap-0 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                        <p class="text-lg font-medium text-gray-700">
+                            Detail Pendaftaran
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            Detail data pendaftaran rawat jalan
+                        </p>
+                    </div>
+
+                    <app-dynamic-form #FormResultComps [props]="FormResultProps"></app-dynamic-form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log BPJS -->
+        <div *ngIf="ResultCekPasienBpjs && !ShowDialogCekPasienBpjs"
+            class="flex flex-col p-3 bg-white rounded-lg shadow-sm fixed right-[40px] w-[24.5rem]">
+            <div class="flex flex-col gap-0 mb-3 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <p class="text-lg font-medium text-gray-700">
+                    Log BPJS Pasien
+                </p>
+                <p class="text-sm text-gray-500">
+                    Detail log BPJS pasien dibawah ini
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="flex flex-col gap-3">
+                <div *ngFor="let item of ResultCekPasienBpjs?.log_cek" class="flex flex-col gap-1">
+                    <div class="w-full">
+                        <p class="text-sm text-gray-700 font-medium">
+                            <i class="pi pi-chevron-right" style="font-size: 9px"></i>
+                            {{ item.title | uppercase }}
+                        </p>
+                    </div>
+
+                    <div
+                        class="w-full p-2 rounded-md {{ item.status == 0 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700' }}">
+                        <p class="text-xs font-medium">
+                            <i class="pi pi-{{ item.status == 0 ? 'times' : 'check' }}"
+                                style="font-size: 11px"></i>&nbsp;
+                            {{ item.message }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog Search Pasien -->
+    <app-search-pasien-dialog #DialogSearchPasienComps (onSelect)="handleSelectLookupPasien($event)">
+    </app-search-pasien-dialog>
+
+    <!-- Dialog Result Cek Pasien BPJS -->
+    <p-dialog header="Detail Kepesertaan BPJS" [modal]="true" [draggable]="false" [resizable]="false"
+        [(visible)]="ShowDialogCekPasienBpjs" [style]="{ width: '40rem' }">
+
+        <!-- Header -->
+        <div class="flex flex-col gap-1 mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <!-- Nama Pasien -->
+            <div class="flex w-full gap-1">
+                <div class="w-3/12">
+                    <p class="text-sm text-gray-600">Nama Pasien</p>
+                </div>
+                <div class="w-9/12">
+                    <p class="text-sm text-gray-800 font-medium">
+                        : {{ ResultCekPasienBpjs?.nama_pasien }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Nama Pasien -->
+            <div class="flex w-full gap-1">
+                <div class="w-3/12">
+                    <p class="text-sm text-gray-600">No. Identitas</p>
+                </div>
+                <div class="w-9/12">
+                    <p class="text-sm text-gray-800 font-medium">
+                        : {{ ResultCekPasienBpjs?.nik }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Nama Pasien -->
+            <div class="flex w-full gap-1">
+                <div class="w-3/12">
+                    <p class="text-sm text-gray-600">No. Kartu BPJS</p>
+                </div>
+                <div class="w-9/12">
+                    <p class="text-sm text-gray-800 font-medium">
+                        : {{ ResultCekPasienBpjs?.no_kartu_bpjs }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex flex-col gap-3 mb-8">
+            <div *ngFor="let item of ResultCekPasienBpjs?.log_cek" class="flex flex-col gap-1">
+                <div class="w-full">
+                    <p class="text-sm text-gray-700 font-medium">
+                        <i class="pi pi-chevron-right" style="font-size: 9px"></i>
+                        {{ item.title | uppercase }}
+                    </p>
+                </div>
+
+                <div
+                    class="w-full p-2 rounded-md {{ item.status == 0 ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700' }}">
+                    <p class="text-xs font-medium">
+                        <i class="pi pi-{{ item.status == 0 ? 'times' : 'check' }}" style="font-size: 11px"></i>&nbsp;
+                        {{ item.message }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="flex justify-end gap-2">
+            <p-button label="Cancel" severity="secondary" styleClass="p-button-sm"
+                (onClick)="ShowDialogCekPasienBpjs = false">
+            </p-button>
+
+            <p-button label="Lanjut Ke Pendaftaran Tanpa SEP" severity="warning" styleClass="p-button-sm"
+                (onClick)="handleCloseDialogCekPasienBpjs(false)">
+            </p-button>
+
+            <p-button label="Lanjut Ke Pendaftaran" severity="info" styleClass="p-button-sm"
+                (onClick)="handleCloseDialogCekPasienBpjs(true)">
+            </p-button>
+        </div>
+    </p-dialog>
+</app-dashboard>

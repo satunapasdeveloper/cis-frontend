@@ -16,6 +16,7 @@ export namespace BedModel {
         page: number;
         count: number;
         no_bed?: string;
+        id_bed_kamar?: string;
     }
 
     export class GetAllBed implements HttpBaseResponse {

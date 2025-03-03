@@ -1,0 +1,35 @@
+<app-dashboard>
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <app-grid [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (pageChanged)="onPageChanged($event)" (customSearchClicked)="onSearchGrid($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full gap-3">
+        <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+            <app-informasi-pasien></app-informasi-pasien>
+        </div>
+
+        <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+        </div>
+
+        <div class="flex w-full justify-end mt-4 gap-4">
+            <p-button severity="secondary" label="Kembali" styleClass="p-button-sm" (onClick)="handleBackToList()">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'insert'" severity="info" label="Simpan" styleClass="p-button-sm"
+                (onClick)="saveAsalRujukan(FormComps.FormGroup.value)">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
+                (onClick)="updateAsalRujukan(FormComps.FormGroup.value)">
+            </p-button>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>

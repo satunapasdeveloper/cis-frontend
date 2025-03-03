@@ -143,8 +143,17 @@ export class GridComponent implements OnInit, OnDestroy {
                     case 'Batal Pendaftaran':
                         icon = 'pi pi-times';
                         break;
+                    case 'Approve':
+                        icon = 'pi pi-check';
+                        break;
                     case 'Cancel':
                         icon = 'pi pi-times';
+                        break;
+                    case 'Bed Transfer':
+                        icon = 'pi pi-clipboard';
+                        break;
+                    case 'Permintaan Operasi':
+                        icon = 'pi pi-wave-pulse';
                         break;
                     default:
                         break;
@@ -271,5 +280,10 @@ export class GridComponent implements OnInit, OnDestroy {
             type: EXCEL_TYPE
         });
         FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    }
+
+    getNestedValue(obj: any, path: string): any {
+        const fields = path.split('.').reduce((o, key) => (o ? o[key] : ''), obj);
+        return fields;
     }
 }

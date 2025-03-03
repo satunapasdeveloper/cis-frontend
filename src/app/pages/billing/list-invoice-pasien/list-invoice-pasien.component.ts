@@ -47,7 +47,7 @@ export class ListInvoicePasienComponent implements OnInit, OnDestroy {
             { field: 'tanggal_billing', headerName: 'Tgl. Register', format: 'date' },
             { field: 'nama_pasien', headerName: 'Nama Pasien' },
             { field: 'type', headerName: 'Debitur' },
-            { field: 'total_billing', headerName: 'Total Tagihan' },
+            { field: 'total_billing', headerName: 'Total Tagihan', format: 'currency' },
             { field: 'status_billing', headerName: 'Status' },
         ],
         dataSource: [],
@@ -87,7 +87,7 @@ export class ListInvoicePasienComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this.getAll({ page: 1, count: 5 });
+        this.getAll({ page: 1, count: 5, jenis_rawat: 'J', status_billing: 'OPEN' });
     }
 
     ngOnDestroy(): void {
@@ -103,6 +103,7 @@ export class ListInvoicePasienComponent implements OnInit, OnDestroy {
                 if (result) {
                     this.GridProps.dataSource = result.data.rows;
                     this.GridProps.totalRows = result.data.totalRows;
+                    this.GridCustomSearchParams = query;
                 }
             });
     }
@@ -114,12 +115,12 @@ export class ListInvoicePasienComponent implements OnInit, OnDestroy {
     }
 
     onPageChanged(args: any) {
-        this.GridPaginationData = { page: args.page + 1, count: args.rows };
-        this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
+        this.GridCustomSearchParams = { ...this.GridCustomSearchParams, page: args.page + 1, count: args.rows };
+        this.getAll(this.GridCustomSearchParams);
     }
 
     onSearchGrid(args: any) {
-        this.GridCustomSearchParams = args;
-        this.getAll({ ...this.GridPaginationData, ...this.GridCustomSearchParams });
+        this.GridCustomSearchParams = { ...this.GridCustomSearchParams, ...args };
+        this.getAll(this.GridCustomSearchParams);
     }
 }

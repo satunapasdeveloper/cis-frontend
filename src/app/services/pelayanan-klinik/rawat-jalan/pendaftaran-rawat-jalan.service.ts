@@ -17,7 +17,7 @@ export class PendaftaranRawatJalanService {
 
     getAll(query: PendaftaranRawatJalanModel.IListPendaftaranQueryParams): Observable<PendaftaranRawatJalanModel.GetAllPendaftaran> {
         return this._httpRequestService
-            .getRequest(`${environment.webApiUrl}/tr-pendaftaran/getAll`, { jenis_rawat: 'J', ...query })
+            .getRequest(`${environment.webApiUrl}/tr-pendaftaran/getAll`, { jenis_rawat: 'J', status_billing: 'BELUM LUNAS', ...query })
             .pipe(
                 map((result) => {
                     if (result.data.rows.length) {
