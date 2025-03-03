@@ -1,15 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TooltipModule } from 'primeng/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 import { DynamicFormComponent } from 'src/app/components/form/dynamic-form/dynamic-form.component';
 import { GridComponent } from 'src/app/components/grid/grid.component';
 import { DashboardComponent } from 'src/app/components/layout/dashboard/dashboard.component';
+import { InformasiPasienComponent } from 'src/app/components/layout/informasi-pasien/informasi-pasien.component';
 import { FormModel } from 'src/app/model/components/form.model';
 import { GridModel } from 'src/app/model/components/grid.model';
 import { LayoutModel } from 'src/app/model/components/layout.model';
+import { PendaftaranRawatInapService } from 'src/app/services/pelayanan-klinik/rawat-inap/pendaftaran-rawat-inap.service';
 import { TransferTempatTidurService } from 'src/app/services/pelayanan-klinik/rawat-inap/transfer-tempat-tidur.service';
 import { BedService } from 'src/app/services/pelayanan-klinik/setup-data/bed.service';
 import { KamarService } from 'src/app/services/pelayanan-klinik/setup-data/kamar.service';
@@ -18,66 +26,60 @@ import { KamarService } from 'src/app/services/pelayanan-klinik/setup-data/kamar
     selector: 'app-transfer-tempat-tidur',
     standalone: true,
     imports: [
+        FormsModule,
         CommonModule,
         DashboardComponent,
         GridComponent,
         DynamicFormComponent,
         ButtonModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        InformasiPasienComponent,
+        TooltipModule,
+        DialogModule,
+        CalendarModule,
+        InputTextareaModule,
     ],
     templateUrl: './transfer-tempat-tidur.component.html',
     styleUrl: './transfer-tempat-tidur.component.scss'
 })
-export class TransferTempatTidurComponent implements OnInit, OnDestroy {
+export class TransferTempatTidurComponent implements OnInit, AfterViewInit, OnDestroy {
 
     Destroy$ = new Subject();
 
     PageState: 'list' | 'form' = 'list';
 
-    ButtonNavigation: LayoutModel.IButtonNavigation[] = [
-        {
-            id: 'add',
-            title: 'Tambah',
-            icon: 'pi pi-plus'
-        }
-    ];
+    ButtonNavigation: LayoutModel.IButtonNavigation[] = [];
 
     GridProps: GridModel.IGrid = {
         id: 'PermintaanOperasi',
         column: [
-            { field: 'register.no_register', headerName: 'No. Register', class: 'text-blue-500 font-semibold' },
-            { field: 'register.pasien.nama_pasien', headerName: 'Nama Pasien' },
-            { field: 'tanggal_permintaan', headerName: 'Tgl. Permintaan', format: 'datetime' },
-            { field: 'ruang_operasi.nama_ruang_operasi', headerName: 'Ruang Operasi' },
-            { field: 'rencana_anestesi.nama_anestesi', headerName: 'Rencana Anastesi' },
-            { field: 'status', headerName: 'Status', class: 'text-center' },
+            { field: 'no_bed_transfer', headerName: 'No. Transfer', class: 'text-blue-500 font-semibold' },
+            { field: 'tanggal_bed_request', headerName: 'Tgl. Transfer', format: 'datetime' },
+            { field: 'bed_kamar_asal.label_kamar', headerName: 'Kamar Asal' },
+            { field: 'bed_asal.no_bed', headerName: 'Bed Asal' },
+            { field: 'bed_kamar_tujuan.label_kamar', headerName: 'Kamar Asal' },
+            { field: 'bed_tujuan.no_bed', headerName: 'Bed Asal' },
+            { field: 'keterangan_request', headerName: 'Keterangan', },
+            { field: 'keterangan_approve', headerName: 'Keterangan Approve', },
+            { field: 'approved_at', headerName: 'Tgl. Approve', format: 'datetime' },
+            { field: 'canceled_at', headerName: 'Tgl. Cancel', format: 'datetime' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
         toolbar: ['Approve', 'Cancel'],
-        showPaging: true,
-        showSearch: true,
-        isCustomSearch: true,
+        showPaging: false,
+        showSearch: false,
+        isCustomSearch: false,
         customSearchProps: [
             {
-                id: 'tanggal_permintaan',
-                placeholder: 'Cari Tgl. Permintaan Disini',
-                type: 'date'
-            },
-            {
-                id: 'no_register',
-                placeholder: 'Cari No. Register Disini',
-                type: 'text'
-            },
-            {
-                id: 'nama_ruang_operasi',
-                placeholder: 'Cari Ruang Operasi Disini',
-                type: 'text'
-            },
-            {
-                id: 'nama_anestesi',
-                placeholder: 'Cari Rencana Anastesi Disini',
-                type: 'text'
+                id: 'id_register',
+                placeholder: 'Cari Register Pasien Disini',
+                type: 'dropdown',
+                dropdownProps: {
+                    options: [],
+                    optionName: 'nama_pasien',
+                    optionValue: 'id_register'
+                }
             },
         ],
         showSort: false,
@@ -88,19 +90,29 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
     GridCustomSearchParams: any;
     GridPaginationData: any = { page: 1, count: 5 };
 
+    ToggleCard = true;
+
     FormState: 'insert' | 'update' = 'insert';
     FormProps: FormModel.IForm;
     @ViewChild('FormComps') FormComps!: DynamicFormComponent;
 
+    ShowDialogAction = false;
+    Action: 'approve' | 'cancel' = 'approve';
+    IdBedTransfer = 0;
+    Keterangan = "";
+    Tanggal = new Date();
+
     constructor(
         private _bedService: BedService,
         private _lamarService: KamarService,
+        private _activatedRoute: ActivatedRoute,
         private _messageService: MessageService,
         private _confirmationService: ConfirmationService,
         private _transferTempatTidurService: TransferTempatTidurService,
+        private _pendaftaranRawatInapService: PendaftaranRawatInapService
     ) {
         this.FormProps = {
-            id: 'form_setup_asal_rujukan',
+            id: 'form_transfer_tempat_tidur',
             fields: [
                 {
                     id: 'id_bed_transfer',
@@ -122,7 +134,7 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
                     id: 'tanggal_bed_request',
                     label: 'Tgl. Bed Transfer',
                     required: true,
-                    type: 'date',
+                    type: 'datetime',
                     value: '',
                 },
                 {
@@ -133,7 +145,7 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
                     value: '',
                     dropdownProps: {
                         options: [],
-                        optionName: 'nama_bed_kamar',
+                        optionName: 'label_kamar',
                         optionValue: 'id_bed_kamar',
                     },
                     onChange: (args: any) => {
@@ -158,21 +170,8 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
                     value: '',
                     dropdownProps: {
                         options: [],
-                        optionName: 'nama_bed',
+                        optionName: 'no_bed',
                         optionValue: 'id_bed',
-                    },
-                    onChange: (args: any) => {
-                        if (args) {
-                            this._bedService
-                                .getAllActive({ page: 1, count: 100, id_bed_kamar: args.id_bed_kamar })
-                                .pipe(takeUntil(this.Destroy$))
-                                .subscribe((result) => {
-                                    if (result) {
-                                        const index = this.FormProps.fields.findIndex(item => item.id == 'id_bed_kamar_tujuan');
-                                        this.FormProps.fields[index].dropdownProps.options = result.data.rows;
-                                    }
-                                });
-                        }
                     }
                 },
                 {
@@ -183,8 +182,21 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
                     value: '',
                     dropdownProps: {
                         options: [],
-                        optionName: 'nama_bed_kamar',
+                        optionName: 'label_kamar',
                         optionValue: 'id_bed_kamar',
+                    },
+                    onChange: (args: any) => {
+                        if (args) {
+                            this._bedService
+                                .getAllActive({ page: 1, count: 100, id_bed_kamar: args.id_bed_kamar })
+                                .pipe(takeUntil(this.Destroy$))
+                                .subscribe((result) => {
+                                    if (result) {
+                                        const index = this.FormProps.fields.findIndex(item => item.id == 'id_bed_tujuan');
+                                        this.FormProps.fields[index].dropdownProps.options = result.data.rows;
+                                    }
+                                });
+                        }
                     }
                 },
                 {
@@ -195,7 +207,7 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
                     value: '',
                     dropdownProps: {
                         options: [],
-                        optionName: 'nama_bed',
+                        optionName: 'no_bed',
                         optionValue: 'id_bed',
                     }
                 },
@@ -208,7 +220,7 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
                 },
             ],
             style: 'not_inline',
-            class: 'grid-rows-6 grid-cols-1',
+            class: 'grid-rows-3 grid-cols-2',
             state: 'write',
             defaultValue: null,
         };
@@ -218,21 +230,45 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
         this.getAllKamar();
     }
 
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const state = this._activatedRoute.snapshot.queryParams['state'];
+
+            if (state == 'create') {
+                this.PageState = 'form';
+
+                setTimeout(() => {
+                    const pasien = JSON.parse(localStorage.getItem("_SPSH_") as any);
+                    this.FormComps.FormGroup.get('id_register')?.setValue(pasien.id_register);
+
+                    this.getAll({ id_register: pasien.id_register });
+                }, 500);
+            }
+        }, 1);
+    }
+
     ngOnDestroy(): void {
         this.Destroy$.next(0);
         this.Destroy$.complete();
     }
 
-    private getAll(id_register: any) {
-        this._transferTempatTidurService
-            .getAll(id_register)
-            .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
-                if (result) {
-                    this.GridProps.dataSource = result.data.rows;
-                    this.GridProps.totalRows = result.data.totalRows;
-                }
-            });
+    private getAll(query: any) {
+        if (!query) {
+            this._messageService.clear();
+            this._messageService.add({ severity: 'warning', summary: 'Oops', detail: 'Register Pasien Tidak Boleh Kosong' })
+        } else {
+            this._transferTempatTidurService
+                .getAll(query)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result) {
+                        this.GridProps.dataSource = result.data;
+                        this.GridProps.totalRows = result.data.totalRows;
+                    }
+                });
+        }
+
+
     }
 
     private getAllKamar() {
@@ -291,25 +327,15 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
 
     onToolbarClicked(args: any): void {
         if (args.type == 'approve') {
-            // this._confirmationService.confirm({
-            //     target: (<any>event).target as EventTarget,
-            //     message: 'Data akan diubah statusnya',
-            //     header: 'Apakah Anda Yakin?',
-            //     icon: 'pi pi-info-circle',
-            //     acceptButtonStyleClass: "p-button-danger p-button-sm",
-            //     rejectButtonStyleClass: "p-button-secondary p-button-sm",
-            //     acceptIcon: "none",
-            //     acceptLabel: 'Iya Saya Yakin',
-            //     rejectIcon: "none",
-            //     rejectLabel: 'Tidak, Kembali',
-            //     accept: () => {
-            //         this.updateStatusAsalRujukan(args.data);
-            //     }
-            // });
+            this.Action = 'approve';
+            this.IdBedTransfer = args.data.id_bed_transfer;
+            this.ShowDialogAction = true;
         }
 
         if (args.type == 'cancel') {
-            this.onRowDoubleClicked(args.data);
+            this.Action = 'cancel';
+            this.IdBedTransfer = args.data.id_bed_transfer;
+            this.ShowDialogAction = true;
         }
     }
 
@@ -354,4 +380,46 @@ export class TransferTempatTidurComponent implements OnInit, OnDestroy {
             })
     }
 
+    handleSaveAction(action: 'approve' | 'cancel') {
+        if (action == 'approve') {
+            const payload = {
+                id_bed_transfer: this.IdBedTransfer,
+                keterangan_approve: this.Keterangan,
+                tanggal_bed_approve: this.Tanggal
+            };
+
+            this._transferTempatTidurService
+                .approve(payload)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.responseResult) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Transfer Tempat Tidur Berhasil Di Approve' });
+                        this.ShowDialogAction = false;
+                        const pasien = JSON.parse(localStorage.getItem("_SPSH_") as any);
+                        this.getAll({ id_register: pasien.id_register })
+                    }
+                });
+        };
+
+        if (action == 'cancel') {
+            const payload = {
+                id_bed_transfer: this.IdBedTransfer,
+                reason_canceled: this.Keterangan,
+            };
+
+            this._transferTempatTidurService
+                .cancel(payload)
+                .pipe(takeUntil(this.Destroy$))
+                .subscribe((result) => {
+                    if (result.responseResult) {
+                        this._messageService.clear();
+                        this._messageService.add({ severity: 'success', summary: 'Berhasil', detail: 'Transfer Tempat Tidur Berhasil Di Batalkan' });
+                        this.ShowDialogAction = false;
+                        const pasien = JSON.parse(localStorage.getItem("_SPSH_") as any);
+                        this.getAll({ id_register: pasien.id_register })
+                    }
+                });
+        }
+    }
 }

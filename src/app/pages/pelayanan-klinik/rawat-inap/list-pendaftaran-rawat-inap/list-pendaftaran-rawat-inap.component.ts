@@ -65,7 +65,7 @@ export class ListPendaftaranRawatInapComponent implements OnInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
-        toolbar: ['Cetak SEP', 'Verifikasi Penjamin', 'Batal Pendaftaran', 'Bed Management', 'Permintaan Operasi'],
+        toolbar: ['Cetak SEP', 'Verifikasi Penjamin', 'Batal Pendaftaran', 'Bed Transfer', 'Permintaan Operasi'],
         showPaging: true,
         showSearch: true,
         isCustomSearch: true,
@@ -182,7 +182,21 @@ export class ListPendaftaranRawatInapComponent implements OnInit, OnDestroy {
     }
 
     onToolbarClicked(args: any): void {
+        console.log(args);
 
+        if (args.type == 'bed transfer') {
+            localStorage.setItem("_SPSH_", JSON.stringify(args.data));
+            setTimeout(() => {
+                this._router.navigateByUrl('/pelayanan-klinik/rawat-inap/transfer-tempat-tidur?state=create')
+            }, 1000);
+        }
+
+        if (args.type == 'permintaan_operasi') {
+            localStorage.setItem("_SPSH_", JSON.stringify(args.data));
+            setTimeout(() => {
+                this._router.navigateByUrl('/pelayanan-klinik/rawat-inap/permintaan_operasi?state=create')
+            }, 1000);
+        }
     }
 
     onPageChanged(args: any) {

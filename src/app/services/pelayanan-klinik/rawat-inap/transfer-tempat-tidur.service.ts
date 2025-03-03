@@ -13,8 +13,8 @@ export class TransferTempatTidurService {
         private _httpRequestService: HttpRequestService
     ) { }
 
-    getAll(id_register: any): Observable<HttpBaseResponse> {
-        return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-bed-transfer/getAll/${id_register}`);
+    getAll(query: any): Observable<HttpBaseResponse> {
+        return this._httpRequestService.getRequest(`${environment.webApiUrl}/tr-bed-transfer/getByIdRegister/${query.id_register}`);
     }
 
     getById(id_bed_transfer: string): Observable<HttpBaseResponse> {
@@ -23,7 +23,7 @@ export class TransferTempatTidurService {
 
     create(payload: any): Observable<HttpBaseResponse> {
         delete (<any>payload)['id_bed_transfer'];
-        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-bed-transfer/create`, payload);
+        return this._httpRequestService.postRequest(`${environment.webApiUrl}/tr-bed-transfer/insert`, payload);
     }
 
     approve(payload: any): Observable<HttpBaseResponse> {

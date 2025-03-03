@@ -89,10 +89,10 @@
                         {{ handleFormatStringToNumber(rowData[col.field]) | currency: 'Rp. ' }}
                         }
                         @case ('date') {
-                        {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                        {{ rowData[col.field] ? (rowData[col.field] | date: 'dd-MM-yyyy') : '-' }}
                         }
                         @case ('datetime') {
-                        {{ handleFormatDateTime(rowData[col.field])}}
+                        {{ rowData[col.field] ? handleFormatDateTime(rowData[col.field]) : '-'}}
                         }
                         @case ('number') {
                         {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
@@ -169,10 +169,10 @@
                             {{ handleFormatStringToNumber(rowData[col.field]) | currency: 'Rp. ' }}
                             }
                             @case ('date') {
-                            {{ rowData[col.field] | date: 'dd-MM-yyyy' }}
+                            {{ rowData[col.field] ? (rowData[col.field] | date: 'dd-MM-yyyy') : '-' }}
                             }
                             @case ('datetime') {
-                            {{ handleFormatDateTime(rowData[col.field])}}
+                            {{ rowData[col.field] ? handleFormatDateTime(rowData[col.field]) : '-'}}
                             }
                             @case ('number') {
                             {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
