@@ -272,4 +272,10 @@ export class GridComponent implements OnInit, OnDestroy {
         });
         FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
     }
+
+    getNestedValue(obj: any, path: string): any {
+        const fields = path.split('.').reduce((o, key) => (o ? o[key] : ''), obj);
+        console.log("fields =>", fields);
+        return fields;
+    }
 }

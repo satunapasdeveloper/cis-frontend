@@ -98,10 +98,10 @@
                         {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
                         }
                         @case (undefined) {
-                        {{ rowData[col.field] }}
+                        {{ getNestedValue(rowData, col.field) }}
                         }
                         @default {
-                        {{ rowData[col.field] }}
+                        {{ getNestedValue(rowData, col.field) }}
                         }
                         }
                     </span>
@@ -178,10 +178,10 @@
                             {{ handleFormatStringToNumber(rowData[col.field]) | number: '' }}
                             }
                             @case (undefined) {
-                            {{ rowData[col.field] }}
+                            {{ getNestedValue(rowData, col.field) }}
                             }
                             @default {
-                            {{ rowData[col.field] }}
+                            {{ getNestedValue(rowData, col.field) }}
                             }
                             }
                         </span>
